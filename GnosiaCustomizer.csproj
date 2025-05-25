@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
     <AssemblyName>GnosiaCustomizer</AssemblyName>
     <Product>Gnosia Customizer</Product>
     <Version>1.0.0</Version>
@@ -19,18 +19,21 @@
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-    <PackageReference Include="UnityEngine.Modules" Version="2019.4.17.31878"
-      IncludeAssets="compile" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.17.31878" IncludeAssets="compile" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2"
-      PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
   </ItemGroup>
+	
+	
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>References\Assembly-CSharp.dll</HintPath>
+        <HintPath>References\Assembly-CSharp.dll</HintPath>
     </Reference>
+	  <Reference Include="UnityEngine.UI">
+		  <HintPath>References\UnityEngine.UI.dll</HintPath>
+	  </Reference>
   </ItemGroup>
 </Project>
