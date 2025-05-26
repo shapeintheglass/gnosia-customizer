@@ -38,9 +38,8 @@ namespace GnosiaCustomizer
         }
 
         // Load custom sprites from the "textures" folder
-        internal static void LoadCustomSprites()
+        internal static void Initialize()
         {
-            Logger.LogInfo("LoadCustomSprites() called");
             // Verify that textures folder exists
             string texturesPath = Path.Combine(Paths.PluginPath, "textures");
             if (!Directory.Exists(texturesPath))
@@ -48,11 +47,12 @@ namespace GnosiaCustomizer
                 Logger.LogError($"Textures folder not found at {texturesPath}. Please create a 'textures' folder in the plugin directory and add your custom sprites.");
                 return;
             }
-
+            var availableFiles = new HashSet<string>(Directory.GetFiles(texturesPath, "*.png", SearchOption.TopDirectoryOnly)
+                .Select(Path.GetFileName));
             // Backgrounds
-            var bgMainConsolePath = Path.Combine(texturesPath, bgMainConsoleName);
-            if (File.Exists(bgMainConsolePath))
+            if (availableFiles.Contains(bgMainConsoleName))
             {
+                var bgMainConsolePath = Path.Combine(texturesPath, bgMainConsoleName);
                 Logger.LogInfo($"Loading background texture: {bgMainConsolePath}");
                 var bgConsoleTexture = new Texture2D(2, 2); // This will get overwritten by the actual texture
                 byte[] bgFileData = File.ReadAllBytes(bgMainConsolePath);
@@ -82,8 +82,7 @@ namespace GnosiaCustomizer
             }
 
             // Sprites
-            var availableFiles = new HashSet<string>(Directory.GetFiles(texturesPath, "*.png", SearchOption.TopDirectoryOnly)
-                .Select(Path.GetFileName));
+            
             // Load custom sprites from the "textures" folder
             var numTextures = headNames.Length + 1;
             var charIndex = 0;
@@ -375,10 +374,10 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(string resourceName, ref ResourceManager.ResTextureList __result)
             {
-                Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName}, __result: {(__result != null ? __result.GetType().Name : "null")})");
                 // Load texture from custom sprites if it exists
                 if (charaTextures.ContainsKey(resourceName))
                 {
+                    Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
                     __result = charaTextures[resourceName].texture;
                     return false;
                 }
@@ -392,7 +391,7 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
             {
-                Logger.LogInfo($"ShowChara_Patch.Prefix called (__instance: {__instance?.GetType().Name}, chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
+                Logger.LogInfo($"ShowChara_Patch.Prefix called (chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
                 if (chara > 0)
                 {
                     // We need to calculate the sprite index to determine if this should be a custom sprite.
@@ -408,6 +407,16 @@ namespace GnosiaCustomizer
                     var spriteIndex = thyojo > 0 ? tid * 100U + hyojo : tid * 100U;
                     if (!modifiedSpriteIndeces.Contains((uint)spriteIndex))
                     {
+                        Logger.LogInfo($"Sprite index {spriteIndex} not modified, using default sprite.");
+                        Logger.LogInfo($"Modified sprites: {string.Join(", ", modifiedSpriteIndeces)}");
+                        Logger.LogInfo($"Available sprites: {string.Join(", ", __instance.m_sb.Keys)}");
+
+                        // Check if this is present in the sprite map anyways
+                        if (!__instance.m_sb.ContainsKey(depth) || !__instance.m_sb[depth].m_spriteMap.ContainsKey((uint)spriteIndex))
+                        {
+                            Logger.LogWarning($"{spriteIndex} is NOT in the sprite map! Oh no!");
+                            return false;
+                        }
                         return true;
                     }
 
@@ -432,7 +441,7 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(ScriptParser __instance, ref int __result, uint depth = 20, int chara = -1)
             {
-                Logger.LogInfo($"UnvisibleAllChara_Patch.Prefix called (__instance: {__instance?.GetType().Name}, depth: {depth}, chara: {chara})");
+                Logger.LogInfo($"UnvisibleAllChara_Patch.Prefix called (depth: {depth}, chara: {chara})");
                 const uint numHeads = 7U;
                 if (chara <= 0)
                     __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
@@ -510,6 +519,17 @@ namespace GnosiaCustomizer
                     return false;
                 }
                 return true;
+            }
+        }
+
+        // ScriptParser.LoadTexture
+        [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
+        public static class LoadTexture_Patch
+        {
+            [HarmonyPrefix]
+            public static void Prefix(ScriptParser __instance, string resourceName)
+            {
+                Logger.LogInfo($"ScriptParser.LoadTexture called (resourceName: {resourceName})");
             }
         }
     }

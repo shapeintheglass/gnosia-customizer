@@ -1,20 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using application;
-using baseEffect.graphics;
-using BepInEx;
-using BepInEx.Logging;
-using config;
-using coreSystem;
-using gnosia;
-using GnosiaCustomizer.utils;
+﻿using BepInEx;
+using GnosiaCustomizer.patches;
 using HarmonyLib;
-using resource;
-using systemService.trophy;
-using UnityEngine;
 
 namespace GnosiaCustomizer;
 
@@ -22,16 +8,29 @@ namespace GnosiaCustomizer;
 [BepInProcess("Gnosia.exe")]
 public class Plugin : BaseUnityPlugin
 {
+    private static readonly string[] SetCharaMethodNames = new string[] {
+       "SetTakashi", "SetGina", "SetSQ", "SetRakio", "SetStella", "SetSigemichi", "SetCipi", "SetRemnant", "SetComet", "SetYuriko", "SetJonas", "SetSetsu", "SetOtome", "SetShaMin", "SetKukulsika"
+    };
+
     public void Awake()
     {
         SpritePatches.Logger = Logger;
+        TextPatches.Logger = Logger;
         // Plugin startup logic
         Logger.LogInfo($"Plugin gnosia customizer is loaded!");
 
-        // Load custom sprites
-        SpritePatches.LoadCustomSprites();
+        // Initialize patches and load custom resources
+        SpritePatches.Initialize();
+        TextPatches.Initialize();
+
 
         var harmony = new Harmony("com.sitg.gnosia.customizer");
+
+        //foreach (var name in SetCharaMethodNames)
+        //{
+        //    TextPatches.PatchSetCharaData(harmony, name);
+        //}
+
         harmony.PatchAll();
         Logger.LogInfo($"Harmony patches applied.");
     }
