@@ -37,9 +37,10 @@ public class Plugin : BaseUnityPlugin
 
     private struct CharaTexture
     {
-        public Texture2D texture;
+        public ResourceManager.ResTextureList texture;
         public Vector2[] sizes;
         public Vector2[] offsets;
+        public Vector2? position;
     }
 
     public void Awake()
@@ -60,6 +61,7 @@ public class Plugin : BaseUnityPlugin
     // Load custom sprites from the "textures" folder
     private void LoadCustomSprites()
     {
+        Logger.LogInfo("LoadCustomSprites() called");
         // Verify that textures folder exists
         string texturesPath = Path.Combine(Paths.PluginPath, "textures");
         if (!Directory.Exists(texturesPath))
@@ -72,26 +74,27 @@ public class Plugin : BaseUnityPlugin
         var bgMainConsolePath = Path.Combine(texturesPath, bgMainConsoleName);
         if (File.Exists(bgMainConsolePath))
         {
+            Logger.LogInfo($"Loading background texture: {bgMainConsolePath}");
             var bgConsoleTexture = new Texture2D(2, 2); // This will get overwritten by the actual texture
             byte[] bgFileData = File.ReadAllBytes(bgMainConsolePath);
             if (bgConsoleTexture.LoadImage(bgFileData))
             {
                 bgTextures = new Dictionary<string, ResourceManager.ResTextureList>()
-                {
-                    { bgMainConsoleName, new ResourceManager.ResTextureList()
-                        {
-                            count = 1,
-                            isFixed = false,
-                            slot = 0,
-                            userInfo = new GraphicsContext.TextureUserInfo()
                             {
-                                size = new Vector2(bgConsoleTexture.width, bgConsoleTexture.height),
-                                isMadeInGame = false
-                            },
-                            texture = bgConsoleTexture
-                        }
-                    }
-                };
+                                { bgMainConsoleName, new ResourceManager.ResTextureList()
+                                    {
+                                        count = 1,
+                                        isFixed = false,
+                                        slot = 0,
+                                        userInfo = new GraphicsContext.TextureUserInfo()
+                                        {
+                                            size = new Vector2(bgConsoleTexture.width, bgConsoleTexture.height),
+                                            isMadeInGame = false
+                                        },
+                                        texture = bgConsoleTexture
+                                    }
+                                }
+                            };
             }
             else
             {
@@ -104,18 +107,22 @@ public class Plugin : BaseUnityPlugin
             .Select(Path.GetFileName));
         // Load custom sprites from the "textures" folder
         var numTextures = headNames.Length + 1;
+        var charIndex = 0;
         foreach (var chara in packedNames)
         {
+            Logger.LogInfo($"Processing character: {chara}");
             var textures = new Texture2D[numTextures];
             var sizes = new Vector2[numTextures];
             float totalWidth = 0;
             float maxHeight = 0;
             string bodyFile = $"{chara}_h00.png";
             // Check if the file ${chara}_h00.png exists
-            if (!availableFiles.Contains(bodyFile)) {
+            if (!availableFiles.Contains(bodyFile))
+            {
+                Logger.LogInfo($"Body file not found: {bodyFile}");
                 continue;
             }
-            
+
             // Load the texture into textures[0]
             var bodyTexture = new Texture2D(2, 2);
             byte[] fileData = File.ReadAllBytes(Path.Combine(Paths.PluginPath, "textures", bodyFile));
@@ -131,7 +138,7 @@ public class Plugin : BaseUnityPlugin
                 Logger.LogError($"Failed to load texture {chara}_h00.png");
                 continue;
             }
-            
+
 
             var allTexturesExist = true;
             var charaIndex = 1;
@@ -141,10 +148,11 @@ public class Plugin : BaseUnityPlugin
                 // Verify that the file ${chara}_{head}.png exists
                 if (!availableFiles.Contains(headFile))
                 {
+                    Logger.LogInfo($"Head file not found: {headFile}");
                     allTexturesExist = false;
                     break;
                 }
-                
+
                 // Load into the textures array
                 var headTexture = new Texture2D(2, 2);
                 byte[] headFileData = File.ReadAllBytes(Path.Combine(Paths.PluginPath, "textures", headFile));
@@ -161,7 +169,7 @@ public class Plugin : BaseUnityPlugin
                     allTexturesExist = false;
                     break;
                 }
-                
+
                 charaIndex++;
             }
             if (!allTexturesExist)
@@ -193,88 +201,91 @@ public class Plugin : BaseUnityPlugin
             }
             spriteSheet.Apply();
 
+            var resourceTextureList = new ResourceManager.ResTextureList
+            {
+                count = 1,
+                isFixed = false,
+                slot = 0,
+                userInfo = new GraphicsContext.TextureUserInfo
+                {
+                    size = new Vector2(spriteSheet.width, spriteSheet.height),
+                    isMadeInGame = false
+                },
+                texture = spriteSheet
+            };
+
             var charaTexture = new CharaTexture
             {
-                texture = spriteSheet,
+                texture = resourceTextureList,
                 sizes = sizes,
-                offsets = offsets
+                offsets = offsets,
+                position = new Vector2?(new Vector2((float)(50.0 * charIndex - 200.0), 0.0f))
             };
             charaTextures.Add(chara, charaTexture);
+            charIndex++;
         }
     }
 
-    // Overwrite the offsets and sizes of the custom sprites in their respective sprite sheets
     [HarmonyPatch(typeof(config.Config), nameof(config.Config.Initialize))]
     public static class Initialize_Config_Patch
     {
         [HarmonyPostfix]
         public static void Postfix(Config __instance, ref int __result)
         {
-
+            Logger.LogInfo($"Initialize_Config_Patch.Postfix called (__instance: {__instance?.GetType().Name}, __result: {__result})");
             // Iterate through each custom sprite
             foreach (var packedName in charaTextures.Keys)
             {
                 var charaTexture = charaTextures[packedName];
-                // Log the size of the texture
                 var sizes = charaTexture.sizes;
                 var offsets = charaTexture.offsets;
 
-                // Set a new one
                 __instance.m_packedMap[packedName] = new Dictionary<string, PackedTexture>()
                 {
                     {
                         "body",
-                        new PackedTexture(charaTexture.offsets[0], charaTexture.sizes[0],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[0], charaTexture.sizes[0], [], 0.0f)
                     },
                     {
                         "h01",
-                        new PackedTexture(charaTexture.offsets[1], charaTexture.sizes[1],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[1], charaTexture.sizes[1], [], 0.0f)
                     },
                     {
                         "h02",
-                        new PackedTexture(charaTexture.offsets[2], charaTexture.sizes[2],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[2], charaTexture.sizes[2], [], 0.0f)
                     },
                     {
                         "h03",
-                        new PackedTexture(charaTexture.offsets[3], charaTexture.sizes[3],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[3], charaTexture.sizes[3], [], 0.0f)
                     },
                     {
                         "h04",
-                        new PackedTexture(charaTexture.offsets[4], charaTexture.sizes[4],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[4], charaTexture.sizes[4], [], 0.0f)
                     },
                     {
                         "h05",
-                        new PackedTexture(charaTexture.offsets[5], charaTexture.sizes[5],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[5], charaTexture.sizes[5], [], 0.0f)
                     },
                     {
                         "h06",
-                        new PackedTexture(charaTexture.offsets[6], charaTexture.sizes[6],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[6], charaTexture.sizes[6], [], 0.0f)
                     },
                     {
                         "h07",
-                        new PackedTexture(charaTexture.offsets[7], charaTexture.sizes[7],
-                        new Dictionary<string, Vector2>(), 0.0f)
+                        new PackedTexture(charaTexture.offsets[7], charaTexture.sizes[7], [], 0.0f)
                     },
                 };
             }
         }
     }
 
-    // Add the textures into the sprite map
     [HarmonyPatch(typeof(CharaScreen), nameof(CharaScreen.InitializeGlm))]
     public static class CharaScreen_InitializeGlm_Patch
     {
         [HarmonyPostfix]
         public static void Postfix(CharaScreen __instance, ResourceManager resourceManager, ScriptParser scriptParser, GameLogManager gameLogManager)
         {
-
+            Logger.LogInfo($"CharaScreen_InitializeGlm_Patch.Postfix called (__instance: {__instance?.GetType().Name}, resourceManager: {resourceManager?.GetType().Name}, scriptParser: {scriptParser?.GetType().Name}, gameLogManager: {gameLogManager?.GetType().Name})");
             for (uint charIndex = 0; charIndex < packedNames.Length; charIndex++)
             {
                 var packedName = packedNames[charIndex];
@@ -287,7 +298,7 @@ public class Plugin : BaseUnityPlugin
                 var textureName = "body";
                 var spriteIndex = charSpriteIndeces[charIndex];
 
-                var position = new Vector2?(new Vector2((float)(50.0 * charIndex - 200.0), 0.0f));
+                var position = charaTextures[packedName].position;
                 // Body
 
                 __instance.SetPackedTexture(
@@ -301,10 +312,11 @@ public class Plugin : BaseUnityPlugin
                     character: true);
                 modifiedSpriteIndeces.Add(spriteIndex);
 
-                __instance.m_spriteMap[spriteIndex].SetSize(0.7f);
-                __instance.m_spriteMap[spriteIndex].GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
-                __instance.m_spriteMap[spriteIndex].SetDisplayOffsetY((float)resourceManager.m_displaySize.height - __instance.m_spriteMap[spriteIndex].GetSizeInDisplay().y * __instance.m_spriteMap[spriteIndex].GetSize() * GraphicsContext.m_textureRatio);
-                __instance.m_spriteMap[spriteIndex].GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
+                var bodySprite = __instance.m_spriteMap[spriteIndex];
+                bodySprite.SetSize(0.7f);
+                bodySprite.GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
+                bodySprite.SetDisplayOffsetY((float)resourceManager.m_displaySize.height - bodySprite.GetSizeInDisplay().y * bodySprite.GetSize() * GraphicsContext.m_textureRatio);
+                bodySprite.GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
 
                 // Heads
                 for (int headIndex = 0; headIndex < headNames.Length; headIndex++)
@@ -321,50 +333,40 @@ public class Plugin : BaseUnityPlugin
                         position);
                     modifiedSpriteIndeces.Add(headSpriteIndex);
 
-                    __instance.m_spriteMap[headSpriteIndex].SetSize(0.7f);
-                    __instance.m_spriteMap[headSpriteIndex].GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
-                    __instance.m_spriteMap[headSpriteIndex].SetDisplayOffsetY((float)resourceManager.m_displaySize.height - __instance.m_spriteMap[spriteIndex].GetSizeInDisplay().y * __instance.m_spriteMap[spriteIndex].GetSize() * GraphicsContext.m_textureRatio);
-                    __instance.m_spriteMap[headSpriteIndex].GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
+                    var headSprite = __instance.m_spriteMap[headSpriteIndex];
+                    headSprite.SetSize(0.7f);
+                    headSprite.GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
+                    headSprite.SetDisplayOffsetY((float)resourceManager.m_displaySize.height - bodySprite.GetSizeInDisplay().y * bodySprite.GetSize() * GraphicsContext.m_textureRatio);
+                    headSprite.GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
                 }
             }
         }
     }
 
-    // Overwrite the original resource with the custom sprite sheet
     [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.GetTexture))]
     public static class GetTexture_Patch
     {
-        [HarmonyPostfix]
-        public static void Postfix(string resourceName, ref ResourceManager.ResTextureList __result)
+        [HarmonyPrefix]
+        public static bool Prefix(string resourceName, ref ResourceManager.ResTextureList __result)
         {
+            Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName}, __result: {(__result != null ? __result.GetType().Name : "null")})");
             // Load texture from custom sprites if it exists
             if (charaTextures.ContainsKey(resourceName))
             {
-                var charaTexture = charaTextures[resourceName];
-
-                __result = new ResourceManager.ResTextureList()
-                {
-                    count = 1,
-                    isFixed = false,
-                    slot = 0,
-                    userInfo = new GraphicsContext.TextureUserInfo()
-                    {
-                        size = new Vector2(charaTexture.texture.width, charaTexture.texture.height),
-                        isMadeInGame = false
-                    },
-                    texture = charaTexture.texture
-                };
+                __result = charaTextures[resourceName].texture;
+                return false;
             }
+            return true;
         }
     }
 
-    // Display the given sprite on the screen. For custom sprites, do not attempt layering.
     [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.ShowChara))]
     public static class ShowChara_Patch
     {
         [HarmonyPrefix]
         public static bool Prefix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
         {
+            Logger.LogInfo($"ShowChara_Patch.Prefix called (__instance: {__instance?.GetType().Name}, chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
             if (chara > 0)
             {
                 // We need to calculate the sprite index to determine if this should be a custom sprite.
@@ -398,13 +400,13 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    // Ensures that both heads and bodies are hidden now that they can be separate
     [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.UnvisibleAllChara))]
     public static class UnvisibleAllChara_Patch
     {
         [HarmonyPrefix]
         public static bool Prefix(ScriptParser __instance, ref int __result, uint depth = 20, int chara = -1)
         {
+            Logger.LogInfo($"UnvisibleAllChara_Patch.Prefix called (__instance: {__instance?.GetType().Name}, depth: {depth}, chara: {chara})");
             const uint numHeads = 7U;
             if (chara <= 0)
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
@@ -455,13 +457,24 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    // Screen.SetTexture(int textureType, Transform parentTrans, uint depth, string textureName, Vector2? _position = null, ResourceManager.ResTextureList texture = null)
+    [HarmonyPatch(typeof(CharaScreen), nameof(CharaScreen.SetColorCoeff))]
+    public static class SetColorCoeff_Patch
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(CharaScreen __instance, Vector4 color)
+        {
+            Logger.LogInfo($"SetColorCoeff_Patch.Prefix called (__instance: {__instance?.GetType().Name}, color: {color})");
+            return true;
+        }
+    }
+
     [HarmonyPatch(typeof(application.Screen), nameof(application.Screen.SetTexture))]
     public static class SetTexture_Patch
     {
         [HarmonyPrefix]
         public static bool Prefix(application.Screen __instance, ref int __result, int textureType, Transform parentTrans, uint depth, string textureName, Vector2? _position = null, ResourceManager.ResTextureList texture = null)
         {
+            Logger.LogInfo($"SetTexture_Patch.Prefix called (__instance: {__instance?.GetType().Name}, textureType: {textureType}, parentTrans: {parentTrans?.GetType().Name}, depth: {depth}, textureName: {textureName}, _position: {_position}, texture: {(texture != null ? texture.GetType().Name : "null")})");
             if (textureName == "bg_mainConsole")
             {
                 Vector2 display = _position ?? Vector2.zero;
@@ -487,6 +500,7 @@ public class Plugin : BaseUnityPlugin
 
     private static GameData? GetGameDataViaReflection()
     {
+        Logger.LogInfo("GetGameDataViaReflection() called");
         if (cachedGameData != null)
         {
             return cachedGameData;
@@ -505,6 +519,7 @@ public class Plugin : BaseUnityPlugin
 
     private static ResourceManager? GetResourceManagerViaReflection(application.Screen screen)
     {
+        Logger.LogInfo($"GetResourceManagerViaReflection(screen: {screen?.GetType().Name}) called");
         Type screenType = typeof(application.Screen);
         FieldInfo rmField = screenType?.GetField("m_resourceManager", BindingFlags.NonPublic | BindingFlags.Instance);
         if (rmField == null)
