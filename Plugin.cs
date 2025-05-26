@@ -14,6 +14,7 @@ using UnityEngine;
 using System;
 using gnosia;
 using systemService.saveData;
+using setting;
 
 namespace GnosiaCustomizer;
 
@@ -53,6 +54,7 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Harmony patches applied.");
     }
 
+    // Load custom sprites from the "textures" folder
     private void LoadCustomSprites()
     {
         // Load custom sprites from the "textures" folder
@@ -145,6 +147,7 @@ public class Plugin : BaseUnityPlugin
                 currentX += size.x;
                 spriteSheet.SetPixels((int)offsets[i].x, (int)offsets[i].y, (int)size.x, (int)size.y, texture.GetPixels());
             }
+            spriteSheet.Apply();
 
             var charaTexture = new CharaTexture
             {
@@ -155,20 +158,18 @@ public class Plugin : BaseUnityPlugin
             charaTextures.Add(chara, charaTexture);
 
             // Save the sprite sheet to a file for debugging purposes
-            string spriteSheetPath = Path.Combine(Paths.PluginPath, "textures", $"{chara}_spriteSheet.png");
-            File.WriteAllBytes(spriteSheetPath, spriteSheet.EncodeToPNG());
-            Logger.LogInfo($"Sprite sheet saved to {spriteSheetPath}");
-            Logger.LogInfo($"Loaded custom sprite for {chara} with size: {spriteSheet.width} x {spriteSheet.height} and offsets: {string.Join(", ", offsets)}");
+            //string spriteSheetPath = Path.Combine(Paths.PluginPath, "textures", $"{chara}_spriteSheet.png");
+            //File.WriteAllBytes(spriteSheetPath, spriteSheet.EncodeToPNG());
         }
     }
 
+    // Overwrite the offsets and sizes of the custom sprites in their respective sprite sheets
     [HarmonyPatch(typeof(config.Config), nameof(config.Config.Initialize))]
     public static class Initialize_Config_Patch
     {
         [HarmonyPostfix]
         public static void Postfix(Config __instance, ref int __result)
         {
-            Logger.LogInfo($"Config.Initialize called, result: {__result}");
 
             // Iterate through each custom sprite
             foreach (var packedName in charaTextures.Keys)
@@ -177,18 +178,11 @@ public class Plugin : BaseUnityPlugin
                 // Log the size of the texture
                 var sizes = charaTexture.sizes;
                 var offsets = charaTexture.offsets;
-                Logger.LogInfo($"Initializing config for custom sprite: {packedName}. num sizes: {sizes.Length} num offsets: {offsets.Length}");
-
-                for (int i = 0; i < sizes.Length; i++)
-                {
-                    Logger.LogInfo($"Texture {i}: size: {sizes[i]}, offset: {offsets[i]}");
-                }
 
                 // Clear the original packed map
                 foreach (string key2 in __instance.m_packedMap[packedName].Keys)
                     __instance.m_packedMap[packedName][key2].m_child.Clear();
                 __instance.m_packedMap[packedName].Clear();
-
 
                 // Set a new one
                 __instance.m_packedMap[packedName] = new Dictionary<string, PackedTexture>()
@@ -238,23 +232,28 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
+    // Add the textures into the sprite map
     [HarmonyPatch(typeof(CharaScreen), nameof(CharaScreen.InitializeGlm))]
     public static class CharaScreen_InitializeGlm_Patch
     {
         [HarmonyPostfix]
         public static void Postfix(CharaScreen __instance, ResourceManager resourceManager, ScriptParser scriptParser, GameLogManager gameLogManager)
         {
-            Logger.LogInfo("CharaScreen.InitializeGlm patch called");
 
             for (uint charIndex = 0; charIndex < packedNames.Length; charIndex++)
             {
                 var packedName = packedNames[charIndex];
+                if (!charaTextures.ContainsKey(packedName))
+                {
+                    Logger.LogWarning($"Custom sprite {packedName} not found. Skipping.");
+                    continue;
+                }
+
                 var textureName = "body";
                 var spriteIndex = charSpriteIndeces[charIndex];
 
                 var position = new Vector2?(new Vector2((float)(50.0 * charIndex - 200.0), 0.0f));
                 // Body
-                Logger.LogInfo($"Processing character index: {charIndex} packedName: {packedName} textureName: {textureName} spriteIndex: {spriteIndex} position: {position}");
 
                 __instance.SetPackedTexture(
                     0,
@@ -267,10 +266,10 @@ public class Plugin : BaseUnityPlugin
                     character: true);
                 modifiedSpriteIndeces.Add(spriteIndex);
 
-                // Write to png
-                var bodyTexture = CopyTextureReadable(__instance.m_spriteMap[spriteIndex].m_texture.texture);
-                var bodyTexturePath = Path.Combine(Paths.PluginPath, "textures", $"{packedName}_{spriteIndex}.png");
-                File.WriteAllBytes(bodyTexturePath, bodyTexture.EncodeToPNG());
+                __instance.m_spriteMap[spriteIndex].SetSize(0.7f);
+                __instance.m_spriteMap[spriteIndex].GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
+                __instance.m_spriteMap[spriteIndex].SetDisplayOffsetY((float)resourceManager.m_displaySize.height - __instance.m_spriteMap[spriteIndex].GetSizeInDisplay().y * __instance.m_spriteMap[spriteIndex].GetSize() * GraphicsContext.m_textureRatio);
+                __instance.m_spriteMap[spriteIndex].GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
 
                 // Heads
                 for (int headIndex = 0; headIndex < headNames.Length; headIndex++)
@@ -286,63 +285,26 @@ public class Plugin : BaseUnityPlugin
                         order: 1U,
                         position);
                     modifiedSpriteIndeces.Add(headSpriteIndex);
-                    // Write to png
-                    var head = CopyTextureReadable(__instance.m_spriteMap[headSpriteIndex].m_texture.texture);
-                    var headTexturePath = Path.Combine(Paths.PluginPath, "textures", $"{packedName}_{headTextureName}_{spriteIndex}.png");
-                    File.WriteAllBytes(headTexturePath, head.EncodeToPNG());
+
+                    __instance.m_spriteMap[headSpriteIndex].SetSize(0.7f);
+                    __instance.m_spriteMap[headSpriteIndex].GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
+                    __instance.m_spriteMap[headSpriteIndex].SetDisplayOffsetY((float)resourceManager.m_displaySize.height - __instance.m_spriteMap[spriteIndex].GetSizeInDisplay().y * __instance.m_spriteMap[spriteIndex].GetSize() * GraphicsContext.m_textureRatio);
+                    __instance.m_spriteMap[headSpriteIndex].GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
                 }
             }
         }
     }
 
-    private static Texture2D CopyTextureReadable(Texture2D source)
-    {
-        // Create a temporary RenderTexture the same size as the source
-        var rt = RenderTexture.GetTemporary(
-            source.width, source.height,
-            0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
-
-        // Blit (GPU copy) the source texture into our RT
-        Graphics.Blit(source, rt);
-
-        // Remember the currently active RT, then bind ours
-        var previous = RenderTexture.active;
-        RenderTexture.active = rt;
-
-        // Read the pixels from the RT into a new Texture2D
-        var copy = new Texture2D(source.width, source.height, TextureFormat.RGBA32, false);
-        copy.ReadPixels(new Rect(0, 0, source.width, source.height), 0, 0);
-        copy.Apply();
-
-        // Cleanup: restore the original RT and release ours
-        RenderTexture.active = previous;
-        RenderTexture.ReleaseTemporary(rt);
-
-        return copy;
-    }
-
-
+    // Overwrite the original resource with the custom sprite sheet
     [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.GetTexture))]
     public static class GetTexture_Patch
     {
         [HarmonyPostfix]
         public static void Postfix(string resourceName, ref ResourceManager.ResTextureList __result)
         {
-            Logger.LogInfo($"GetTexture called with resourceName: {resourceName}");
-            if (__result != null)
-            {
-                // Log the count, isFixed, slot, userInfo, and textureName of the ResTextureList
-                Logger.LogInfo($"GetTexture result: count: {__result.count}, isFixed: {__result.isFixed}, slot: {__result.slot}, userInfo.size: {__result.userInfo.size}, userInfo.isMadeInGame: {__result.userInfo.isMadeInGame}, textureName: {__result.texture.width} x {__result.texture.height}");
-            }
-            else
-            {
-                Logger.LogWarning($"GetTexture result is null for resourceName: {resourceName}");
-            }
-
             // Load texture from custom sprites if it exists
             if (charaTextures.ContainsKey(resourceName))
             {
-                Logger.LogInfo($"Loading custom sprite sheet for resourceName: {resourceName}");
                 var charaTexture = charaTextures[resourceName];
 
                 __result = new ResourceManager.ResTextureList()
@@ -361,49 +323,34 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-
-
+    // Display the given sprite on the screen. For custom sprites, do not attempt layering.
     [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.ShowChara))]
     public static class ShowChara_Patch
     {
         [HarmonyPrefix]
         public static bool Prefix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
         {
-            Logger.LogInfo($"ShowChara called with chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId}");
-
-
             if (chara > 0)
             {
+                // We need to calculate the sprite index to determine if this should be a custom sprite.
                 int thyojo = hyojo % 100;
-
-                // Use reflection to get Data
-                Type dataType = AccessTools.TypeByName("gnosia.Data");
-                FieldInfo gdField = dataType?.GetField("gd", BindingFlags.Public | BindingFlags.Static);
-                if (gdField == null)
-                {
-                    Logger.LogWarning("Failed to find gnosia.Data type or gd field");
-                    return true;
-                }
-                object gdInstance = gdField.GetValue(null);
-                var gameData = gdInstance as GameData;
+                var gameData = GetGameDataViaReflection();
                 if (gameData == null)
                 {
-                    Logger.LogWarning("Failed to cast gd instance to GameData");
+                    Logger.LogWarning("Failed to get GameData");
                     return true;
                 }
                 int tid = charaisId ? chara : (int)gameData.chara[chara].id;
-                Logger.LogInfo($"tid = {tid}");
 
                 var spriteIndex = thyojo > 0 ? tid * 100U + hyojo : tid * 100U;
                 if (!modifiedSpriteIndeces.Contains((uint)spriteIndex))
                 {
-                    Logger.LogInfo($"Skipping sprite index {spriteIndex} as it has not been modified.");
                     return true;
                 }
 
+                // For custom sprites, do not draw the default sprite underneath
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                 {
-                    Logger.LogInfo($"Using sprite index: {spriteIndex}");
                     var sprite = __instance.m_sb[depth].m_spriteMap[(uint)spriteIndex];
                     sprite.SetVisible(true);
                     sprite.SetCenterPosition(
@@ -416,14 +363,13 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    // ScriptParser.UnvisibleAllChara(uint depth = 20, int chara = -1)
+    // Ensures that both heads and bodies are hidden now that they can be separate
     [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.UnvisibleAllChara))]
     public static class UnvisibleAllChara_Patch
     {
         [HarmonyPrefix]
         public static bool Prefix(ScriptParser __instance, ref int __result, uint depth = 20, int chara = -1)
         {
-            Logger.LogInfo($"UnvisibleAllChara called with depth: {depth}, chara: {chara}");
             const uint numHeads = 7U;
             if (chara <= 0)
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
@@ -449,16 +395,7 @@ public class Plugin : BaseUnityPlugin
             else
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                 {
-                    // Use reflection to get Data
-                    Type dataType = AccessTools.TypeByName("gnosia.Data");
-                    FieldInfo gdField = dataType?.GetField("gd", BindingFlags.Public | BindingFlags.Static);
-                    if (gdField == null)
-                    {
-                        Logger.LogWarning("Failed to find gnosia.Data type or gd field");
-                        return true;
-                    }
-                    object gdInstance = gdField.GetValue(null);
-                    var gameData = gdInstance as GameData;
+                    var gameData = GetGameDataViaReflection();
                     if (gameData == null)
                     {
                         Logger.LogWarning("Failed to cast gd instance to GameData");
@@ -483,215 +420,28 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    #region system
-
-    // public void GameData.GetFromBaseData(ref SaveDataManager.SaveDataFileImage image)
-    [HarmonyPatch(typeof(GameData), nameof(GameData.GetFromBaseData))]
-    public static class GetFromBaseData_Patch
-    {
-        [HarmonyPostfix]
-        public static void Postfix(GameData __instance, ref SaveDataManager.SaveDataFileImage image)
-        {
-            Logger.LogInfo($"GetFromBaseData called with image: {image}");
-            foreach (var character in __instance.chara)
-            {
-                Logger.LogInfo($"ID: {character.id}, doa: {character.doa}");
-            }
-        }
-    }
-
-    // GameData.MakeLoop()
-    [HarmonyPatch(typeof(GameData), nameof(GameData.MakeLoop))]
-    public static class MakeLoop_Patch
-    {
-        [HarmonyPostfix]
-        public static void Prefix(GameData __instance)
-        {
-            Logger.LogInfo($"MakeLoop called with __instance: {__instance}");
-            foreach (var chara in __instance.chara)
-            {
-                Logger.LogInfo($"Chara: {chara.id}");
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadPlace))]
-    public static class LoadPlace_Patch
+    // void CharaScreen.SetColorCoeff(Vector4 color)
+    [HarmonyPatch(typeof(CharaScreen), nameof(CharaScreen.SetColorCoeff))]
+    public static class SetColorCoeff_Patch
     {
         [HarmonyPrefix]
-        public static void Prefix(byte place = 255, bool setPlaceData = true)
+        public static bool Prefix(CharaScreen __instance, Vector4 color)
         {
-            Logger.LogInfo($"LoadPlace called with place: {place}, setPlaceData: {setPlaceData}");
+            return true;
         }
     }
 
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.SetInterface))]
-    public static class SetInterface_Patch
+    private static GameData? GetGameDataViaReflection()
     {
-        [HarmonyPrefix]
-        public static void Prefix(uint depth, int mainChara, int targetChara = -1, bool vRole = true, bool shouldLog = true)
+        // Use reflection to get Data
+        Type dataType = AccessTools.TypeByName("gnosia.Data");
+        FieldInfo gdField = dataType?.GetField("gd", BindingFlags.Public | BindingFlags.Static);
+        if (gdField == null)
         {
-            Logger.LogInfo($"SetInterface called with depth: {depth}, mainChara: {mainChara}, targetChara: {targetChara}, vRole: {vRole}, shouldLog: {shouldLog}");
+            return null;
         }
+        object gdInstance = gdField.GetValue(null);
+        var gameData = gdInstance as GameData;
+        return gameData;
     }
-
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.SetNormalSerifu))]
-    public static class SetNormalSerifu_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(int main, int tgt, int pos, List<string> lang, bool waitNextText = false, bool withoutTrans = false, bool withoutCharaChange = false, bool vRole = true)
-        {
-            Logger.LogInfo($"SetNormalSerifu called with main: {main}, tgt: {tgt}, pos: {pos}, lang: {string.Join(", ", lang)}, waitNextText: {waitNextText}, withoutTrans: {withoutTrans}, withoutCharaChange: {withoutCharaChange}, vRole: {vRole}");
-        }
-    }
-
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.SetDialogScreen))]
-    public static class SetDialogScreen_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(uint depth, string message, int lines, bool canSelect)
-        {
-            Logger.LogInfo($"SetDialogScreen called with depth: {depth}, message: {message}, lines: {lines}, canSelect: {canSelect}");
-        }
-    }
-
-    [HarmonyPatch(typeof(application.Screen), nameof(application.Screen.SetTexture))]
-    public static class SetTexture_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(int textureType, Transform parentTrans, uint depth, string textureName, Vector2? _position = null, ResourceManager.ResTextureList texture = null)
-        {
-            Logger.LogInfo($"SetTexture called with type: {textureType}, depth: {depth}, textureName: {textureName}, position: {_position}");
-        }
-    }
-
-    [HarmonyPatch(typeof(application.Screen), nameof(application.Screen.SetPackedTexture))]
-    public static class SetPackedTexture_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(
-            application.Screen __instance,
-            int type,
-            Transform parentTrans,
-            string packedName,
-            string textureName,
-            uint depth,
-            uint order = 100,
-            Vector2? _position = null,
-            Sprite2dEffectArg parent = null,
-            ResourceManager.ResTextureList texture = null,
-            bool character = false)
-        {
-            Logger.LogInfo($"SetPackedTexture called with type: {type}, packedName: {packedName}, textureName: {textureName}, depth: {depth}, order: {order}, position: {_position}, character: {character}");
-        }
-    }
-
-    
-
-    #endregion system
-    #region texture
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
-    public static class LoadTexture_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(string resourceName)
-        {
-            Logger.LogInfo($"LoadTexture called with resourceName: {resourceName}");
-        }
-    }
-
-    // public int ResourceManager.LoadTexture(string resourceName, bool isFixed = false)
-    [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.LoadTexture))]
-    public static class LoadTexture_ResourceManager_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(string resourceName, bool isFixed = false)
-        {
-            Logger.LogInfo($"LoadTexture (ResourceManager) called with resourceName: {resourceName}, isFixed: {isFixed}");
-        }
-    }
-
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.ChangeCharaTexture))]
-    public static class ChangeCharaTexture_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(uint cid, string textureName, uint order = 10, uint targetLayer = 20, bool matUse = true)
-        {
-            Logger.LogInfo($"ChangeCharaTexture called with cid: {cid}, textureName: {textureName}, order: {order}, targetLayer: {targetLayer}, matUse: {matUse}");
-        }
-    }
-
-    [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.SetCharaSingleTexture))]
-    public static class SetCharaSingleTexture_Patch
-    {
-        [HarmonyPrefix]
-        public static void Prefix(int _depth, string textureName, uint pos = 1, float faceCenter = 0.0f, uint targetLayer = 20)
-        {
-            Logger.LogInfo($"SetCharaSingleTexture called with _depth: {_depth}, textureName: {textureName}, pos: {pos}, faceCenter: {faceCenter}, targetLayer: {targetLayer}");
-        }
-    }
-    #endregion texture
-
-    #region sound
-    //[HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadSound))]
-    //public static class LoadSound_Patch
-    //{
-    //    [HarmonyPrefix]
-    //    public static void Prefix(string resourceName)
-    //    {
-    //        Logger.LogInfo($"LoadSound called with resourceName: {resourceName}");
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(SoundManager), nameof(SoundManager.PlayBgm))]
-    //public static class PlayBgm_Patch
-    //{
-    //    [HarmonyPrefix]
-    //    public static void Prefix(string name, float fadeInTime = 0.0f, float volume = 1f, int target = -1, bool loop = true)
-    //    {
-    //        Logger.LogInfo($"PlayBgm called with name: {name}, fadeInTime: {fadeInTime}, volume: {volume}, target: {target}, loop: {loop}");
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(SoundManager), nameof(SoundManager.StopBgm))]
-    //public static class StopBgm_Patch
-    //{
-    //    [HarmonyPrefix]
-    //    public static void Prefix(int target = -1, bool isOld = false)
-    //    {
-    //        Logger.LogInfo($"StopBgm called with target: {target}, isOld: {isOld}");
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(SoundManager), nameof(SoundManager.FadeBgm))]
-    //public static class FadeBgm_Patch
-    //{
-    //    [HarmonyPrefix]
-    //    public static void Prefix(float startVol, float lastVol, float fadeTime, bool stopAtFadeOut = false, int target = -1)
-    //    {
-    //        Logger.LogInfo($"FadeBgm called with startVol: {startVol}, lastVol: {lastVol}, fadeTime: {fadeTime}, stopAtFadeOut: {stopAtFadeOut}, target: {target}");
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(SoundManager), nameof(SoundManager.PlaySe))]
-    //public static class PlaySe_Patch
-    //{
-    //    [HarmonyPrefix]
-    //    public static void Prefix(string name, float volume = 1f)
-    //    {
-    //        Logger.LogInfo($"PlaySe called with name: {name}, volume: {volume}");
-    //    }
-    //}
-
-    //[HarmonyPatch(typeof(SoundManager), nameof(SoundManager.StopAllSe))]
-    //public static class StopAllSe_Patch
-    //{
-    //    [HarmonyPrefix]
-    //    public static void Prefix()
-    //    {
-    //        Logger.LogInfo($"StopAllSe called");
-    //    }
-    //}
-    
-    #endregion sound
 }
