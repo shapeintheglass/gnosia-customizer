@@ -8,6 +8,7 @@ using System.Linq;
 using System;
 using HarmonyLib;
 using System.Reflection;
+using GnosiaCustomizer.utils;
 
 namespace GnosiaCustomizer.patches
 {
@@ -33,43 +34,6 @@ namespace GnosiaCustomizer.patches
         };
 
         private static Dictionary<int, CharacterText> characterTexts = new Dictionary<int, CharacterText>();
-
-        public class CharacterText
-        {
-            public string Name { get; set; }
-            public int Sex { get; set; }
-            public int Age { get; set; }
-            public string Place { get; set; }
-            public int NumJournalEntries { get; set; }
-            public List<JournalEntry> JournalEntries { get; set; }
-            public Dictionary<string, float> Attributes { get; set; }
-            public Dictionary<string, float> AbilityStart { get; set; }
-            public Dictionary<string, float> AbilityMax { get; set; }
-            public Dictionary<string, bool> KnownSkills { get; set; }
-            public Dictionary<string, bool> PreferredPlaces { get; set; }
-            public Dictionary<string, bool> DislikedPlaces { get; set; }
-            public int HpMin { get; set; }
-            public int HpWithGnos { get; set; }
-            public List<DialogueEntry> Dialogue { get; set; }
-        }
-
-        public class JournalEntry
-        {
-            public string Text { get; set; }
-            public int Type { get; set; }
-        }
-
-        public class DialogueEntry
-        {
-            public string Type { get; set; }
-            public List<Line> Lines { get; set; }
-        }
-
-        public class Line
-        {
-            public string Text { get; set; }
-            public int? Face { get; set; } // Nullable int to handle cases where face is not present
-        }
 
         internal static void Initialize()
         {
@@ -123,59 +87,13 @@ namespace GnosiaCustomizer.patches
             }
         }
 
-
-        // Patches
-
-        // ScenarioEngineObj.Initialize()
-        //[HarmonyPatch(typeof(gnosia.ScenarioEngineObj), nameof(gnosia.ScenarioEngineObj.Initialize))]
-        //internal class ScenarioEngineObj_Initialize_Patch
-        //{
-        //    internal static void Postfix(gnosia.ScenarioEngineObj __instance)
-        //    {
-        //        Logger.LogInfo("ScenarioEngineObj.Initialize() called");
-        //        foreach (var absoluteId in characterIdToFile.Keys)
-        //        {
-        //            if (characterTexts.TryGetValue(absoluteId, out var character) && !string.IsNullOrEmpty(character.Name))
-        //            {
-        //                utils.Utils.SetCharaFieldValue(absoluteId, "name", character.Name);
-        //                Logger.LogInfo($"Set name for character ID {absoluteId} to {character.Name}");
-        //            }
-        //            // Log the new name
-        //            Logger.LogInfo($"Character ID {absoluteId} name is now: {utils.Utils.GetCharaFieldValue(absoluteId, "name")}");
-        //        }
-        //    }
-        //}
-
-        //public static void PatchSetCharaData(Harmony harmony, string methodName="SetTakashi")
-        //{
-        //    var dataType = AccessTools.TypeByName("gnosia.Data");
-        //    var method = AccessTools.Method(dataType, methodName);
-        //    if (method == null)
-        //    {
-        //        Logger.LogWarning($"Method {methodName} not found in gnosia.Data");
-        //        return;
-        //    }
-
-        //    var prefix = typeof(SetCharaDataPatch).GetMethod(nameof(SetCharaDataPatch.Prefix), BindingFlags.Static | BindingFlags.Public);
-        //    harmony.Patch(method, prefix: new HarmonyMethod(prefix));
-        //}
-
-        //public static class SetCharaDataPatch
-        //{
-        //    public static void Prefix()
-        //    {
-        //        Logger.LogInfo("A SetX method is about to be called.");
-        //    }
-        //}
-
-
         [HarmonyPatch]
-        public class SetTakashiPatch
+        public class SetCharaDataPatch
         {
             static MethodBase TargetMethod()
             {
                 var type = AccessTools.TypeByName("gnosia.Data");
-                return AccessTools.Method(type, "SetKukulsika");
+                return AccessTools.Method(type, "SetKukulsika"); // This is called last
             }
 
             static void Postfix()
@@ -184,29 +102,11 @@ namespace GnosiaCustomizer.patches
                 {
                     if (characterTexts.TryGetValue(absoluteId, out var character) && !string.IsNullOrEmpty(character.Name))
                     {
-                        utils.Utils.SetCharaFieldValue(Logger, absoluteId, "name", character.Name);
-                        Logger.LogInfo($"Set name for character ID {absoluteId} to {character.Name}");
+                        Utils.SetChara(Logger, absoluteId, character);
                     }
                     // Log the new name
-                    Logger.LogInfo($"Character ID {absoluteId} name is now: {utils.Utils.GetCharaFieldValue(absoluteId, "name")}");
+                    Logger.LogInfo($"Character ID {absoluteId} name is now: {Utils.GetCharaFieldValue(absoluteId, "name")}");
                 }
-            }
-        }
-
-        // ScriptParser.SetNormalSerifu
-        [HarmonyPatch(typeof(coreSystem.ScriptParser), nameof(coreSystem.ScriptParser.SetNormalSerifu))]
-        internal class ScriptParser_SetNormalSerifu_Patch
-        {
-            internal static void Prefix(coreSystem.ScriptParser __instance, int main,
-                int tgt,
-                int pos,
-                List<string> lang,
-                bool waitNextText = false,
-                bool withoutTrans = false,
-                bool withoutCharaChange = false,
-                bool vRole = true)
-            {
-                Logger.LogInfo($"ScriptParser.SetNormalSerifu called with main={main}, tgt={tgt}, pos={pos}, lang={string.Join(", ", lang)}");
             }
         }
     }

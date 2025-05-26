@@ -407,10 +407,6 @@ namespace GnosiaCustomizer
                     var spriteIndex = thyojo > 0 ? tid * 100U + hyojo : tid * 100U;
                     if (!modifiedSpriteIndeces.Contains((uint)spriteIndex))
                     {
-                        Logger.LogInfo($"Sprite index {spriteIndex} not modified, using default sprite.");
-                        Logger.LogInfo($"Modified sprites: {string.Join(", ", modifiedSpriteIndeces)}");
-                        Logger.LogInfo($"Available sprites: {string.Join(", ", __instance.m_sb.Keys)}");
-
                         // Check if this is present in the sprite map anyways
                         if (!__instance.m_sb.ContainsKey(depth) || !__instance.m_sb[depth].m_spriteMap.ContainsKey((uint)spriteIndex))
                         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using BepInEx.Logging;
 using gnosia;
@@ -65,53 +66,116 @@ namespace GnosiaCustomizer.utils
             return field.GetValue(instance);
         }
 
-        internal static void SetCharaFieldValue(ManualLogSource Logger, int index, string fieldName, object newValue)
+        internal static void SetChara(ManualLogSource Logger, int index, CharacterText charaText)
         {
-            Logger.LogInfo($"Attempting to set '{fieldName}' at index {index} to '{newValue}'");
-
             var fieldInfo = AccessTools.Field(DataType, "Chara");
             if (fieldInfo == null)
             {
-                Logger.LogInfo("Field 'Chara' not found on DataType");
-                return;
+                throw new Exception("Chara field not found in Data class.");
             }
-
             var array = fieldInfo.GetValue(null) as Array;
             if (array == null)
             {
-                Logger.LogInfo("Chara array is null");
-                return;
+                throw new Exception("Chara field is not an array or is null.");
             }
-
             if (index < 0 || index >= array.Length)
             {
-                Logger.LogInfo($"Index {index} out of bounds (0..{array.Length - 1})");
-                return;
+                throw new IndexOutOfRangeException("Invalid CharaData index: " + index);
             }
-
             var charaStruct = array.GetValue(index);
-            if (charaStruct == null)
+
+            Logger.LogInfo("Setting character data for index: " + index);
+            Logger.LogInfo("Character Name: " + charaText.Name);
+            if (!string.IsNullOrEmpty(charaText.Name))
             {
-                Logger.LogInfo("charaStruct is null");
-                return;
+                SetField(charaStruct, "name", charaText.Name);
+            }
+            Logger.LogInfo("Sex: " + charaText.Sex);
+            if (charaText.Sex != null)
+            {
+                SetField(charaStruct, "sex", charaText.Sex.Value);
+            }
+            Logger.LogInfo("Age: " + charaText.Age);
+            if (charaText.Age != null)
+            {
+                SetField(charaStruct, "age", charaText.Age.Value);
+            }
+            Logger.LogInfo("Place: " + charaText.Place);
+            if (!string.IsNullOrEmpty(charaText.Place))
+            {
+                SetField(charaStruct, "d_place", charaText.Place);
+            }
+            Logger.LogInfo("NumJournalEntries: " + charaText.NumJournalEntries);
+            if (charaText.NumJournalEntries != null)
+            {
+                SetField(charaStruct, "d_tokkiNum", charaText.NumJournalEntries.Value);
             }
 
+            //if (charaText.JournalEntries != null && charaText.JournalEntries.Count > 0)
+            //{
+            //    var entries = new List<string>(charaText.JournalEntries.Count);
+            //    var types = new List<int>(charaText.JournalEntries.Count);
+            //    for (int i = 0; i < charaText.JournalEntries.Count; i++)
+            //    {
+            //        var entry = charaText.JournalEntries[i];
+            //        entries[i] = entry.Text;
+            //        types[i] = entry.Type;
+            //    }
+            //    SetField(charaStruct, "d_tokki", entries);
+            //    SetField(charaStruct, "d_tokkiType", types);
+            //}
+
+            //Logger.LogInfo("Attributes: " + (charaText.Attributes != null ? string.Join(", ", charaText.Attributes) : "null"));
+            //if (charaText.Attributes != null && charaText.Attributes.Count > 0)
+            //{
+            //    var attributes = new List<float>(charaText.Attributes.Count);
+            //    foreach (var attr in charaText.Attributes.Values)
+            //    {
+            //        attributes.Add(attr);
+            //    }
+            //    SetField(charaStruct, "attr", attributes);
+            //}
+
+            //Logger.LogInfo("AbilityStart: " + (charaText.AbilityStart != null ? string.Join(", ", charaText.AbilityStart) : "null"));
+            //if (charaText.AbilityStart != null && charaText.AbilityStart.Count > 0)
+            //{
+            //    var abilityStart = new List<float>(charaText.AbilityStart.Count);
+            //    foreach (var ability in charaText.AbilityStart.Values)
+            //    {
+            //        abilityStart.Add(ability);
+            //    }
+            //    SetField(charaStruct, "abil", abilityStart);
+            //}
+
+            //Logger.LogInfo("AbilityMax: " + (charaText.AbilityMax != null ? string.Join(", ", charaText.AbilityMax) : "null"));
+            //if (charaText.AbilityMax != null && charaText.AbilityMax.Count > 0)
+            //{
+            //    var abilityMax = new List<float>(charaText.AbilityMax.Count);
+            //    foreach (var ability in charaText.AbilityMax.Values)
+            //    {
+            //        abilityMax.Add(ability);
+            //    }
+            //    SetField(charaStruct, "abilMax", abilityMax);
+            //}
+
+            var honorific = GetCharaFieldValue(index, "t_keisho") as string;
+            Logger.LogInfo($"Honorific: {honorific}");
+
+            var introduction = GetCharaFieldValue(index, "t_aisatu") as List<string>;
+            Logger.LogInfo($"Intro: {introduction[0]}");
+
+            array.SetValue(charaStruct, index);
+        }
+
+        private static void SetField(object charaStruct, string fieldName, object value)
+        {
             var structType = charaStruct.GetType();
             var targetField = AccessTools.Field(structType, fieldName);
             if (targetField == null)
             {
-                Logger.LogInfo($"Field '{fieldName}' not found in CharaData struct");
-                return;
+                throw new Exception($"Field '{fieldName}' not found in CharaData struct.");
             }
-
-            targetField.SetValue(charaStruct, newValue);
-            Logger.LogInfo($"Set '{fieldName}' to '{newValue}' on copy");
-
-            var newValueRead = targetField.GetValue(charaStruct);
-            Logger.LogInfo($"'{fieldName}' after set: {newValueRead}");
-
-            array.SetValue(charaStruct, index);
-            Logger.LogInfo($"Modified struct written back to array at index {index}");
+            targetField.SetValue(charaStruct, value);
         }
 
 
