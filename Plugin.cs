@@ -29,7 +29,7 @@ public class Plugin : BaseUnityPlugin
         Logger.LogInfo($"Plugin gnosia customizer is loaded!");
 
         // Load custom sprites
-        SpritePatches.LoadCustomSprites(base.Logger);
+        SpritePatches.LoadCustomSprites();
 
         var harmony = new Harmony("com.sitg.gnosia.customizer");
         harmony.PatchAll();

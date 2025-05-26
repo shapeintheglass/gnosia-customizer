@@ -38,14 +38,14 @@ namespace GnosiaCustomizer
         }
 
         // Load custom sprites from the "textures" folder
-        internal static void LoadCustomSprites(ManualLogSource logger)
+        internal static void LoadCustomSprites()
         {
-            logger.LogInfo("LoadCustomSprites() called");
+            Logger.LogInfo("LoadCustomSprites() called");
             // Verify that textures folder exists
             string texturesPath = Path.Combine(Paths.PluginPath, "textures");
             if (!Directory.Exists(texturesPath))
             {
-                logger.LogError($"Textures folder not found at {texturesPath}. Please create a 'textures' folder in the plugin directory and add your custom sprites.");
+                Logger.LogError($"Textures folder not found at {texturesPath}. Please create a 'textures' folder in the plugin directory and add your custom sprites.");
                 return;
             }
 
@@ -53,7 +53,7 @@ namespace GnosiaCustomizer
             var bgMainConsolePath = Path.Combine(texturesPath, bgMainConsoleName);
             if (File.Exists(bgMainConsolePath))
             {
-                logger.LogInfo($"Loading background texture: {bgMainConsolePath}");
+                Logger.LogInfo($"Loading background texture: {bgMainConsolePath}");
                 var bgConsoleTexture = new Texture2D(2, 2); // This will get overwritten by the actual texture
                 byte[] bgFileData = File.ReadAllBytes(bgMainConsolePath);
                 if (bgConsoleTexture.LoadImage(bgFileData))
@@ -77,7 +77,7 @@ namespace GnosiaCustomizer
                 }
                 else
                 {
-                    logger.LogError($"Failed to load background texture {bgMainConsoleName}");
+                    Logger.LogError($"Failed to load background texture {bgMainConsoleName}");
                 }
             }
 
@@ -264,62 +264,109 @@ namespace GnosiaCustomizer
             [HarmonyPostfix]
             public static void Postfix(CharaScreen __instance, ResourceManager resourceManager, ScriptParser scriptParser, GameLogManager gameLogManager)
             {
-                Logger.LogInfo($"CharaScreen_InitializeGlm_Patch.Postfix called (__instance: {__instance?.GetType().Name}, resourceManager: {resourceManager?.GetType().Name}, scriptParser: {scriptParser?.GetType().Name}, gameLogManager: {gameLogManager?.GetType().Name})");
+                var displayHeight = resourceManager.m_displaySize.height;
+                var textureRatio = GraphicsContext.m_textureRatio;
+                var defaultMat = resourceManager.uiCharaDefaultMat;
+                var colorCoeff = (Color)__instance.GetColorCoeff();
                 for (uint charIndex = 0; charIndex < packedNames.Length; charIndex++)
                 {
                     var packedName = packedNames[charIndex];
-                    if (!charaTextures.ContainsKey(packedName))
+                    if (!charaTextures.TryGetValue(packedName, out CharaTexture value))
                     {
                         Logger.LogWarning($"Custom sprite {packedName} not found. Skipping.");
                         continue;
                     }
-
-                    var textureName = "body";
                     var spriteIndex = charSpriteIndeces[charIndex];
-
-                    var position = charaTextures[packedName].position;
+                    var position = value.position ?? Vector2.zero;
                     // Body
-
-                    __instance.SetPackedTexture(
-                        0,
+                    SetPackedTexture(
+                        __instance,
+                        resourceManager,
                         __instance.transform,
                         packedName,
-                        textureName,
+                        "body",
                         spriteIndex,
-                        order: 10U,
+                        10U,
                         position,
-                        character: true);
+                        value.texture,
+                        defaultMat);
+
                     modifiedSpriteIndeces.Add(spriteIndex);
 
                     var bodySprite = __instance.m_spriteMap[spriteIndex];
                     bodySprite.SetSize(0.7f);
-                    bodySprite.GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
-                    bodySprite.SetDisplayOffsetY((float)resourceManager.m_displaySize.height - bodySprite.GetSizeInDisplay().y * bodySprite.GetSize() * GraphicsContext.m_textureRatio);
-                    bodySprite.GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
+                    var bodyComponent = bodySprite.GetComponent<UnityEngine.UI.Image>();
+                    bodyComponent.material = defaultMat;
+                    bodySprite.SetDisplayOffsetY(displayHeight - bodySprite.GetSizeInDisplay().y * bodySprite.GetSize() * textureRatio);
+                    bodyComponent.material.SetColor("_Color", colorCoeff);
 
                     // Heads
                     for (int headIndex = 0; headIndex < headNames.Length; headIndex++)
                     {
                         var headTextureName = headNames[headIndex];
                         var headSpriteIndex = spriteIndex + headOffsetIndeces[headIndex];
-                        __instance.SetPackedTexture(
-                            0,
+                        // Time the setpackedtexture operation
+                        SetPackedTexture(
+                            __instance,
+                            resourceManager,
                             __instance.transform,
                             packedName,
                             headTextureName,
                             headSpriteIndex,
-                            order: 1U,
-                            position);
+                            1U,
+                            position,
+                            charaTextures[packedName].texture,
+                            defaultMat);
                         modifiedSpriteIndeces.Add(headSpriteIndex);
 
                         var headSprite = __instance.m_spriteMap[headSpriteIndex];
                         headSprite.SetSize(0.7f);
-                        headSprite.GetComponent<UnityEngine.UI.Image>().material = resourceManager.uiCharaDefaultMat;
-                        headSprite.SetDisplayOffsetY((float)resourceManager.m_displaySize.height - bodySprite.GetSizeInDisplay().y * bodySprite.GetSize() * GraphicsContext.m_textureRatio);
-                        headSprite.GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", (Color)__instance.GetColorCoeff());
+                        var headComponent = headSprite.GetComponent<UnityEngine.UI.Image>();
+                        headComponent.material = defaultMat;
+                        headSprite.SetDisplayOffsetY(displayHeight - bodySprite.GetSizeInDisplay().y * headSprite.GetSize() * GraphicsContext.m_textureRatio);
+                        headComponent.material.SetColor("_Color", colorCoeff);
                     }
                 }
             }
+        }
+
+        private static void SetPackedTexture(application.Screen __instance,
+                ResourceManager rm,
+                Transform parentTrans,
+                string packedName,
+                string textureName,
+                uint depth,
+                uint order,
+                Vector2 _position,
+                ResourceManager.ResTextureList texture,
+                Material mat)
+        {
+            // Same as above but with TryGet
+            if (!rm.m_config.m_packedMap.TryGetValue(packedName, out var packedTextures) 
+                || !packedTextures.TryGetValue(textureName, out var textureConfig))
+            {
+                Logger.LogWarning($"Packed texture {packedName}/{textureName} not found in config.");
+                return;
+            }
+
+            GameObject gameObject = new GameObject(textureName);
+            gameObject.AddComponent<Sprite2dEffectArg>();
+            gameObject.AddComponent<UnityEngine.UI.Image>();
+            gameObject.transform.SetParent(parentTrans);
+            gameObject.SetActive(false);
+            __instance.m_spriteMap[depth] = gameObject.GetComponent<Sprite2dEffectArg>();
+            __instance.m_spriteMap[depth].SetFromLeftUpper(
+                0,
+                _position.x,
+                _position.y,
+                textureConfig.m_textureOffset.x,
+                textureConfig.m_textureOffset.y,
+                textureConfig.m_sizeInTexture.x,
+                textureConfig.m_sizeInTexture.y,
+                texture,
+                Sprite2dEffectArg.SpriteType.k_SpriteTypeSingle,
+                mat
+            );
         }
 
         [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.GetTexture))]
