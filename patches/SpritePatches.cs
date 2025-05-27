@@ -120,7 +120,6 @@ namespace GnosiaCustomizer
         public static CharaFileInfo[] LoadCharacterTexturesAsync(
             HashSet<string> availableFiles)
         {
-            Logger.LogInfo("Loading character  asynchronously...");
             var tasks = new List<Task>();
 
             var numTextures = headNames.Length + 1;
@@ -167,7 +166,6 @@ namespace GnosiaCustomizer
                         bytes = bytes,
                         fileNames = fileNames
                     };
-
                 }));
             }
 
@@ -250,7 +248,6 @@ namespace GnosiaCustomizer
 
             charaTextures[chara] = charaTexture;
         }
-
 
         [HarmonyPatch(typeof(config.Config), nameof(config.Config.Initialize))]
         public static class Initialize_Config_Patch
@@ -574,7 +571,7 @@ namespace GnosiaCustomizer
                     Vector2 display = _position ?? Vector2.zero;
                     GameObject gameObject = new GameObject(textureName);
                     gameObject.AddComponent<Sprite2dEffectArg>();
-                    gameObject.AddComponent<UnityEngine.UI.Image>();
+                    gameObject.AddComponent<Image>();
                     gameObject.transform.SetParent(parentTrans);
                     gameObject.SetActive(false);
                     __instance.m_spriteMap[depth] = gameObject.GetComponent<Sprite2dEffectArg>();
@@ -592,7 +589,6 @@ namespace GnosiaCustomizer
             }
         }
 
-        // ScriptParser.LoadTexture
         [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
         public static class LoadTexture_Patch
         {

@@ -47,7 +47,6 @@ namespace GnosiaCustomizer.patches
             }
 
         }
-
         public static IEnumerator LoadWavFromFile(string path, System.Action<AudioClip> onLoaded)
         {
             using var www = UnityWebRequestMultimedia.GetAudioClip("file://" + path, AudioType.WAV);
@@ -64,25 +63,26 @@ namespace GnosiaCustomizer.patches
             onLoaded?.Invoke(clip);
         }
 
-
-        ////ResourceManager.FirstAssetLoader
-        //[HarmonyLib.HarmonyPatch(typeof(resource.ResourceManager), "FirstAssetLoader")]
-        //public class ResourceManager_FirstAssetLoader_Patch
-        //{
-        //    public static void Postfix(resource.ResourceManager __instance)
-        //    {
-        //        Logger.LogInfo("ResourceManager.FirstAssetLoader called");
-        //        Logger.LogInfo($"bgm keys: {__instance.}");
-        //    }
-        //}
-
-        // ResourceManager.GetBGMData
         [HarmonyLib.HarmonyPatch(typeof(resource.ResourceManager), "GetBGMData")]
         public class ResourceManager_GetBGMData_Patch
         {
             public static void Postfix(resource.ResourceManager __instance, string resourceName, ref AudioClip __result)
             {
                 Logger.LogInfo($"ResourceManager.GetBGMData called for {resourceName}");
+                if (cachedAudio.TryGetValue(resourceName, out var customAudio))
+                {
+                    __result = customAudio;
+                }
+            }
+        }
+
+        // ResourceManager.GetVoiceData
+        [HarmonyLib.HarmonyPatch(typeof(resource.ResourceManager), "GetVoiceData")]
+        public class ResourceManager_GetVoiceData_Patch
+        {
+            public static void Postfix(resource.ResourceManager __instance, string resourceName, ref AudioClip __result)
+            {
+                Logger.LogInfo($"ResourceManager.GetVoiceData called for {resourceName}");
                 if (cachedAudio.TryGetValue(resourceName, out var customAudio))
                 {
                     __result = customAudio;
