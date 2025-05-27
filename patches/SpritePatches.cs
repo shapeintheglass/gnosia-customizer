@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using application;
 using baseEffect.graphics;
 using BepInEx;
@@ -23,10 +24,10 @@ namespace GnosiaCustomizer
     {
         internal static new ManualLogSource Logger;
 
-        private static readonly string[] packedNames = new string[] { "p01", "p02", "p03", "p04", "p05", "p06", "p07", "p08", "p09", "p10", "p11", "p12", "p13", "p14" };
-        private static readonly uint[] charSpriteIndeces = new uint[] { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400 };
-        private static readonly string[] headNames = new string[] { "h01", "h02", "h03", "h04", "h05", "h06", "h07" };
-        private static readonly uint[] headOffsetIndeces = new uint[] { 1, 2, 3, 4, 5, 6, 7 };
+        private static readonly string[] packedNames = ["p01", "p02", "p03", "p04", "p05", "p06", "p07", "p08", "p09", "p10", "p11", "p12", "p13", "p14"];
+        private static readonly uint[] charSpriteIndeces = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400];
+        private static readonly string[] headNames = ["h01", "h02", "h03", "h04", "h05", "h06", "h07"];
+        private static readonly uint[] headOffsetIndeces = [1, 2, 3, 4, 5, 6, 7];
         private const string bgMainConsoleName = "bg_mainConsole.png";
 
         private static Dictionary<string, CharaTexture> charaTextures = new Dictionary<string, CharaTexture>();
@@ -44,6 +45,15 @@ namespace GnosiaCustomizer
         private static readonly Vector2 ZeroOne = new Vector2(0.0f, 1.0f);
         private static readonly Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
 
+        private struct CharaFileInfo
+        {
+            public string bodyFileName;
+            public byte[] bodyBytes;
+            public string[] headFileNames;
+            public string[] headBytes;
+            public Vector2[] sizes;
+        }
+
         private struct CharaTexture
         {
             public ResourceManager.ResTextureList texture;
@@ -53,7 +63,7 @@ namespace GnosiaCustomizer
         }
 
         // Load custom sprites from the "textures" folder
-        internal static void Initialize()
+        internal static async Task InitializeAsync()
         {
             // Verify that textures folder exists
             string texturesPath = Path.Combine(Paths.PluginPath, "textures");
@@ -97,127 +107,136 @@ namespace GnosiaCustomizer
             }
 
             // Sprites
-            
-            // Load custom sprites from the "textures" folder
-            var numTextures = headNames.Length + 1;
+            await LoadCharacterTexturesAsync(availableFiles);
+        }
+
+        public static async Task LoadCharacterTexturesAsync(HashSet<string> availableFiles)
+        {
+            var tasks = new List<Task>();
+
             var charIndex = 0;
+            var numTextures = headNames.Length + 1;
+            var spriteNameAndBytes = new List<CharaFileInfo>(numTextures);
+
             foreach (var chara in packedNames)
             {
-                var textures = new Texture2D[numTextures];
-                var sizes = new Vector2[numTextures];
-                float totalWidth = 0;
-                float maxHeight = 0;
-                string bodyFile = $"{chara}_h00.png";
-                // Check if the file ${chara}_h00.png exists
-                if (!availableFiles.Contains(bodyFile))
+                var currentIndex = charIndex++;
+                tasks.Add(Task.Run(() =>
                 {
-                    Logger.LogInfo($"Body file not found: {bodyFile}");
-                    continue;
-                }
+                    var sizes = new Vector2[numTextures];
 
-                // Load the texture into textures[0]
-                var bodyTexture = new Texture2D(2, 2);
-                byte[] fileData = File.ReadAllBytes(Path.Combine(Paths.PluginPath, "textures", bodyFile));
-                if (bodyTexture.LoadImage(fileData))
+                    string bodyFile = $"{chara}_h00.png";
+                    if (!availableFiles.Contains(bodyFile))
+                    {
+                        Logger.LogInfo($"Body file not found: {bodyFile}");
+                        return;
+                    }
+
+                    var bodyFilePath = Path.Combine(Paths.PluginPath, "textures", bodyFile);
+                    var bodyBytes = File.ReadAllBytes(bodyFilePath);
+
+                    var headsData = new List<(string name, byte[] data)>();
+
+                    foreach (var head in headNames)
+                    {
+                        var headFile = $"{chara}_{head}.png";
+                        if (!availableFiles.Contains(headFile))
+                        {
+                            Logger.LogInfo($"Head file not found: {headFile}");
+                            return;
+                        }
+                        var headFilePath = Path.Combine(Paths.PluginPath, "textures", headFile);
+                        headsData.Add((headFile, File.ReadAllBytes(headFilePath)));
+                    }
+                }));
+            }
+
+
+            await Task.WhenAll(tasks);
+        }
+
+        private static void CreateTextures(int charaIndex, CharaFileInfo info, int numTextures)
+        {
+            var textures = new Texture2D[numTextures];
+
+            var index = 0;
+            float totalWidth = 0;
+            float maxHeight = 0;
+            var bodyTex = new Texture2D(2, 2);
+            if (bodyTex.LoadImage(info.bodyBytes))
+            {
+                textures[0] = bodyTex;
+                info.sizes[0] = new Vector2(bodyTex.width, bodyTex.height);
+                totalWidth += bodyTex.width;
+                maxHeight = Mathf.Max(maxHeight, bodyTex.height);
+            }
+            else
+            {
+                Logger.LogError($"Failed to load body texture for chara index {charaIndex}");
+                return;
+            }
+
+            index = 1;
+            for (;index < numTextures; index++)
+            {
+                var headTex = new Texture2D(2, 2);
+                if (headTex.LoadImage(data))
                 {
-                    textures[0] = bodyTexture;
-                    sizes[0] = new Vector2(bodyTexture.width, bodyTexture.height);
-                    totalWidth += bodyTexture.width;
-                    maxHeight = Mathf.Max(maxHeight, bodyTexture.height);
+                    textures[index] = headTex;
+                    info.sizes[index] = new Vector2(headTex.width, headTex.height);
+                    totalWidth += headTex.width;
+                    maxHeight = Mathf.Max(maxHeight, headTex.height);
                 }
                 else
                 {
-                    Logger.LogError($"Failed to load texture {chara}_h00.png");
-                    continue;
+                    Logger.LogError($"Failed to load texture {name}");
+                    return;
                 }
-
-
-                var allTexturesExist = true;
-                var charaIndex = 1;
-                foreach (var head in headNames)
-                {
-                    var headFile = $"{chara}_{head}.png";
-                    // Verify that the file ${chara}_{head}.png exists
-                    if (!availableFiles.Contains(headFile))
-                    {
-                        Logger.LogInfo($"Head file not found: {headFile}");
-                        allTexturesExist = false;
-                        break;
-                    }
-
-                    // Load into the textures array
-                    var headTexture = new Texture2D(2, 2);
-                    byte[] headFileData = File.ReadAllBytes(Path.Combine(Paths.PluginPath, "textures", headFile));
-                    if (headTexture.LoadImage(headFileData))
-                    {
-                        textures[charaIndex] = headTexture;
-                        sizes[charaIndex] = new Vector2(headTexture.width, headTexture.height);
-                        totalWidth += headTexture.width;
-                        maxHeight = Mathf.Max(maxHeight, headTexture.height);
-                    }
-                    else
-                    {
-                        Logger.LogError($"Failed to load texture {chara}_{head}.png");
-                        allTexturesExist = false;
-                        break;
-                    }
-
-                    charaIndex++;
-                }
-                if (!allTexturesExist)
-                {
-                    continue;
-                }
-
-                // Create a sprite sheet to contain all of these
-                var spriteSheet = new Texture2D((int)totalWidth, (int)maxHeight, TextureFormat.RGBA32, false);
-
-                // Fill with transparent pixels
-                var fillColor = Color.clear;
-                var fillPixels = new Color[spriteSheet.width * spriteSheet.height];
-                for (int i = 0; i < fillPixels.Length; i++)
-                {
-                    fillPixels[i] = fillColor;
-                }
-                spriteSheet.SetPixels(fillPixels);
-
-                var offsets = new Vector2[numTextures];
-                var currentX = 0f;
-                for (int i = 0; i < textures.Length; i++)
-                {
-                    var texture = textures[i];
-                    var size = sizes[i];
-                    offsets[i] = new Vector2(currentX, 0);
-                    currentX += size.x;
-                    spriteSheet.SetPixels((int)offsets[i].x, (int)offsets[i].y, (int)size.x, (int)size.y, texture.GetPixels());
-                }
-                spriteSheet.Apply();
-
-                var resourceTextureList = new ResourceManager.ResTextureList
-                {
-                    count = 1,
-                    isFixed = false,
-                    slot = 0,
-                    userInfo = new GraphicsContext.TextureUserInfo
-                    {
-                        size = new Vector2(spriteSheet.width, spriteSheet.height),
-                        isMadeInGame = false
-                    },
-                    texture = spriteSheet
-                };
-
-                var charaTexture = new CharaTexture
-                {
-                    texture = resourceTextureList,
-                    sizes = sizes,
-                    offsets = offsets,
-                    position = new Vector2?(new Vector2((float)(50.0 * charIndex - 200.0), 0.0f))
-                };
-                charaTextures.Add(chara, charaTexture);
-                charIndex++;
+                index++;
             }
-            Logger.LogInfo($"Custom sprites loaded: {charaTextures.Count} characters with custom textures");
+
+            // Create sprite sheet
+            var spriteSheet = new Texture2D((int)totalWidth, (int)maxHeight, TextureFormat.RGBA32, false);
+            var fill = new Color[spriteSheet.width * spriteSheet.height];
+            for (int i = 0; i < fill.Length; i++) fill[i] = Color.clear;
+            spriteSheet.SetPixels(fill);
+
+            var offsets = new Vector2[numTextures];
+            var currentX = 0f;
+            for (int i = 0; i < textures.Length; i++)
+            {
+                var tex = textures[i];
+                var size = sizes[i];
+                offsets[i] = new Vector2(currentX, 0);
+                currentX += size.x;
+                spriteSheet.SetPixels((int)offsets[i].x, (int)offsets[i].y, (int)size.x, (int)size.y, tex.GetPixels());
+            }
+            spriteSheet.Apply();
+
+            var resourceList = new ResourceManager.ResTextureList
+            {
+                count = 1,
+                isFixed = false,
+                slot = 0,
+                userInfo = new GraphicsContext.TextureUserInfo
+                {
+                    size = new Vector2(spriteSheet.width, spriteSheet.height),
+                    isMadeInGame = false
+                },
+                texture = spriteSheet
+            };
+
+            var charaTexture = new CharaTexture
+            {
+                texture = resourceList,
+                sizes = sizes,
+                offsets = offsets,
+                position = new Vector2?(new Vector2(50f * currentIndex - 200f, 0f))
+            };
+
+            charaTextures[chara] = charaTexture;
         }
+
 
         [HarmonyPatch(typeof(config.Config), nameof(config.Config.Initialize))]
         public static class Initialize_Config_Patch

@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using GnosiaCustomizer.patches;
+using GnosiaCustomizer.utils;
 using HarmonyLib;
 
 namespace GnosiaCustomizer;
@@ -20,8 +21,10 @@ public class Plugin : BaseUnityPlugin
         // Plugin startup logic
         Logger.LogInfo($"Plugin gnosia customizer is loaded!");
 
+        MainThreadDispatcher.Init();
+
         // Initialize patches and load custom resources
-        SpritePatches.Initialize();
+        SpritePatches.InitializeAsync();
         TextPatches.Initialize();
         SoundPatches.Initialize();
 
