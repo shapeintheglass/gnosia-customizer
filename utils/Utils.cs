@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using BepInEx.Logging;
 using gnosia;
 using HarmonyLib;
 using resource;
+using UnityEngine.Networking;
+using UnityEngine;
 
 namespace GnosiaCustomizer.utils
 {
@@ -84,31 +88,75 @@ namespace GnosiaCustomizer.utils
             }
             var charaStruct = array.GetValue(index);
 
-            Logger.LogInfo("Setting character data for index: " + index);
-            Logger.LogInfo("Character Name: " + charaText.Name);
             if (!string.IsNullOrEmpty(charaText.Name))
             {
                 SetField(charaStruct, "name", charaText.Name);
             }
-            Logger.LogInfo("Sex: " + charaText.Sex);
             if (charaText.Sex != null)
             {
                 SetField(charaStruct, "sex", charaText.Sex.Value);
             }
-            Logger.LogInfo("Age: " + charaText.Age);
             if (charaText.Age != null)
             {
                 SetField(charaStruct, "age", charaText.Age.Value);
             }
-            Logger.LogInfo("Place: " + charaText.Place);
             if (!string.IsNullOrEmpty(charaText.Place))
             {
                 SetField(charaStruct, "d_place", charaText.Place);
             }
-            Logger.LogInfo("NumJournalEntries: " + charaText.NumJournalEntries);
             if (charaText.NumJournalEntries != null)
             {
                 SetField(charaStruct, "d_tokkiNum", charaText.NumJournalEntries.Value);
+            }
+            if (charaText.Attributes != null)
+            {
+                var attr = charaText.Attributes;
+                if (attr.TryGetValue("playful", out var playful)
+                    && attr.TryGetValue("social", out var social)
+                    && attr.TryGetValue("logic", out var logic)
+                    && attr.TryGetValue("neat", out var neat)
+                    && attr.TryGetValue("desire", out var desire)
+                    && attr.TryGetValue("courage", out var courage)) 
+                {
+                    SetField(charaStruct, "attr", new List<float>()
+                    {
+                        playful, social, logic, neat, desire, courage 
+                    });
+                }
+            }
+
+            if (charaText.AbilityStart != null)
+            {
+                var abil = charaText.AbilityStart;
+                if (abil.TryGetValue("charisma", out var charisma)
+                    && abil.TryGetValue("intuition", out var intuition)
+                    && abil.TryGetValue("charm", out var charm)
+                    && abil.TryGetValue("logic", out var logic)
+                    && abil.TryGetValue("perform", out var perform)
+                    && abil.TryGetValue("stealth", out var stealth))
+                {
+                    SetField(charaStruct, "abil", new List<float>()
+                    {
+                        charisma, intuition, charm, logic, perform, stealth
+                    });
+                }
+            }
+
+            if (charaText.AbilityMax != null)
+            {
+                var abil = charaText.AbilityMax;
+                if (abil.TryGetValue("charisma", out var charisma)
+                    && abil.TryGetValue("intuition", out var intuition)
+                    && abil.TryGetValue("charm", out var charm)
+                    && abil.TryGetValue("logic", out var logic)
+                    && abil.TryGetValue("perform", out var perform)
+                    && abil.TryGetValue("stealth", out var stealth))
+                {
+                    SetField(charaStruct, "abilMax", new List<float>()
+                    {
+                        charisma, intuition, charm, logic, perform, stealth
+                    });
+                }
             }
 
             //if (charaText.JournalEntries != null && charaText.JournalEntries.Count > 0)
@@ -158,11 +206,11 @@ namespace GnosiaCustomizer.utils
             //    SetField(charaStruct, "abilMax", abilityMax);
             //}
 
-            var honorific = GetCharaFieldValue(index, "t_keisho") as string;
-            Logger.LogInfo($"Honorific: {honorific}");
+            //var honorific = GetCharaFieldValue(index, "t_keisho") as string;
+            //Logger.LogInfo($"Honorific: {honorific}");
 
-            var introduction = GetCharaFieldValue(index, "t_aisatu") as List<string>;
-            Logger.LogInfo($"Intro: {introduction[0]}");
+            //var introduction = GetCharaFieldValue(index, "t_aisatu") as List<string>;
+            //Logger.LogInfo($"Intro: {introduction[0]}");
 
             array.SetValue(charaStruct, index);
         }
@@ -195,6 +243,28 @@ namespace GnosiaCustomizer.utils
         private static Array GetCharaArray()
         {
             return (Array)CharaField.GetValue(null); // static field = null instance
+        }
+
+        public static IEnumerator LoadWavClip(string filePath, Action<AudioClip> onLoaded)
+        {
+            string uri = "file://" + filePath;
+
+            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(uri, AudioType.WAV))
+            {
+                yield return www.SendWebRequest();
+
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.LogError($"Failed to load audio clip from {filePath}: {www.error}");
+                    onLoaded?.Invoke(null);
+                }
+                else
+                {
+                    var clip = DownloadHandlerAudioClip.GetContent(www);
+                    clip.name = Path.GetFileNameWithoutExtension(filePath);
+                    onLoaded?.Invoke(clip);
+                }
+            }
         }
     }
 }

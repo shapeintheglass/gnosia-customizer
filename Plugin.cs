@@ -16,13 +16,14 @@ public class Plugin : BaseUnityPlugin
     {
         SpritePatches.Logger = Logger;
         TextPatches.Logger = Logger;
+        SoundPatches.Logger = Logger;
         // Plugin startup logic
         Logger.LogInfo($"Plugin gnosia customizer is loaded!");
 
         // Initialize patches and load custom resources
         SpritePatches.Initialize();
         TextPatches.Initialize();
-
+        SoundPatches.Initialize();
 
         var harmony = new Harmony("com.sitg.gnosia.customizer");
 
