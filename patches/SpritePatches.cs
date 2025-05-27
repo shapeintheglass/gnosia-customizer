@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using application;
 using baseEffect.graphics;
 using BepInEx;
@@ -12,6 +14,8 @@ using HarmonyLib;
 using resource;
 using systemService.trophy;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements.StyleSheets.Syntax;
 
 namespace GnosiaCustomizer
 {
@@ -28,6 +32,17 @@ namespace GnosiaCustomizer
         private static Dictionary<string, CharaTexture> charaTextures = new Dictionary<string, CharaTexture>();
         private static HashSet<uint> modifiedSpriteIndeces = new HashSet<uint>();
         private static Dictionary<string, ResourceManager.ResTextureList> bgTextures;
+
+        private static readonly Type Sprite2dEffectArgType = typeof(Sprite2dEffectArg);
+        private static readonly BindingFlags PrivateInstance = BindingFlags.NonPublic | BindingFlags.Instance;
+        private static readonly FieldInfo DisplayOffsetField = Sprite2dEffectArgType.GetField("m_displayOffset", PrivateInstance);
+        private static readonly FieldInfo DisplayOffsetObjField = Sprite2dEffectArgType.GetField("m_displayOffsetObj", PrivateInstance);
+        private static readonly FieldInfo SizeInDisplayField = Sprite2dEffectArgType.GetField("m_sizeInDisplay", PrivateInstance);
+        private static readonly FieldInfo TextureOffsetField = Sprite2dEffectArgType.GetField("m_textureOffset", PrivateInstance);
+        private static readonly FieldInfo SizeInTextureField = Sprite2dEffectArgType.GetField("m_sizeInTexture", PrivateInstance);
+        private static readonly FieldInfo ImageField = Sprite2dEffectArgType.GetField("m_image", PrivateInstance);
+        private static readonly Vector2 ZeroOne = new Vector2(0.0f, 1.0f);
+        private static readonly Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
 
         private struct CharaTexture
         {
@@ -278,7 +293,7 @@ namespace GnosiaCustomizer
                     var spriteIndex = charSpriteIndeces[charIndex];
                     var position = value.position ?? Vector2.zero;
                     // Body
-                    SetPackedTexture(
+                    SetPackedTextureWithCache(
                         __instance,
                         resourceManager,
                         __instance.transform,
@@ -288,24 +303,18 @@ namespace GnosiaCustomizer
                         10U,
                         position,
                         value.texture,
-                        defaultMat);
-
+                        defaultMat,
+                        colorCoeff,
+                        displayHeight,
+                        textureRatio);
                     modifiedSpriteIndeces.Add(spriteIndex);
-
-                    var bodySprite = __instance.m_spriteMap[spriteIndex];
-                    bodySprite.SetSize(0.7f);
-                    var bodyComponent = bodySprite.GetComponent<UnityEngine.UI.Image>();
-                    bodyComponent.material = defaultMat;
-                    bodySprite.SetDisplayOffsetY(displayHeight - bodySprite.GetSizeInDisplay().y * bodySprite.GetSize() * textureRatio);
-                    bodyComponent.material.SetColor("_Color", colorCoeff);
 
                     // Heads
                     for (int headIndex = 0; headIndex < headNames.Length; headIndex++)
                     {
                         var headTextureName = headNames[headIndex];
                         var headSpriteIndex = spriteIndex + headOffsetIndeces[headIndex];
-                        // Time the setpackedtexture operation
-                        SetPackedTexture(
+                        SetPackedTextureWithCache(
                             __instance,
                             resourceManager,
                             __instance.transform,
@@ -315,21 +324,17 @@ namespace GnosiaCustomizer
                             1U,
                             position,
                             charaTextures[packedName].texture,
-                            defaultMat);
+                            defaultMat,
+                            colorCoeff,
+                            displayHeight,
+                            textureRatio);
                         modifiedSpriteIndeces.Add(headSpriteIndex);
-
-                        var headSprite = __instance.m_spriteMap[headSpriteIndex];
-                        headSprite.SetSize(0.7f);
-                        var headComponent = headSprite.GetComponent<UnityEngine.UI.Image>();
-                        headComponent.material = defaultMat;
-                        headSprite.SetDisplayOffsetY(displayHeight - bodySprite.GetSizeInDisplay().y * headSprite.GetSize() * GraphicsContext.m_textureRatio);
-                        headComponent.material.SetColor("_Color", colorCoeff);
                     }
                 }
             }
         }
 
-        private static void SetPackedTexture(application.Screen __instance,
+        private static void SetPackedTextureWithCache(application.Screen __instance,
                 ResourceManager rm,
                 Transform parentTrans,
                 string packedName,
@@ -338,9 +343,11 @@ namespace GnosiaCustomizer
                 uint order,
                 Vector2 _position,
                 ResourceManager.ResTextureList texture,
-                Material mat)
+                Material mat,
+                Color colorCoeff,
+                float displayHeight,
+                float textureRatio)
         {
-            // Same as above but with TryGet
             if (!rm.m_config.m_packedMap.TryGetValue(packedName, out var packedTextures) 
                 || !packedTextures.TryGetValue(textureName, out var textureConfig))
             {
@@ -348,24 +355,58 @@ namespace GnosiaCustomizer
                 return;
             }
 
+            if (DisplayOffsetField == null
+                || DisplayOffsetObjField == null
+                || SizeInDisplayField == null
+                || TextureOffsetField == null
+                || SizeInTextureField == null
+                || ImageField == null)
+            {
+                throw new Exception($"One or more field types in Sprite2dEffectArg could not be found." +
+                    $"DisplayOffsetField: {DisplayOffsetField == null}, DisplayOffsetObjField: {DisplayOffsetObjField == null} " +
+                    $"SizeInDisplayField: {SizeInDisplayField == null}, TextureOffsetField: {TextureOffsetField == null} " +
+                    $"SizeInTextureField: {SizeInTextureField == null}, ImageField: {ImageField == null}");
+            }
             GameObject gameObject = new GameObject(textureName);
-            gameObject.AddComponent<Sprite2dEffectArg>();
-            gameObject.AddComponent<UnityEngine.UI.Image>();
             gameObject.transform.SetParent(parentTrans);
             gameObject.SetActive(false);
-            __instance.m_spriteMap[depth] = gameObject.GetComponent<Sprite2dEffectArg>();
-            __instance.m_spriteMap[depth].SetFromLeftUpper(
-                0,
-                _position.x,
-                _position.y,
-                textureConfig.m_textureOffset.x,
-                textureConfig.m_textureOffset.y,
-                textureConfig.m_sizeInTexture.x,
-                textureConfig.m_sizeInTexture.y,
-                texture,
-                Sprite2dEffectArg.SpriteType.k_SpriteTypeSingle,
-                mat
-            );
+
+            // Game object sprite
+            var sprite = gameObject.AddComponent<Sprite2dEffectArg>();
+            __instance.m_spriteMap[depth] = sprite;
+            sprite.m_type = 0;
+            sprite.m_texture = texture;
+            DisplayOffsetField.SetValue(sprite, _position);
+            var displayOffsetVec = new Vector2(_position.x / 3f * 4f, _position.y / 3f * 4f * -1f);
+            DisplayOffsetObjField.SetValue(sprite, displayOffsetVec);
+            SizeInDisplayField.SetValue(sprite, textureConfig.m_sizeInTexture);
+            TextureOffsetField.SetValue(sprite, textureConfig.m_textureOffset);
+            SizeInTextureField.SetValue(sprite, textureConfig.m_sizeInTexture);
+
+            // Game object image
+            var image = gameObject.AddComponent<Image>();
+            image.material = mat;
+            image.material.SetColor("_Color", colorCoeff);
+            var cachedName = $"{packedName}_{textureName}";
+            if (!spriteCache.TryGetValue(cachedName, out var cachedSprite))
+            {
+                var newTextureOffset = new Vector2(textureConfig.m_textureOffset.x,
+                texture.texture.height - (textureConfig.m_textureOffset.y + textureConfig.m_sizeInTexture.y));
+                cachedSprite = Sprite.Create(sprite.m_texture.texture, new Rect(newTextureOffset, textureConfig.m_sizeInTexture),
+                ZeroOne);
+                spriteCache[cachedName] = cachedSprite;
+            }
+            image.sprite = cachedSprite;
+            image.rectTransform.sizeDelta = textureConfig.m_sizeInTexture;
+            image.rectTransform.anchorMax = ZeroOne;
+            image.rectTransform.anchorMin = ZeroOne;
+            image.rectTransform.pivot = ZeroOne;
+            image.rectTransform.anchoredPosition3D = (Vector3)displayOffsetVec;
+            image.rectTransform.localScale = Vector3.one;
+            ImageField.SetValue(sprite, image);
+
+            sprite.SetSize(0.7f);
+            sprite.SetDisplayOffsetY(displayHeight - sprite.GetSizeInDisplay().y * sprite.GetSize() * textureRatio);
         }
 
         [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.GetTexture))]
