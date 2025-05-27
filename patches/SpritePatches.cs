@@ -16,7 +16,6 @@ using resource;
 using systemService.trophy;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements.StyleSheets.Syntax;
 
 namespace GnosiaCustomizer
 {
@@ -45,13 +44,12 @@ namespace GnosiaCustomizer
         private static readonly Vector2 ZeroOne = new Vector2(0.0f, 1.0f);
         private static readonly Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
 
-        private struct CharaFileInfo
+        public struct CharaFileInfo
         {
-            public string bodyFileName;
-            public byte[] bodyBytes;
-            public string[] headFileNames;
-            public string[] headBytes;
+            public bool hasCustomTexture;
             public Vector2[] sizes;
+            public string[] fileNames;
+            public byte[][] bytes;
         }
 
         private struct CharaTexture
@@ -106,24 +104,37 @@ namespace GnosiaCustomizer
                 }
             }
 
-            // Sprites
-            await LoadCharacterTexturesAsync(availableFiles);
+            // We can asynchronously load the resources, but must create the textures synchronously
+            var spriteNameAndBytes = LoadCharacterTexturesAsync(availableFiles);
+            for (int i = 0; i < spriteNameAndBytes.Length; i++)
+            {
+                var charaIndex = i + 1;
+                if (spriteNameAndBytes[i].hasCustomTexture)
+                {
+                    CreateTextures(packedNames[i], charaIndex, spriteNameAndBytes[i]);
+                    Logger.LogInfo("Loaded custom textures for character: " + packedNames[i]);
+                }
+            }
         }
 
-        public static async Task LoadCharacterTexturesAsync(HashSet<string> availableFiles)
+        public static CharaFileInfo[] LoadCharacterTexturesAsync(
+            HashSet<string> availableFiles)
         {
+            Logger.LogInfo("Loading character  asynchronously...");
             var tasks = new List<Task>();
 
-            var charIndex = 0;
             var numTextures = headNames.Length + 1;
-            var spriteNameAndBytes = new List<CharaFileInfo>(numTextures);
+            var spriteNameAndBytes = new CharaFileInfo[packedNames.Length];
 
-            foreach (var chara in packedNames)
+            for (var charaIndex = 0; charaIndex < packedNames.Length; charaIndex++)
             {
-                var currentIndex = charIndex++;
+                var localIndex = charaIndex; // Capture for closure
+                var chara = packedNames[localIndex];
                 tasks.Add(Task.Run(() =>
                 {
                     var sizes = new Vector2[numTextures];
+                    var bytes = new byte[numTextures][];
+                    var fileNames = new string[numTextures];
 
                     string bodyFile = $"{chara}_h00.png";
                     if (!availableFiles.Contains(bodyFile))
@@ -131,14 +142,13 @@ namespace GnosiaCustomizer
                         Logger.LogInfo($"Body file not found: {bodyFile}");
                         return;
                     }
-
+                    fileNames[0] = bodyFile;
                     var bodyFilePath = Path.Combine(Paths.PluginPath, "textures", bodyFile);
-                    var bodyBytes = File.ReadAllBytes(bodyFilePath);
+                    bytes[0] = File.ReadAllBytes(bodyFilePath);
 
-                    var headsData = new List<(string name, byte[] data)>();
-
-                    foreach (var head in headNames)
+                    for (int textureIndex = 0; textureIndex < headNames.Length; textureIndex++)
                     {
+                        var head = headNames[textureIndex];
                         var headFile = $"{chara}_{head}.png";
                         if (!availableFiles.Contains(headFile))
                         {
@@ -146,67 +156,71 @@ namespace GnosiaCustomizer
                             return;
                         }
                         var headFilePath = Path.Combine(Paths.PluginPath, "textures", headFile);
-                        headsData.Add((headFile, File.ReadAllBytes(headFilePath)));
+                        fileNames[textureIndex + 1] = headFile;
+                        bytes[textureIndex + 1] = File.ReadAllBytes(headFilePath);
                     }
+
+                    spriteNameAndBytes[localIndex] = new CharaFileInfo
+                    {
+                        hasCustomTexture = true,
+                        sizes = sizes,
+                        bytes = bytes,
+                        fileNames = fileNames
+                    };
+
                 }));
             }
 
-
-            await Task.WhenAll(tasks);
+            try
+            {
+                Task.WhenAll(tasks).GetAwaiter().GetResult();
+            }
+            catch (Exception ex) {
+                Logger.LogError($"Error loading character textures: {ex.Message}");
+            }
+            return spriteNameAndBytes;
         }
 
-        private static void CreateTextures(int charaIndex, CharaFileInfo info, int numTextures)
+        private static void CreateTextures(string chara, int charaIndex, CharaFileInfo info)
         {
+            var numTextures = info.sizes.Length;
             var textures = new Texture2D[numTextures];
 
-            var index = 0;
             float totalWidth = 0;
             float maxHeight = 0;
-            var bodyTex = new Texture2D(2, 2);
-            if (bodyTex.LoadImage(info.bodyBytes))
+            for (int i = 0; i < numTextures; i++)
             {
-                textures[0] = bodyTex;
-                info.sizes[0] = new Vector2(bodyTex.width, bodyTex.height);
-                totalWidth += bodyTex.width;
-                maxHeight = Mathf.Max(maxHeight, bodyTex.height);
-            }
-            else
-            {
-                Logger.LogError($"Failed to load body texture for chara index {charaIndex}");
-                return;
-            }
-
-            index = 1;
-            for (;index < numTextures; index++)
-            {
-                var headTex = new Texture2D(2, 2);
-                if (headTex.LoadImage(data))
+                var texture = new Texture2D(2, 2);
+                if (texture.LoadImage(info.bytes[i]))
                 {
-                    textures[index] = headTex;
-                    info.sizes[index] = new Vector2(headTex.width, headTex.height);
-                    totalWidth += headTex.width;
-                    maxHeight = Mathf.Max(maxHeight, headTex.height);
+                    textures[i] = texture;
+                    info.sizes[i] = new Vector2(texture.width, texture.height);
+                    totalWidth += texture.width;
+                    maxHeight = Mathf.Max(maxHeight, texture.height);
                 }
                 else
                 {
-                    Logger.LogError($"Failed to load texture {name}");
+                    Logger.LogError($"Failed to load texture {info.fileNames[i]} for chara index {charaIndex}");
                     return;
                 }
-                index++;
             }
 
-            // Create sprite sheet
+            // Create sprite sheet and fill it with transparency
             var spriteSheet = new Texture2D((int)totalWidth, (int)maxHeight, TextureFormat.RGBA32, false);
             var fill = new Color[spriteSheet.width * spriteSheet.height];
-            for (int i = 0; i < fill.Length; i++) fill[i] = Color.clear;
+            for (int i = 0; i < fill.Length; i++)
+            {
+                fill[i] = Color.clear;
+            }
             spriteSheet.SetPixels(fill);
 
             var offsets = new Vector2[numTextures];
             var currentX = 0f;
+
             for (int i = 0; i < textures.Length; i++)
             {
                 var tex = textures[i];
-                var size = sizes[i];
+                var size = info.sizes[i];
                 offsets[i] = new Vector2(currentX, 0);
                 currentX += size.x;
                 spriteSheet.SetPixels((int)offsets[i].x, (int)offsets[i].y, (int)size.x, (int)size.y, tex.GetPixels());
@@ -229,9 +243,9 @@ namespace GnosiaCustomizer
             var charaTexture = new CharaTexture
             {
                 texture = resourceList,
-                sizes = sizes,
+                sizes = info.sizes,
                 offsets = offsets,
-                position = new Vector2?(new Vector2(50f * currentIndex - 200f, 0f))
+                position = new Vector2?(new Vector2(50f * charaIndex - 200f, 0f))
             };
 
             charaTextures[chara] = charaTexture;

@@ -21,8 +21,6 @@ public class Plugin : BaseUnityPlugin
         // Plugin startup logic
         Logger.LogInfo($"Plugin gnosia customizer is loaded!");
 
-        MainThreadDispatcher.Init();
-
         // Initialize patches and load custom resources
         SpritePatches.InitializeAsync();
         TextPatches.Initialize();
