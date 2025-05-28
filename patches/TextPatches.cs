@@ -70,9 +70,12 @@ namespace GnosiaCustomizer.patches
                     var character = deserializer.Deserialize<CharacterText>(yamlContent);
                     // Add the character text to the dictionary
                     int characterId = characterIdToFile.FirstOrDefault(x => x.Value == charaFile).Key;
+                    
                     if (characterId != 0)
                     {
                         characterTexts[characterId] = character;
+                        JinroPatches.SkillMap[characterId] = character.KnownSkills;
+                        Logger.LogInfo($"Set skills for character ID {characterId}: {string.Join(", ", character.KnownSkills.Select(kv => $"{kv.Key}: {kv.Value}"))}");
                     }
                     else
                     {
@@ -102,10 +105,10 @@ namespace GnosiaCustomizer.patches
                 {
                     if (characterTexts.TryGetValue(absoluteId, out var character) && !string.IsNullOrEmpty(character.Name))
                     {
-                        Utils.SetChara(Logger, absoluteId, character);
+                        CharacterSetter.SetChara(Logger, absoluteId, character);
                     }
                     // Log the new name
-                    Logger.LogInfo($"Character ID {absoluteId} name is now: {Utils.GetCharaFieldValue(absoluteId, "name")}");
+                    Logger.LogInfo($"Character ID {absoluteId} name is now: {CharacterSetter.GetCharaFieldValue(absoluteId, "name")}");
                 }
             }
         }

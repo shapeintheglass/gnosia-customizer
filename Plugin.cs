@@ -18,6 +18,7 @@ public class Plugin : BaseUnityPlugin
         SpritePatches.Logger = Logger;
         TextPatches.Logger = Logger;
         SoundPatches.Logger = Logger;
+        JinroPatches.Logger = Logger;
         // Plugin startup logic
         Logger.LogInfo($"Plugin gnosia customizer is loaded!");
 
