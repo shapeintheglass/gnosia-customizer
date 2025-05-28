@@ -9,6 +9,8 @@ using System;
 using HarmonyLib;
 using System.Reflection;
 using GnosiaCustomizer.utils;
+using gnosia;
+using coreSystem;
 
 namespace GnosiaCustomizer.patches
 {
@@ -109,6 +111,41 @@ namespace GnosiaCustomizer.patches
                     }
                     // Log the new name
                     Logger.LogInfo($"Character ID {absoluteId} name is now: {CharacterSetter.GetCharaFieldValue(absoluteId, "name")}");
+                    Logger.LogInfo($"Grovel lines are {CharacterSetter.GetCharaFieldValueAsStringArray(absoluteId, "t_skill_dogeza").Join()}");
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
+        public class ScriptParserSetNormalSerifuPatch
+        {
+            static void Prefix(ScriptParser __instance, 
+                int main,
+                int tgt,
+                int pos,
+                List<string> lang,
+                bool waitNextText = false,
+                bool withoutTrans = false,
+                bool withoutCharaChange = false,
+                bool vRole = true)
+            {
+                Logger.LogInfo($"ScriptParser.SetNormalSerifu called with main={main}, tgt={tgt}, pos={pos}, lang={lang.Join()}, waitNextText={waitNextText}, " +
+                    $"withoutTrans={withoutTrans}, withoutCharaChange={withoutCharaChange}, vrole={vRole}");
+            }
+        }
+
+        // ScriptParser.SetText
+        //[HarmonyPatch(typeof(ScriptParser), "SetText")]
+        public class ScriptParserSetTextPatch
+        {
+            static void Prefix(ScriptParser __instance,
+                ref string message, bool waitFinish = false, uint depth = 50, string targetText = "test")
+            {
+                Logger.LogInfo($"ScriptParser.SetText called with message='{message}', waitFinish={waitFinish}, depth={depth}, targetText='{targetText}'");
+                if (string.IsNullOrEmpty(message))
+                {
+                    Logger.LogInfo("Using placeholder for empty message.");
+                    message = "placeholder...";
                 }
             }
         }
