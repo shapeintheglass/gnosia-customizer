@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 namespace GnosiaCustomizer.patches
 {
-    internal class SoundPatches : BaseUnityPlugin
+    internal class SoundPatches
     {
         internal static new ManualLogSource Logger;
 

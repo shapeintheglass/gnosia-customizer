@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using application;
 using baseEffect.graphics;
@@ -11,18 +10,16 @@ using BepInEx;
 using BepInEx.Logging;
 using config;
 using coreSystem;
-using coreSystem.sound;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 using resource;
-using setting;
 using systemService.trophy;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace GnosiaCustomizer
 {
-    internal class SpritePatches : BaseUnityPlugin
+    internal class SpritePatches
     {
         internal static new ManualLogSource Logger;
 
@@ -355,7 +352,7 @@ namespace GnosiaCustomizer
                             packedName,
                             headTextureName,
                             headSpriteIndex,
-                            1U,
+                            10U,
                             position,
                             charaTextures[packedName].texture,
                             defaultMat,
@@ -471,7 +468,6 @@ namespace GnosiaCustomizer
                 
                 if (chara <= 0)
                 {
-                    __result = 1;
                     return;
                 }
                 // We need to calculate the sprite index to determine if this should be a custom sprite.
@@ -483,28 +479,27 @@ namespace GnosiaCustomizer
                     return;
                 }
                 int tid = charaisId ? chara : (int)gameData.chara[chara].id;
-                
-                var spriteIndex = (uint) (thyojo > 0 ? tid * 100U + hyojo : tid * 100U);
 
-                if (thyojo > 0
-                    && modifiedSpriteIndeces.Contains(spriteIndex) 
-                    && __instance.m_sb.ContainsKey(depth)
-                    && __instance.m_sb[depth].m_spriteMap.ContainsKey(spriteIndex))
+                var spriteIndex = (uint) tid * 100U;
+                if (thyojo > 0)
                 {
-                    // For custom sprites, do not draw the default sprite underneath
-                    __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
-                    {
-                        // Hide the "default" sprite
-                        var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint) tid * 100U];
-                        defaultSprite.SetVisible(false);
-                        // Only show the "head" sprite, and reposition it
-                        var sprite = __instance.m_sb[depth].m_spriteMap[spriteIndex];
-                        sprite.SetCenterPosition(
-                            new Vector2((float)(__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize(), sprite.GetCenterPosition().y));
-                        return true;
-                    }), (ScriptParser.Script._EndFunc)(e => true), false));
+                    spriteIndex += (uint)thyojo;
                 }
-                __result = 1;
+
+                // For custom sprites, do not draw the default sprite underneath
+                __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
+                {
+                    if (thyojo > 0 && modifiedSpriteIndeces.Contains(spriteIndex)
+                        && __instance.m_sb.TryGetValue(depth, out var screen) && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                    {
+                        var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint)tid * 100U];
+                        var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
+                        var centerY = sprite.GetCenterPosition().y;
+                        defaultSprite.SetVisible(false);
+                        sprite.SetCenterPosition(new Vector2(centerX, centerY));
+                    }
+                    return true;
+                }), (ScriptParser.Script._EndFunc)(e => true), false));
             }
         }
 

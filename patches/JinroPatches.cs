@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BepInEx;
 using BepInEx.Logging;
 using gnosia;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace GnosiaCustomizer.patches
 {
-    public class JinroPatches : BaseUnityPlugin
+    public class JinroPatches
     {
         internal static new ManualLogSource Logger;
 
@@ -158,6 +159,11 @@ namespace GnosiaCustomizer.patches
                     }
                     var actionData = gd.actionDoIt;
                     if (actionData.scenarioNum < 0 || actionData.id < 0)
+                    {
+                        return;
+                    }
+                    if (actionData.scenarioNum >= gd.sceOn.Count || gd.sceOn[actionData.scenarioNum].id >= scenarioContents.Length
+                        || actionData.id >= scenarioContents[gd.sceOn[actionData.scenarioNum].id].actions.Count)
                     {
                         return;
                     }

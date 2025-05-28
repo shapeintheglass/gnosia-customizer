@@ -12,7 +12,7 @@ using GnosiaCustomizer.utils;
 
 namespace GnosiaCustomizer.patches
 {
-    internal class TextPatches : BaseUnityPlugin
+    internal class TextPatches
     {
         internal static new ManualLogSource Logger;
 
