@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,11 +28,10 @@ namespace GnosiaCustomizer
         private static readonly uint[] charSpriteIndeces = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400];
         private static readonly string[] headNames = ["h01", "h02", "h03", "h04", "h05", "h06", "h07"];
         private static readonly uint[] headOffsetIndeces = [1, 2, 3, 4, 5, 6, 7];
-        private const string bgMainConsoleName = "bg_mainConsole.png";
 
         private static Dictionary<string, CharaTexture> charaTextures = new Dictionary<string, CharaTexture>();
         private static HashSet<uint> modifiedSpriteIndeces = new HashSet<uint>();
-        private static Dictionary<string, ResourceManager.ResTextureList> bgTextures;
+        private static Dictionary<string, ResourceManager.ResTextureList> replacementTextures = new Dictionary<string, ResourceManager.ResTextureList>();
 
         private static readonly Type Sprite2dEffectArgType = typeof(Sprite2dEffectArg);
         private static readonly BindingFlags PrivateInstance = BindingFlags.NonPublic | BindingFlags.Instance;
@@ -61,7 +61,7 @@ namespace GnosiaCustomizer
         }
 
         // Load custom sprites from the "textures" folder
-        internal static async Task InitializeAsync()
+        internal static void InitializeAsync()
         {
             // Verify that textures folder exists
             string texturesPath = Path.Combine(Paths.PluginPath, "textures");
@@ -72,40 +72,11 @@ namespace GnosiaCustomizer
             }
             var availableFiles = new HashSet<string>(Directory.GetFiles(texturesPath, "*.png", SearchOption.TopDirectoryOnly)
                 .Select(Path.GetFileName));
-            // Backgrounds
-            if (availableFiles.Contains(bgMainConsoleName))
-            {
-                var bgMainConsolePath = Path.Combine(texturesPath, bgMainConsoleName);
-                Logger.LogInfo($"Loading background texture: {bgMainConsolePath}");
-                var bgConsoleTexture = new Texture2D(2, 2); // This will get overwritten by the actual texture
-                byte[] bgFileData = File.ReadAllBytes(bgMainConsolePath);
-                if (bgConsoleTexture.LoadImage(bgFileData))
-                {
-                    bgTextures = new Dictionary<string, ResourceManager.ResTextureList>()
-                            {
-                                { bgMainConsoleName, new ResourceManager.ResTextureList()
-                                    {
-                                        count = 1,
-                                        isFixed = false,
-                                        slot = 0,
-                                        userInfo = new GraphicsContext.TextureUserInfo()
-                                        {
-                                            size = new Vector2(bgConsoleTexture.width, bgConsoleTexture.height),
-                                            isMadeInGame = false
-                                        },
-                                        texture = bgConsoleTexture
-                                    }
-                                }
-                            };
-                }
-                else
-                {
-                    Logger.LogError($"Failed to load background texture {bgMainConsoleName}");
-                }
-            }
 
-            // We can asynchronously load the resources, but must create the textures synchronously
-            var spriteNameAndBytes = LoadCharacterTexturesAsync(availableFiles);
+            // We can asynchronously load the bytes from file, but Unity libraries are not thread-safe
+            var customTextures = LoadCustomTextures(availableFiles, texturesPath);
+            LoadReplacementTextures(customTextures);
+            var spriteNameAndBytes = LoadCharacterTextures(customTextures);
             for (int i = 0; i < spriteNameAndBytes.Length; i++)
             {
                 var charaIndex = i + 1;
@@ -117,10 +88,74 @@ namespace GnosiaCustomizer
             }
         }
 
-        public static CharaFileInfo[] LoadCharacterTexturesAsync(
-            HashSet<string> availableFiles)
+        private static ConcurrentDictionary<string, byte[]> LoadCustomTextures(HashSet<string> availableFiles, string texturesPath)
         {
+            var customTextures = new ConcurrentDictionary<string, byte[]>();
             var tasks = new List<Task>();
+
+            foreach (var file in availableFiles)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    customTextures[file] = File.ReadAllBytes(Path.Combine(texturesPath, file));
+                }));
+            }
+
+            try
+            {
+                Task.WhenAll(tasks).GetAwaiter().GetResult();
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var inner in ex.InnerExceptions)
+                {
+                    Logger.LogError($"Error loading texture: {inner.Message}");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError($"Unexpected error loading textures: {e.Message}");
+            }
+            Logger.LogInfo($"Loaded {customTextures.Count} custom textures from {texturesPath}");
+            return customTextures;
+        }
+
+        private static void LoadReplacementTextures(ConcurrentDictionary<string, byte[]> customTextures)
+        {
+            foreach (var file in customTextures.Keys)
+            {
+                // Skip textures that match the regex pXX_hYY.png
+                if (System.Text.RegularExpressions.Regex.IsMatch(file, @"^p\d{2}_h\d{2}\.png$"))
+                {
+                    continue;
+                }
+
+                var newTexture = new Texture2D(2, 2);
+                if (newTexture.LoadImage(customTextures[file]))
+                {
+                    replacementTextures[Path.GetFileNameWithoutExtension(file)] = new ResourceManager.ResTextureList()
+                    {
+                        count = 1,
+                        isFixed = false,
+                        slot = 0,
+                        userInfo = new GraphicsContext.TextureUserInfo()
+                        {
+                            size = new Vector2(newTexture.width, newTexture.height),
+                            isMadeInGame = false
+                        },
+                        texture = newTexture
+                    };
+                }
+                else
+                {
+                    Logger.LogError($"Failed to load background texture {file}");
+                }
+            }
+        }
+
+        public static CharaFileInfo[] LoadCharacterTextures(
+            ConcurrentDictionary<string, byte[]> customTextures)
+        {
 
             var numTextures = headNames.Length + 1;
             var spriteNameAndBytes = new CharaFileInfo[packedNames.Length];
@@ -129,53 +164,44 @@ namespace GnosiaCustomizer
             {
                 var localIndex = charaIndex; // Capture for closure
                 var chara = packedNames[localIndex];
-                tasks.Add(Task.Run(() =>
+
+                var sizes = new Vector2[numTextures];
+                var bytes = new byte[numTextures][];
+                var fileNames = new string[numTextures];
+
+                string bodyFile = $"{chara}_h00.png";
+                if (!customTextures.ContainsKey(bodyFile))
                 {
-                    var sizes = new Vector2[numTextures];
-                    var bytes = new byte[numTextures][];
-                    var fileNames = new string[numTextures];
+                    Logger.LogInfo($"Body file not found: {bodyFile}");
+                    continue;
+                }
+                fileNames[0] = bodyFile;
+                var bodyFilePath = Path.Combine(Paths.PluginPath, "textures", bodyFile);
+                bytes[0] = customTextures[bodyFile];
 
-                    string bodyFile = $"{chara}_h00.png";
-                    if (!availableFiles.Contains(bodyFile))
+                for (int textureIndex = 0; textureIndex < headNames.Length; textureIndex++)
+                {
+                    var head = headNames[textureIndex];
+                    var headFile = $"{chara}_{head}.png";
+                    if (!customTextures.ContainsKey(headFile))
                     {
-                        Logger.LogInfo($"Body file not found: {bodyFile}");
-                        return;
+                        Logger.LogInfo($"Head file not found: {headFile}");
+                        continue;
                     }
-                    fileNames[0] = bodyFile;
-                    var bodyFilePath = Path.Combine(Paths.PluginPath, "textures", bodyFile);
-                    bytes[0] = File.ReadAllBytes(bodyFilePath);
+                    var headFilePath = Path.Combine(Paths.PluginPath, "textures", headFile);
+                    fileNames[textureIndex + 1] = headFile;
+                    bytes[textureIndex + 1] = customTextures[headFile];
+                }
 
-                    for (int textureIndex = 0; textureIndex < headNames.Length; textureIndex++)
-                    {
-                        var head = headNames[textureIndex];
-                        var headFile = $"{chara}_{head}.png";
-                        if (!availableFiles.Contains(headFile))
-                        {
-                            Logger.LogInfo($"Head file not found: {headFile}");
-                            return;
-                        }
-                        var headFilePath = Path.Combine(Paths.PluginPath, "textures", headFile);
-                        fileNames[textureIndex + 1] = headFile;
-                        bytes[textureIndex + 1] = File.ReadAllBytes(headFilePath);
-                    }
-
-                    spriteNameAndBytes[localIndex] = new CharaFileInfo
-                    {
-                        hasCustomTexture = true,
-                        sizes = sizes,
-                        bytes = bytes,
-                        fileNames = fileNames
-                    };
-                }));
+                spriteNameAndBytes[localIndex] = new CharaFileInfo
+                {
+                    hasCustomTexture = true,
+                    sizes = sizes,
+                    bytes = bytes,
+                    fileNames = fileNames
+                };
             }
 
-            try
-            {
-                Task.WhenAll(tasks).GetAwaiter().GetResult();
-            }
-            catch (Exception ex) {
-                Logger.LogError($"Error loading character textures: {ex.Message}");
-            }
             return spriteNameAndBytes;
         }
 
@@ -567,7 +593,7 @@ namespace GnosiaCustomizer
             public static bool Prefix(application.Screen __instance, ref int __result, int textureType, Transform parentTrans, uint depth, string textureName, Vector2? _position = null, ResourceManager.ResTextureList texture = null)
             {
                 Logger.LogInfo($"SetTexture_Patch.Prefix called (__instance: {__instance?.GetType().Name}, textureType: {textureType}, parentTrans: {parentTrans?.GetType().Name}, depth: {depth}, textureName: {textureName}, _position: {_position}, texture: {(texture != null ? texture.GetType().Name : "null")})");
-                if (textureName == "bg_mainConsole")
+                if (replacementTextures.TryGetValue(textureName, out var resTextureList))
                 {
                     Vector2 display = _position ?? Vector2.zero;
                     GameObject gameObject = new GameObject(textureName);
@@ -582,7 +608,7 @@ namespace GnosiaCustomizer
                         Logger.LogWarning("Failed to get ResourceManager instance via reflection");
                         return true;
                     }
-                    __instance.m_spriteMap[depth].SetFromLeftUpper(textureType, display, bgTextures[bgMainConsoleName], resourceManager.uiDefaultMat);
+                    __instance.m_spriteMap[depth].SetFromLeftUpper(textureType, display, resTextureList, resourceManager.uiDefaultMat);
                     __result = 1;
                     return false;
                 }
