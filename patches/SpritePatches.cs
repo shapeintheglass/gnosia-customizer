@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using application;
 using baseEffect.graphics;
@@ -10,9 +11,11 @@ using BepInEx;
 using BepInEx.Logging;
 using config;
 using coreSystem;
+using coreSystem.sound;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 using resource;
+using setting;
 using systemService.trophy;
 using UnityEngine;
 using UnityEngine.UI;
@@ -264,40 +267,40 @@ namespace GnosiaCustomizer
                     var offsets = charaTexture.offsets;
 
                     __instance.m_packedMap[packedName] = new Dictionary<string, PackedTexture>()
-                {
                     {
-                        "body",
-                        new PackedTexture(charaTexture.offsets[0], charaTexture.sizes[0], [], 0.0f)
-                    },
-                    {
-                        "h01",
-                        new PackedTexture(charaTexture.offsets[1], charaTexture.sizes[1], [], 0.0f)
-                    },
-                    {
-                        "h02",
-                        new PackedTexture(charaTexture.offsets[2], charaTexture.sizes[2], [], 0.0f)
-                    },
-                    {
-                        "h03",
-                        new PackedTexture(charaTexture.offsets[3], charaTexture.sizes[3], [], 0.0f)
-                    },
-                    {
-                        "h04",
-                        new PackedTexture(charaTexture.offsets[4], charaTexture.sizes[4], [], 0.0f)
-                    },
-                    {
-                        "h05",
-                        new PackedTexture(charaTexture.offsets[5], charaTexture.sizes[5], [], 0.0f)
-                    },
-                    {
-                        "h06",
-                        new PackedTexture(charaTexture.offsets[6], charaTexture.sizes[6], [], 0.0f)
-                    },
-                    {
-                        "h07",
-                        new PackedTexture(charaTexture.offsets[7], charaTexture.sizes[7], [], 0.0f)
-                    },
-                };
+                        {
+                            "body",
+                            new PackedTexture(charaTexture.offsets[0], charaTexture.sizes[0], [], 0.0f)
+                        },
+                        {
+                            "h01",
+                            new PackedTexture(charaTexture.offsets[1], charaTexture.sizes[1], [], 0.0f)
+                        },
+                        {
+                            "h02",
+                            new PackedTexture(charaTexture.offsets[2], charaTexture.sizes[2], [], 0.0f)
+                        },
+                        {
+                            "h03",
+                            new PackedTexture(charaTexture.offsets[3], charaTexture.sizes[3], [], 0.0f)
+                        },
+                        {
+                            "h04",
+                            new PackedTexture(charaTexture.offsets[4], charaTexture.sizes[4], [], 0.0f)
+                        },
+                        {
+                            "h05",
+                            new PackedTexture(charaTexture.offsets[5], charaTexture.sizes[5], [], 0.0f)
+                        },
+                        {
+                            "h06",
+                            new PackedTexture(charaTexture.offsets[6], charaTexture.sizes[6], [], 0.0f)
+                        },
+                        {
+                            "h07",
+                            new PackedTexture(charaTexture.offsets[7], charaTexture.sizes[7], [], 0.0f)
+                        },
+                    };
                 }
             }
         }
@@ -308,6 +311,7 @@ namespace GnosiaCustomizer
             [HarmonyPostfix]
             public static void Postfix(CharaScreen __instance, ResourceManager resourceManager, ScriptParser scriptParser, GameLogManager gameLogManager)
             {
+                Logger.LogInfo($"CharaScreen.InitializeGlm called");
                 var displayHeight = resourceManager.m_displaySize.height;
                 var textureRatio = GraphicsContext.m_textureRatio;
                 var defaultMat = resourceManager.uiCharaDefaultMat;
@@ -378,6 +382,7 @@ namespace GnosiaCustomizer
                 float displayHeight,
                 float textureRatio)
         {
+            Logger.LogInfo($"SetPackedTextureWithCache called (packedName: {packedName}, textureName: {textureName}, depth: {depth}, order: {order}, _position: {_position})");
             if (!rm.m_config.m_packedMap.TryGetValue(packedName, out var packedTextures) 
                 || !packedTextures.TryGetValue(textureName, out var textureConfig))
             {
@@ -459,46 +464,47 @@ namespace GnosiaCustomizer
         [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.ShowChara))]
         public static class ShowChara_Patch
         {
-            [HarmonyPrefix]
-            public static bool Prefix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
+            [HarmonyPostfix]
+            public static void Postfix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
             {
-                Logger.LogInfo($"ShowChara_Patch.Prefix called (chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
-                if (chara > 0)
+                Logger.LogInfo($"ShowChara_Patch called (chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
+                
+                if (chara <= 0)
                 {
-                    // We need to calculate the sprite index to determine if this should be a custom sprite.
-                    int thyojo = hyojo % 100;
-                    var gameData = Utils.GetGameDataViaReflection();
-                    if (gameData == null)
-                    {
-                        Logger.LogWarning("Failed to get GameData");
-                        return true;
-                    }
-                    int tid = charaisId ? chara : (int)gameData.chara[chara].id;
+                    __result = 1;
+                    return;
+                }
+                // We need to calculate the sprite index to determine if this should be a custom sprite.
+                int thyojo = hyojo % 100;
+                var gameData = Utils.GetGameDataViaReflection();
+                if (gameData == null)
+                {
+                    Logger.LogWarning("Failed to get GameData");
+                    return;
+                }
+                int tid = charaisId ? chara : (int)gameData.chara[chara].id;
+                
+                var spriteIndex = (uint) (thyojo > 0 ? tid * 100U + hyojo : tid * 100U);
 
-                    var spriteIndex = thyojo > 0 ? tid * 100U + hyojo : tid * 100U;
-                    if (!modifiedSpriteIndeces.Contains((uint)spriteIndex))
-                    {
-                        // Check if this is present in the sprite map anyways
-                        if (!__instance.m_sb.ContainsKey(depth) || !__instance.m_sb[depth].m_spriteMap.ContainsKey((uint)spriteIndex))
-                        {
-                            Logger.LogWarning($"{spriteIndex} is NOT in the sprite map! Oh no!");
-                            return false;
-                        }
-                        return true;
-                    }
-
+                if (thyojo > 0
+                    && modifiedSpriteIndeces.Contains(spriteIndex) 
+                    && __instance.m_sb.ContainsKey(depth)
+                    && __instance.m_sb[depth].m_spriteMap.ContainsKey(spriteIndex))
+                {
                     // For custom sprites, do not draw the default sprite underneath
                     __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                     {
-                        var sprite = __instance.m_sb[depth].m_spriteMap[(uint)spriteIndex];
-                        sprite.SetVisible(true);
+                        // Hide the "default" sprite
+                        var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint) tid * 100U];
+                        defaultSprite.SetVisible(false);
+                        // Only show the "head" sprite, and reposition it
+                        var sprite = __instance.m_sb[depth].m_spriteMap[spriteIndex];
                         sprite.SetCenterPosition(
                             new Vector2((float)(__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize(), sprite.GetCenterPosition().y));
                         return true;
                     }), (ScriptParser.Script._EndFunc)(e => true), false));
                 }
                 __result = 1;
-                return false;
             }
         }
 
@@ -596,6 +602,16 @@ namespace GnosiaCustomizer
             public static void Prefix(ScriptParser __instance, string resourceName)
             {
                 Logger.LogInfo($"ScriptParser.LoadTexture called (resourceName: {resourceName})");
+            }
+        }
+
+        [HarmonyPatch(typeof(ScriptParser), "_SetScreen")]
+        public static class SetScreen_Patch
+        {
+            [HarmonyPrefix]
+            public static void Prefix(ScriptParser __instance, application.Screen scr, uint depth, bool useGameLogManager = false)
+            {
+                Logger.LogInfo($"ScriptParser._SetScreen called (scr: {scr?.GetType().Name}, depth: {depth}, useGameLogManager: {useGameLogManager})");
             }
         }
     }
