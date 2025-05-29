@@ -116,7 +116,7 @@ namespace GnosiaCustomizer.patches
             }
         }
 
-        [HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
+        //[HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
         public class ScriptParserSetNormalSerifuPatch
         {
             static void Prefix(ScriptParser __instance, 

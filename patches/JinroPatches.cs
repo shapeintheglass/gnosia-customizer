@@ -47,7 +47,6 @@ namespace GnosiaCustomizer.patches
                 {
                     return true;
                 }
-                Logger.LogInfo($"Checking if character {cid} has skill {skill}...");
                 if (!SkillMap.ContainsKey(cid) || SkillMap[cid] == null)
                 {
                     Logger.LogWarning($"Character {cid} not found in SkillMap. Falling back to original skills.");
@@ -70,7 +69,6 @@ namespace GnosiaCustomizer.patches
                 if (cid == 0)
                 {
                     __result = (gameData.chara[cid].allFlg & (ulong)(1L << (int)(skill & (Setting.SkillList)63))) > 0UL;
-                    Logger.LogInfo($"Character {cid} is the player. Returning original skill check result: {__result}");
                     return false;
                 }
                 switch (skill)
@@ -124,12 +122,11 @@ namespace GnosiaCustomizer.patches
                         __result = true;
                         break;
                 }
-                Logger.LogInfo($"Character {cid} has skill {skill}: {__result}");
                 return false; // Skip original method
             }
 
             // ResourceManager.GetScenarioBaseText
-            [HarmonyPatch(typeof(ResourceManager), "GetScenarioBaseText")]
+            //[HarmonyPatch(typeof(ResourceManager), "GetScenarioBaseText")]
             internal static class ResourceManagerGetScenarioBaseTextPatch
             {
                 internal static void Postfix(ref string __result, int fileId, int listId, int faceId = -1)
@@ -141,7 +138,7 @@ namespace GnosiaCustomizer.patches
             private static string previousActionName = "";
 
             //ScenarioEngineObj.MyUpdate
-            [HarmonyPatch(typeof(ScenarioEngineObj), "MyUpdate")]
+            //[HarmonyPatch(typeof(ScenarioEngineObj), "MyUpdate")]
             internal static class ScenarioEngineObjMyUpdatePatch
             {
                 internal static void Postfix(ScenarioEngineObj __instance)

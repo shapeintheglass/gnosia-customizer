@@ -473,14 +473,21 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(string resourceName, ref ResourceManager.ResTextureList __result)
             {
+
                 // Load texture from custom sprites if it exists
                 if (charaTextures.ContainsKey(resourceName))
                 {
-                    Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
+                    //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
                     __result = charaTextures[resourceName].texture;
                     return false;
                 }
-                return true;
+                else if (replacementTextures.TryGetValue(resourceName, out var resTextureList))
+                {
+                    //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
+                    __result = resTextureList;
+                    return false;
+                }
+                    return true;
             }
         }
 
@@ -616,7 +623,7 @@ namespace GnosiaCustomizer
             }
         }
 
-        [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
+        //[HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
         public static class LoadTexture_Patch
         {
             [HarmonyPrefix]
@@ -626,7 +633,7 @@ namespace GnosiaCustomizer
             }
         }
 
-        [HarmonyPatch(typeof(ScriptParser), "_SetScreen")]
+        //[HarmonyPatch(typeof(ScriptParser), "_SetScreen")]
         public static class SetScreen_Patch
         {
             [HarmonyPrefix]
