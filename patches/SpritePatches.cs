@@ -29,10 +29,11 @@ namespace GnosiaCustomizer
 
         // Stores bytes of textures loaded from file
         private static ConcurrentDictionary<string, byte[]> filePathToBytesMap = new ConcurrentDictionary<string, byte[]>();
-        private static HashSet<int> customSpriteAbsIds = new HashSet<int>();
 
-        // Keeping track of which sprites we have modified
-        private static HashSet<uint> modifiedSpriteIndeces = new HashSet<uint>();
+        // Character absolute IDs that have custom sprites
+        private static HashSet<int> customSpriteAbsIds = new HashSet<int>();
+        // Cached sprite sheet information
+        private static Dictionary<string, CharaSpriteInfo> cachedSpriteSheets = new Dictionary<string, CharaSpriteInfo>();
         // Cached Sprite objects, generated during gameplay
         private static Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
         // Replacement textures loaded from file
@@ -213,9 +214,18 @@ namespace GnosiaCustomizer
             var packedName = Consts.CharaFolderNames[charaIndex];
             var numTextures = Consts.HeadFileNamesWithExt.Length;
 
-            if (!GenerateSpriteSheetForCharacter(charaIndex, Consts.CharaFolderNames[charaIndex], out var spriteSheet))
+            if (!cachedSpriteSheets.TryGetValue(Consts.CharaFolderNames[charaIndex], out var spriteSheet))
             {
-                return false;
+                if (!GenerateSpriteSheetForCharacter(charaIndex, packedName, out spriteSheet))
+                {
+                    Logger.LogInfo($"LLZR No custom sprite sheet found for {packedName}. Skipping character.");
+                    return false;
+                }
+                else
+                {
+                    cachedSpriteSheets[packedName] = spriteSheet;
+                    Logger.LogInfo($"LLZR Generated new sprite sheet for {packedName}.");
+                }
             }
 
             var spriteIndex = charSpriteIndeces[charaIndex];
@@ -233,7 +243,6 @@ namespace GnosiaCustomizer
                 displayHeight,
                 textureRatio,
                 new PackedTexture(spriteSheet.offsets[0], spriteSheet.sizes[0], [], 0.0f));
-            modifiedSpriteIndeces.Add(spriteIndex);
 
             // Heads
             for (int headIndex = 1; headIndex < Consts.HeadFileNamesWithExt.Length; headIndex++)
@@ -253,7 +262,6 @@ namespace GnosiaCustomizer
                     displayHeight,
                     textureRatio,
                     new PackedTexture(spriteSheet.offsets[headIndex], spriteSheet.sizes[headIndex], [], 0.0f));
-                modifiedSpriteIndeces.Add(headSpriteIndex);
             }
             Logger.LogInfo($"LLZR LazyLoadCharacterSprites completed for {packedName} in {sw.ElapsedMilliseconds} ms.");
             return true;
@@ -265,6 +273,7 @@ namespace GnosiaCustomizer
         private static bool GenerateSpriteSheetForCharacter(int charaIndex, string charaFolder, out CharaSpriteInfo charaSpriteInfo)
         {
             Logger.LogInfo($"LLZR GenerateSpriteSheetForCharacter called (charaIndex: {charaIndex}, charaFolder: {charaFolder})");
+
             int numTexturesPerSheet = Consts.HeadFileNamesWithExt.Length;
             charaSpriteInfo = default;
 
@@ -515,8 +524,10 @@ namespace GnosiaCustomizer
                 // For custom sprites, do not draw the default sprite underneath
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                 {
-                    if (thyojo > 0 && modifiedSpriteIndeces.Contains(spriteIndex)
-                        && __instance.m_sb.TryGetValue(depth, out var screen) && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                    if (thyojo > 0 
+                        && customSpriteAbsIds.Contains(tid)
+                        && __instance.m_sb.TryGetValue(depth, out var screen) 
+                        && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
                     {
                         var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint)tid * 100U];
                         var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
