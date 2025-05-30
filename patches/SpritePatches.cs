@@ -202,7 +202,9 @@ namespace GnosiaCustomizer
             int absoluteId,
             application.Screen screen,
             float displayHeight,
-            Material defaultMat)
+            Material defaultMat,
+            uint desiredSpriteIndex,
+            out Sprite2dEffectArg sprite)
         {
             Logger.LogInfo($"LLZR LazyLoadCharacterSprites called (absoluteId: {absoluteId})");
             var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -213,6 +215,7 @@ namespace GnosiaCustomizer
             var charaIndex = absoluteId - 1;
             var packedName = Consts.CharaFolderNames[charaIndex];
             var numTextures = Consts.HeadFileNamesWithExt.Length;
+            sprite = null;
 
             if (!cachedSpriteSheets.TryGetValue(Consts.CharaFolderNames[charaIndex], out var spriteSheet))
             {
@@ -264,6 +267,7 @@ namespace GnosiaCustomizer
                     new PackedTexture(spriteSheet.offsets[headIndex], spriteSheet.sizes[headIndex], [], 0.0f));
             }
             Logger.LogInfo($"LLZR LazyLoadCharacterSprites completed for {packedName} in {sw.ElapsedMilliseconds} ms.");
+            //sprite = screen.m_spriteMap[desiredSpriteIndex];
             return true;
         }
 
@@ -465,7 +469,7 @@ namespace GnosiaCustomizer
                 for (uint charIndex = 0; charIndex < Consts.CharaFolderNames.Length; charIndex++)
                 {
                     var absoluteId = charIndex + 1;
-                    LoadCharacterSpritesInScreen((int)absoluteId, __instance, displayHeight, defaultMat);
+                   LoadCharacterSpritesInScreen((int)absoluteId, __instance, displayHeight, defaultMat, 1, out var sprite);
                 }
             }
         }
@@ -496,14 +500,14 @@ namespace GnosiaCustomizer
         [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.ShowChara))]
         public static class ShowChara_Patch
         {
-            [HarmonyPostfix]
-            public static void Postfix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
+            [HarmonyPrefix]
+            public static bool Prefix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
             {
                 Logger.LogInfo($"ShowChara_Patch called (chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
                 
                 if (chara <= 0)
                 {
-                    return;
+                    return false;
                 }
                 // We need to calculate the sprite index to determine if this should be a custom sprite.
                 int thyojo = hyojo % 100;
@@ -511,11 +515,12 @@ namespace GnosiaCustomizer
                 if (gameData == null)
                 {
                     Logger.LogWarning("Failed to get GameData");
-                    return;
+                    return true;
                 }
-                int tid = charaisId ? chara : (int)gameData.chara[chara].id;
+                int tid = charaisId ? chara : gameData.chara[chara].id;
 
-                var spriteIndex = (uint) tid * 100U;
+                var defaultSpriteIndex = (uint) tid * 100U;
+                var spriteIndex = defaultSpriteIndex;
                 if (thyojo > 0)
                 {
                     spriteIndex += (uint)thyojo;
@@ -524,19 +529,26 @@ namespace GnosiaCustomizer
                 // For custom sprites, do not draw the default sprite underneath
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                 {
-                    if (thyojo > 0 
-                        && customSpriteAbsIds.Contains(tid)
-                        && __instance.m_sb.TryGetValue(depth, out var screen) 
-                        && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                    if (customSpriteAbsIds.Contains(tid))
                     {
-                        var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint)tid * 100U];
-                        var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
-                        var centerY = sprite.GetCenterPosition().y;
-                        defaultSprite.SetVisible(false);
-                        sprite.SetCenterPosition(new Vector2(centerX, centerY));
+                        if (__instance.m_sb.TryGetValue(depth, out var screen)
+                            && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                        {
+                            sprite.SetVisible(true);
+                            var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
+                            var centerY = sprite.GetCenterPosition().y;
+                            sprite.SetCenterPosition(new Vector2(centerX, centerY));
+
+                            if (thyojo > 0)
+                            {
+                                var defaultSprite = __instance.m_sb[depth].m_spriteMap[defaultSpriteIndex];
+                                defaultSprite.SetVisible(false);
+                            }
+                        }
                     }
                     return true;
                 }), (ScriptParser.Script._EndFunc)(e => true), false));
+                return false;
             }
         }
 
