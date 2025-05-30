@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BepInEx;
 using BepInEx.Logging;
 using gnosia;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
-using resource;
 using setting;
-using UnityEngine;
 
 namespace GnosiaCustomizer.patches
 {
@@ -15,8 +12,8 @@ namespace GnosiaCustomizer.patches
     {
         internal static new ManualLogSource Logger;
 
-        public static Dictionary<int, Dictionary<string, bool>> SkillMap { get; set; } 
-            = new Dictionary<int, Dictionary<string, bool>>();
+        // Initialized by TextPatches.Initialize()
+        public static Dictionary<int, Dictionary<string, bool>> SkillMap = new Dictionary<int, Dictionary<string, bool>>();
 
         private const string step_forward = "charisma_step_forward";
         private const string seek_agreement = "charisma_seek_agreement";
@@ -40,14 +37,12 @@ namespace GnosiaCustomizer.patches
         [HarmonyPatch(typeof(Jinro), "HaveSkill")]
         internal class JinroHaveSkillPatch
         {
-            internal static bool Prefix(ref bool __result, int cid,
-                setting.Setting.SkillList skill)
+            internal static bool Prefix(ref bool __result, int cid, Setting.SkillList skill)
             {
                 if (cid == 0)
                 {
                     return true;
                 }
-                Logger.LogInfo($"Checking if character {cid} has skill {skill}...");
                 if (!SkillMap.ContainsKey(cid) || SkillMap[cid] == null)
                 {
                     Logger.LogWarning($"Character {cid} not found in SkillMap. Falling back to original skills.");
@@ -70,7 +65,6 @@ namespace GnosiaCustomizer.patches
                 if (cid == 0)
                 {
                     __result = (gameData.chara[cid].allFlg & (ulong)(1L << (int)(skill & (Setting.SkillList)63))) > 0UL;
-                    Logger.LogInfo($"Character {cid} is the player. Returning original skill check result: {__result}");
                     return false;
                 }
                 switch (skill)
@@ -124,12 +118,11 @@ namespace GnosiaCustomizer.patches
                         __result = true;
                         break;
                 }
-                Logger.LogInfo($"Character {cid} has skill {skill}: {__result}");
                 return false; // Skip original method
             }
 
             // ResourceManager.GetScenarioBaseText
-            [HarmonyPatch(typeof(ResourceManager), "GetScenarioBaseText")]
+            //[HarmonyPatch(typeof(ResourceManager), "GetScenarioBaseText")]
             internal static class ResourceManagerGetScenarioBaseTextPatch
             {
                 internal static void Postfix(ref string __result, int fileId, int listId, int faceId = -1)
@@ -141,7 +134,7 @@ namespace GnosiaCustomizer.patches
             private static string previousActionName = "";
 
             //ScenarioEngineObj.MyUpdate
-            [HarmonyPatch(typeof(ScenarioEngineObj), "MyUpdate")]
+            //[HarmonyPatch(typeof(ScenarioEngineObj), "MyUpdate")]
             internal static class ScenarioEngineObjMyUpdatePatch
             {
                 internal static void Postfix(ScenarioEngineObj __instance)

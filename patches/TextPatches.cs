@@ -9,86 +9,77 @@ using System;
 using HarmonyLib;
 using System.Reflection;
 using GnosiaCustomizer.utils;
-using gnosia;
 using coreSystem;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace GnosiaCustomizer.patches
 {
     internal class TextPatches
     {
         internal static new ManualLogSource Logger;
+        private const string ConfigFileName = "config.yaml";
 
-        private static readonly Dictionary<int, string> characterIdToFile = new Dictionary<int, string> {
-            { 1, "chara01.yaml" },
-            { 2, "chara02.yaml" },
-            { 3, "chara03.yaml" },
-            { 4, "chara04.yaml" },
-            { 5, "chara05.yaml" },
-            { 6, "chara06.yaml" },
-            { 7, "chara07.yaml" },
-            { 8, "chara08.yaml" },
-            { 9, "chara09.yaml" },
-            { 10, "chara10.yaml" },
-            { 11, "chara11.yaml" },
-            { 12, "chara12.yaml" },
-            { 13, "chara13.yaml" },
-            { 14, "chara14.yaml" },
-        };
-
-        private static Dictionary<int, CharacterText> characterTexts = new Dictionary<int, CharacterText>();
+        private static ConcurrentDictionary<int, CharacterText> characterTexts = new ConcurrentDictionary<int, CharacterText>();
 
         internal static void Initialize()
         {
             Logger.LogInfo("LoadCustomText called");
-            // Verify that the text folder exists
-            string textFolderPath = Path.Combine(Paths.PluginPath, "text");
-            if (!Directory.Exists(textFolderPath))
+
+            // Read from each character folder asynchronously
+            var tasks = new List<Task>();
+            int characterId = 1;
+            var skillMap = new ConcurrentDictionary<int, Dictionary<string, bool>>();
+            foreach (var charaFolder in Consts.CharaFolderNames)
             {
-                Logger.LogWarning($"Text folder not found at {textFolderPath}. No custom text will be loaded.");
-                return;
+                var charaPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, ConfigFileName);
+                if (!File.Exists(charaPath))
+                {
+                    characterId++;
+                    continue;
+                }
+
+                var localCharacterId = characterId; // Capture the current characterId for the task
+                tasks.Add(Task.Run(() =>
+                {
+                    string yamlContent = File.ReadAllText(charaPath);
+
+                    var deserializer = new DeserializerBuilder()
+                        .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                        .Build();
+                    try
+                    {
+                        var character = deserializer.Deserialize<CharacterText>(yamlContent);
+                        if (localCharacterId != 0)
+                        {
+                            characterTexts[localCharacterId] = character;
+                            skillMap[localCharacterId] = character.KnownSkills;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError($"Failed to deserialize {charaFolder}: {ex.Message}");
+                    }
+
+                }));
+                characterId++;
             }
-
-            // Get all available files in the directory
-            var availableFiles = new HashSet<string>(
-                Directory.GetFiles(textFolderPath, "*.yaml", SearchOption.TopDirectoryOnly)).Select(Path.GetFileName);
-
-            foreach (var charaFile in characterIdToFile.Values)
+            try
             {
-                if (!availableFiles.Contains(charaFile))
+                Task.WhenAll(tasks).GetAwaiter().GetResult();
+                Logger.LogInfo($"Loaded {characterTexts.Count}/{Consts.CharaFolderNames.Length} character configs and initialized {skillMap.Count}/{Consts.CharaFolderNames.Length} character skills");
+                JinroPatches.SkillMap = skillMap.ToDictionary(kv => kv.Key, kv => kv.Value);
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var inner in ex.InnerExceptions)
                 {
-                    Logger.LogInfo(charaFile + " not found in text folder. Skipping.");
-                    continue;
+                    Logger.LogError($"Error loading texture: {inner.Message}");
                 }
-                // Load the character text file
-                string yamlPath = Path.Combine(textFolderPath, charaFile);
-                string yamlContent = File.ReadAllText(yamlPath);
-
-                var deserializer = new DeserializerBuilder()
-                    .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                    .Build();
-
-                try
-                {
-                    var character = deserializer.Deserialize<CharacterText>(yamlContent);
-                    // Add the character text to the dictionary
-                    int characterId = characterIdToFile.FirstOrDefault(x => x.Value == charaFile).Key;
-                    
-                    if (characterId != 0)
-                    {
-                        characterTexts[characterId] = character;
-                        JinroPatches.SkillMap[characterId] = character.KnownSkills;
-                        Logger.LogInfo($"Set skills for character ID {characterId}: {string.Join(", ", character.KnownSkills.Select(kv => $"{kv.Key}: {kv.Value}"))}");
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"Character ID not found for file {charaFile}. Skipping.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError($"Failed to deserialize {charaFile}: {ex.Message}");
-                    continue;
-                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError($"Unexpected error loading textures: {e.Message}");
             }
         }
 
@@ -103,20 +94,18 @@ namespace GnosiaCustomizer.patches
 
             static void Postfix()
             {
-                foreach (var absoluteId in characterIdToFile.Keys)
+                foreach (var absoluteId in Consts.CharaFolderIds)
                 {
                     if (characterTexts.TryGetValue(absoluteId, out var character) && !string.IsNullOrEmpty(character.Name))
                     {
                         CharacterSetter.SetChara(Logger, absoluteId, character);
                     }
-                    // Log the new name
                     Logger.LogInfo($"Character ID {absoluteId} name is now: {CharacterSetter.GetCharaFieldValue(absoluteId, "name")}");
-                    Logger.LogInfo($"Grovel lines are {CharacterSetter.GetCharaFieldValueAsStringArray(absoluteId, "t_skill_dogeza").Join()}");
                 }
             }
         }
 
-        [HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
+        //[HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
         public class ScriptParserSetNormalSerifuPatch
         {
             static void Prefix(ScriptParser __instance, 

@@ -1,42 +1,45 @@
-﻿using BepInEx;
+﻿using System.IO;
+using BepInEx;
+using GnosiaCustomizer.loaders;
 using GnosiaCustomizer.patches;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 
 namespace GnosiaCustomizer;
 
-[BepInPlugin("com.sitg.gnosia.customizer", "Gnosia Customizer", "1.0.0")]
-[BepInProcess("Gnosia.exe")]
+[BepInPlugin(PluginId, PluginName, Version)]
+[BepInProcess(GnosiaProcessName)]
 public class Plugin : BaseUnityPlugin
 {
-    private static readonly string[] SetCharaMethodNames = new string[] {
-       "SetTakashi", "SetGina", "SetSQ", "SetRakio", "SetStella", "SetSigemichi", "SetCipi", "SetRemnant", "SetComet", "SetYuriko", "SetJonas", "SetSetsu", "SetOtome", "SetShaMin", "SetKukulsika"
-    };
+    private const string PluginId = "com.sitg.gnosia.customizer";
+    private const string PluginName = "Gnosia Customizer";
+    private const string Version = "1.0.0";
+    private const string GnosiaProcessName = "Gnosia.exe";
 
     public void Awake()
     {
+        // Verify that assets folder exists
+        string assetsPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder);
+        if (!Directory.Exists(assetsPath))
+        {
+            Logger.LogError($"Gnosia Customizer Assets folder not found at {assetsPath}. Please create this folder and add your custom assets.");
+            return;
+        }
+
         SpritePatches.Logger = Logger;
         TextPatches.Logger = Logger;
         SoundPatches.Logger = Logger;
         JinroPatches.Logger = Logger;
-        // Plugin startup logic
-        Logger.LogInfo($"Plugin gnosia customizer is loaded!");
+        AssetLoader.Logger = Logger;
 
-        // Initialize patches and load custom resources
-        SpritePatches.InitializeAsync();
+        Logger.LogInfo($"Plugin gnosia customizer is starting!");
+
+        SpritePatches.Initialize();
         TextPatches.Initialize();
         SoundPatches.Initialize();
 
-        var harmony = new Harmony("com.sitg.gnosia.customizer");
-
-        //foreach (var name in SetCharaMethodNames)
-        //{
-        //    TextPatches.PatchSetCharaData(harmony, name);
-        //}
-
+        var harmony = new Harmony(PluginId);
         harmony.PatchAll();
         Logger.LogInfo($"Harmony patches applied.");
     }
-
-
 }
