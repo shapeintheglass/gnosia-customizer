@@ -140,13 +140,18 @@ Custom audio can be placed in the plugins/sound folder in .wav format. If it mat
 | Name | Description  |
 |----|-------|
 | G_bgm_01_strm.wav  | Vote screen |
-| G_bgm_02_strm.wav  | Discussion |
+| G_bgm_02_strm.wav  | Default discussion music |
+| G_bgm_03_strm.wav  | Discussion music when your average trust is above 75% (Ex. Labelled 'Definte Human') |
+| G_bgm_04_strm.wav  | Conversation |
+| G_bgm_06_strm.wav  | Small Talk |
+| G_bgm_07_strm.wav  | Sad conversation |
 | G_bgm_10_strm.wav  | Title |
+| G_bgm_13_strm.wav  | Discussion music when your average trust has fallen below 25% (Ex. Labelled 'Definite Enemy') |
 | G_bgm_15_strm.wav  | Configure loop |
 | G_bgm_22_strm.wav  | Gnosia |
 | G_bgm_23_strm.wav  | Happy end |
 | G_bgm_24_strm.wav  | Bug victory |
-| G_bgm_26_strm.wav  | Small talk |
+| G_bgm_26_strm.wav  | Obfuscate |
 | G_jin_02.wav  | No one was attacked last night |
 |G_jin_03.wav| Last night, ___ disappeared |
 | G_jin_06.wav |You were killed by Gnosia |

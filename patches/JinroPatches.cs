@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BepInEx;
 using BepInEx.Logging;
 using gnosia;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
-using resource;
 using setting;
-using UnityEngine;
 
 namespace GnosiaCustomizer.patches
 {
@@ -15,8 +12,8 @@ namespace GnosiaCustomizer.patches
     {
         internal static new ManualLogSource Logger;
 
-        public static Dictionary<int, Dictionary<string, bool>> SkillMap { get; set; } 
-            = new Dictionary<int, Dictionary<string, bool>>();
+        // Initialized by TextPatches.Initialize()
+        public static Dictionary<int, Dictionary<string, bool>> SkillMap = new Dictionary<int, Dictionary<string, bool>>();
 
         private const string step_forward = "charisma_step_forward";
         private const string seek_agreement = "charisma_seek_agreement";
@@ -40,8 +37,7 @@ namespace GnosiaCustomizer.patches
         [HarmonyPatch(typeof(Jinro), "HaveSkill")]
         internal class JinroHaveSkillPatch
         {
-            internal static bool Prefix(ref bool __result, int cid,
-                setting.Setting.SkillList skill)
+            internal static bool Prefix(ref bool __result, int cid, Setting.SkillList skill)
             {
                 if (cid == 0)
                 {
