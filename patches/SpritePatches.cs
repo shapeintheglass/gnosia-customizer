@@ -27,6 +27,10 @@ namespace GnosiaCustomizer
         private static readonly uint[] charSpriteIndeces = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400];
         private static readonly Vector2 ZeroOne = new Vector2(0.0f, 1.0f);
 
+
+        // Stores bytes of textures loaded from file
+        private static ConcurrentDictionary<string, byte[]> filePathToBytesMap = new ConcurrentDictionary<string, byte[]>();
+
         // Texture2D loaded from file
         private static Dictionary<string, CharaTexture> charaTextures = new Dictionary<string, CharaTexture>();
         // Keeping track of which sprites we have modified
@@ -107,17 +111,19 @@ namespace GnosiaCustomizer
             }
 
             // We can asynchronously load the bytes from file
-            var filePathToBytesMap = LoadTexturesAsynchronously(textureFilePaths);
+            LoadTexturesAsynchronously(textureFilePaths);
 
             // Unity libraries are not thread-safe and must be executed synchronously
-            CreateTextureReplacements(filePathToBytesMap);
-            CreateSpriteReplacements(filePathToBytesMap);
+            //CreateTextureReplacements();
+
+            CreateSpriteReplacements();
+
             Logger.LogInfo($"Loaded sprites for {charaTextures.Keys.Count}/{Consts.CharaFolderNames.Length} characters.");
         }
 
-        private static ConcurrentDictionary<string, byte[]> LoadTexturesAsynchronously(HashSet<string> textureFilePaths)
+        private static void LoadTexturesAsynchronously(HashSet<string> textureFilePaths)
         {
-            var filePathToBytesMap = new ConcurrentDictionary<string, byte[]>();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var tasks = new List<Task>();
 
             foreach (var file in textureFilePaths)
@@ -144,11 +150,10 @@ namespace GnosiaCustomizer
             {
                 Logger.LogError($"Unexpected error loading textures: {e.Message}");
             }
-            Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} non-character textures.");
-            return filePathToBytesMap;
+            Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} textures (including character sprites) in {sw.ElapsedMilliseconds} ms.");
         }
 
-        private static void CreateTextureReplacements(ConcurrentDictionary<string, byte[]> filePathToBytesMap)
+        private static void CreateTextureReplacements()
         {
             foreach (var filepath in filePathToBytesMap.Keys)
             {
@@ -175,8 +180,42 @@ namespace GnosiaCustomizer
             }
         }
 
-        public static void CreateSpriteReplacements(
-            ConcurrentDictionary<string, byte[]> filePathToBytesMap)
+        private static bool CreateTextureForResourceName(string resourceName, out ResourceManager.ResTextureList resTextureList)
+        {
+            var filePath = Path.GetFullPath(Path.Combine(Paths.PluginPath, Consts.AssetsFolder, Consts.TextureAssetsFolder, resourceName + ".png"));
+            resTextureList = null;
+            if (filePathToBytesMap.TryGetValue(filePath, out var bytes))
+            {
+                var newTexture = new Texture2D(2, 2);
+                if (newTexture.LoadImage(filePathToBytesMap[filePath]))
+                {
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+
+                    resTextureList = new ResourceManager.ResTextureList()
+                    {
+                        count = 1,
+                        isFixed = false,
+                        slot = 0,
+                        userInfo = new GraphicsContext.TextureUserInfo()
+                        {
+                            size = new Vector2(newTexture.width, newTexture.height),
+                            isMadeInGame = false
+                        },
+                        texture = newTexture
+                    };
+                    replacementTextures[Path.GetFileNameWithoutExtension(filePath)] = resTextureList;
+                    Logger.LogInfo($"Lazy loaded texture for {resourceName} in {sw.ElapsedMilliseconds} ms.");
+                    return true;
+                }
+                else
+                {
+                    Logger.LogError($"Failed to load custom texture for {resourceName}");
+                }
+            }
+            return false;
+        }
+
+        private static void CreateSpriteReplacements()
         {
             var numTextures = Consts.HeadFileNamesWithExt.Length;
             var spriteNameAndBytes = new CharaFileInfo[Consts.CharaFolderNames.Length];
@@ -374,7 +413,9 @@ namespace GnosiaCustomizer
                     var packedName = Consts.CharaFolderNames[charIndex];
                     if (!charaTextures.TryGetValue(packedName, out CharaTexture value))
                     {
-                        Logger.LogWarning($"Custom sprite {packedName} not found in {charaTextures.Keys.Join()}. Skipping.");
+                        // Load and cache the texture here
+
+                        
                         continue;
                     }
                     var spriteIndex = charSpriteIndeces[charIndex];
@@ -440,6 +481,10 @@ namespace GnosiaCustomizer
                 || !packedTextures.TryGetValue(textureName, out var textureConfig))
             {
                 Logger.LogWarning($"Packed texture {packedName}/{textureName} not found in config.");
+                // Load the config
+
+
+
                 return;
             }
 
@@ -503,21 +548,28 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(string resourceName, ref ResourceManager.ResTextureList __result)
             {
-
                 // Load texture from custom sprites if it exists
                 if (charaTextures.ContainsKey(resourceName))
                 {
-                    //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
                     __result = charaTextures[resourceName].texture;
                     return false;
                 }
-                else if (replacementTextures.TryGetValue(resourceName, out var resTextureList))
+
+
+                if (!replacementTextures.TryGetValue(resourceName, out var resTextureList)
+                    && !CreateTextureForResourceName(resourceName, out resTextureList))
                 {
-                    //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
+                    Logger.LogInfo($"Unable to lazy load texture for {resourceName}");
+                    replacementTextures[resourceName] = null;
+                    return true;
+                }
+
+                if (resTextureList != null)
+                {
                     __result = resTextureList;
                     return false;
                 }
-                    return true;
+                return true;
             }
         }
 
@@ -630,26 +682,37 @@ namespace GnosiaCustomizer
             public static bool Prefix(application.Screen __instance, ref int __result, int textureType, Transform parentTrans, uint depth, string textureName, Vector2? _position = null, ResourceManager.ResTextureList texture = null)
             {
                 Logger.LogInfo($"SetTexture_Patch.Prefix called (__instance: {__instance?.GetType().Name}, textureType: {textureType}, parentTrans: {parentTrans?.GetType().Name}, depth: {depth}, textureName: {textureName}, _position: {_position}, texture: {(texture != null ? texture.GetType().Name : "null")})");
-                if (replacementTextures.TryGetValue(textureName, out var resTextureList))
+
+                if (!replacementTextures.TryGetValue(textureName, out var resTextureList)
+                    && !CreateTextureForResourceName(textureName, out resTextureList))
                 {
-                    Vector2 display = _position ?? Vector2.zero;
-                    GameObject gameObject = new GameObject(textureName);
-                    gameObject.AddComponent<Sprite2dEffectArg>();
-                    gameObject.AddComponent<Image>();
-                    gameObject.transform.SetParent(parentTrans);
-                    gameObject.SetActive(false);
-                    __instance.m_spriteMap[depth] = gameObject.GetComponent<Sprite2dEffectArg>();
-                    var resourceManager = Utils.GetResourceManagerViaReflection(__instance);
-                    if (resourceManager == null)
-                    {
-                        Logger.LogWarning("Failed to get ResourceManager instance via reflection");
-                        return true;
-                    }
-                    __instance.m_spriteMap[depth].SetFromLeftUpper(textureType, display, resTextureList, resourceManager.uiDefaultMat);
-                    __result = 1;
-                    return false;
+                    Logger.LogWarning($"Failed to lazy load texture for resource name {textureName}. Returning true to skip further processing.");
+                    replacementTextures[textureName] = null;
+                    return true;
                 }
-                return true;
+
+                if (resTextureList == null)
+                {
+                    // We already tried to lazy load this texture and it failed
+                    return true;
+                }
+
+                Vector2 display = _position ?? Vector2.zero;
+                GameObject gameObject = new GameObject(textureName);
+                gameObject.AddComponent<Sprite2dEffectArg>();
+                gameObject.AddComponent<Image>();
+                gameObject.transform.SetParent(parentTrans);
+                gameObject.SetActive(false);
+                __instance.m_spriteMap[depth] = gameObject.GetComponent<Sprite2dEffectArg>();
+                var resourceManager = Utils.GetResourceManagerViaReflection(__instance);
+                if (resourceManager == null)
+                {
+                    Logger.LogWarning("Failed to get ResourceManager instance via reflection");
+                    return true;
+                }
+                __instance.m_spriteMap[depth].SetFromLeftUpper(textureType, display, resTextureList, resourceManager.uiDefaultMat);
+                __result = 1;
+                return false;
             }
         }
 
