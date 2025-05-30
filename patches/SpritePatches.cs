@@ -11,6 +11,7 @@ using BepInEx;
 using BepInEx.Logging;
 using config;
 using coreSystem;
+using gnosia;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 using resource;
@@ -24,8 +25,8 @@ namespace GnosiaCustomizer
     {
         internal static new ManualLogSource Logger;
 
-        private static readonly uint[] charSpriteIndeces = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400];
         private static readonly Vector2 ZeroOne = new Vector2(0.0f, 1.0f);
+        private const uint Order = 10U;
 
         // Stores bytes of textures loaded from file
         private static ConcurrentDictionary<string, byte[]> filePathToBytesMap = new ConcurrentDictionary<string, byte[]>();
@@ -48,6 +49,7 @@ namespace GnosiaCustomizer
         private static readonly FieldInfo TextureOffsetField = Sprite2dEffectArgType.GetField("m_textureOffset", PrivateInstance);
         private static readonly FieldInfo SizeInTextureField = Sprite2dEffectArgType.GetField("m_sizeInTexture", PrivateInstance);
         private static readonly FieldInfo ImageField = Sprite2dEffectArgType.GetField("m_image", PrivateInstance);
+        private static readonly GameData? GameData = Utils.GetGameDataViaReflection();
 
         private struct CharaSpriteInfo
         {
@@ -55,6 +57,7 @@ namespace GnosiaCustomizer
             public Vector2[] sizes;
             public Vector2[] offsets;
             public Vector2 position;
+            public PackedTexture[] packedTextures;
         }
 
         internal static void Initialize()
@@ -105,29 +108,16 @@ namespace GnosiaCustomizer
             LoadTexturesAsynchronously(textureFilePaths);
             // Pre-determine which characters can be replaced based on the loaded sprites
             CheckCustomCharacterSprites();
-        }
 
-        private static void CheckCustomCharacterSprites()
-        {
-            var absoluteId = 1;
-            foreach (var charaFolder in Consts.CharaFolderNames)
+            for (var i = 0; i < Consts.CharaFolderNames.Length; i++)
             {
-                bool hasCustomSprites = true;
-                foreach (var headFileName in Consts.HeadFileNamesWithExt)
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                if (GenerateSpriteSheetForCharacter(i + 1, Consts.CharaFolderNames[i], out var charaSpriteInfo))
                 {
-                    var headFilePathWithExt = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, headFileName);
-                    if (!filePathToBytesMap.ContainsKey(Path.GetFullPath(headFilePathWithExt)))
-                    {
-                        hasCustomSprites = false;
-                        break;
-                    }
+                    cachedSpriteSheets[Consts.CharaFolderNames[i]] = charaSpriteInfo;
+                    Logger.LogInfo($"Generated custom sprite sheet for {Consts.CharaFolderNames[i]}.");
                 }
-                if (hasCustomSprites)
-                {
-                    Logger.LogInfo($"Found custom character sprites for char ID {absoluteId}");
-                    customSpriteAbsIds.Add(absoluteId);
-                }
-                absoluteId++;
+                Logger.LogInfo($"Generated sprite sheet for {Consts.CharaFolderNames[i]} in {sw.ElapsedMilliseconds} ms.");
             }
         }
 
@@ -161,6 +151,30 @@ namespace GnosiaCustomizer
                 Logger.LogError($"Unexpected error loading textures: {e.Message}");
             }
             Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} textures (including character sprites) in {sw.ElapsedMilliseconds} ms.");
+        }
+
+        private static void CheckCustomCharacterSprites()
+        {
+            var absoluteId = 1;
+            foreach (var charaFolder in Consts.CharaFolderNames)
+            {
+                bool hasCustomSprites = true;
+                foreach (var headFileName in Consts.HeadFileNamesWithExt)
+                {
+                    var headFilePathWithExt = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, headFileName);
+                    if (!filePathToBytesMap.ContainsKey(Path.GetFullPath(headFilePathWithExt)))
+                    {
+                        hasCustomSprites = false;
+                        break;
+                    }
+                }
+                if (hasCustomSprites)
+                {
+                    Logger.LogInfo($"Found custom character sprites for char ID {absoluteId}");
+                    customSpriteAbsIds.Add(absoluteId);
+                }
+                absoluteId++;
+            }
         }
 
         private static bool CreateTextureForResourceName(string resourceName, out ResourceManager.ResTextureList resTextureList)
@@ -202,50 +216,36 @@ namespace GnosiaCustomizer
             int absoluteId,
             application.Screen screen,
             float displayHeight,
-            Material defaultMat,
-            uint desiredSpriteIndex,
-            out Sprite2dEffectArg sprite)
+            Material defaultMat)
         {
-            Logger.LogInfo($"LLZR LazyLoadCharacterSprites called (absoluteId: {absoluteId})");
+            Logger.LogInfo($"LLZR LoadCharacterSpritesInScreen called (absoluteId: {absoluteId})");
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var order = 10U;
-            var bodyDepth = (uint)(absoluteId * 100U);
             var textureRatio = GraphicsContext.m_textureRatio;
             var colorCoeff = (Color)screen.GetColorCoeff();
             var charaIndex = absoluteId - 1;
             var packedName = Consts.CharaFolderNames[charaIndex];
-            var numTextures = Consts.HeadFileNamesWithExt.Length;
-            sprite = null;
-
             if (!cachedSpriteSheets.TryGetValue(Consts.CharaFolderNames[charaIndex], out var spriteSheet))
             {
-                if (!GenerateSpriteSheetForCharacter(charaIndex, packedName, out spriteSheet))
-                {
-                    Logger.LogInfo($"LLZR No custom sprite sheet found for {packedName}. Skipping character.");
-                    return false;
-                }
-                else
-                {
-                    cachedSpriteSheets[packedName] = spriteSheet;
-                    Logger.LogInfo($"LLZR Generated new sprite sheet for {packedName}.");
-                }
+                Logger.LogInfo($"LLZR No custom sprite sheet found for {packedName}. Skipping character.");
+                return false;
             }
 
-            var spriteIndex = charSpriteIndeces[charaIndex];
+            var spriteIndex = (uint) absoluteId * 100U;
+
             // Body
             SetSpriteInScreenAtDepth(
                 screen,
                 packedName,
                 "body",
                 spriteIndex,
-                order,
+                Order,
                 spriteSheet.position,
                 spriteSheet.texture,
                 defaultMat,
                 colorCoeff,
                 displayHeight,
                 textureRatio,
-                new PackedTexture(spriteSheet.offsets[0], spriteSheet.sizes[0], [], 0.0f));
+                spriteSheet.packedTextures[0]);
 
             // Heads
             for (int headIndex = 1; headIndex < Consts.HeadFileNamesWithExt.Length; headIndex++)
@@ -257,17 +257,16 @@ namespace GnosiaCustomizer
                     packedName,
                     headTextureName,
                     headSpriteIndex,
-                    order,
+                    Order,
                     spriteSheet.position,
                     spriteSheet.texture,
                     defaultMat,
                     colorCoeff,
                     displayHeight,
                     textureRatio,
-                    new PackedTexture(spriteSheet.offsets[headIndex], spriteSheet.sizes[headIndex], [], 0.0f));
+                    spriteSheet.packedTextures[headIndex]);
             }
             Logger.LogInfo($"LLZR LazyLoadCharacterSprites completed for {packedName} in {sw.ElapsedMilliseconds} ms.");
-            //sprite = screen.m_spriteMap[desiredSpriteIndex];
             return true;
         }
 
@@ -281,7 +280,7 @@ namespace GnosiaCustomizer
             int numTexturesPerSheet = Consts.HeadFileNamesWithExt.Length;
             charaSpriteInfo = default;
 
-            if (!LoadHeadsForCharacter(numTexturesPerSheet, filePathToBytesMap, charaFolder,
+            if (!LoadHeadsForCharacter(filePathToBytesMap, charaFolder,
                 out byte[][] bytes, out string[] headNames))
             {
                 Logger.LogInfo("LLZR Skipping character " + charaFolder + " due to missing textures.");
@@ -319,6 +318,7 @@ namespace GnosiaCustomizer
             spriteSheet.SetPixels32(clearArray);
 
             var offsets = new Vector2[numTexturesPerSheet];
+            var packedTextures = new PackedTexture[numTexturesPerSheet];
             var currentX = 0f;
 
             for (int i = 0; i < textures.Length; i++)
@@ -326,6 +326,7 @@ namespace GnosiaCustomizer
                 var tex = textures[i];
                 var size = sizes[i];
                 offsets[i] = new Vector2(currentX, 0);
+                packedTextures[i] = new PackedTexture(offsets[i], sizes[i], [], 0.0f);
                 currentX += size.x;
                 spriteSheet.SetPixels32(
                     (int)offsets[i].x,
@@ -355,7 +356,8 @@ namespace GnosiaCustomizer
                 texture = resourceList,
                 sizes = sizes,
                 offsets = offsets,
-                position = new Vector2(50f * charaIndex - 200f, 0f)
+                position = new Vector2(50f * charaIndex - 200f, 0f),
+                packedTextures = packedTextures
             };
             return true;
         }
@@ -363,11 +365,12 @@ namespace GnosiaCustomizer
         /// <summary>
         /// Loads head textures for a character from the specified folder.
         /// </summary>
-        private static bool LoadHeadsForCharacter(int numTextures,
+        private static bool LoadHeadsForCharacter(
             ConcurrentDictionary<string, byte[]> filePathToBytesMap,
             string charaFolder, out byte[][] bytes, out string[] fileNames)
         {
             Logger.LogInfo($"LLZR LoadHeadsForCharacter called (charaFolder: {charaFolder})");
+            var numTextures = Consts.HeadFileNamesWithExt.Length;
             bytes = new byte[numTextures][];
             fileNames = new string[numTextures];
             for (int textureIndex = 0; textureIndex < Consts.HeadFileNamesWithExt.Length; textureIndex++)
@@ -386,7 +389,7 @@ namespace GnosiaCustomizer
             return true;
         }
 
-        private static void SetSpriteInScreenAtDepth(
+        private static (uint, Sprite2dEffectArg) SetSpriteInScreenAtDepth(
                 application.Screen screen,
                 string packedName,
                 string textureName,
@@ -453,6 +456,7 @@ namespace GnosiaCustomizer
             ImageField.SetValue(sprite, image);
             sprite.SetSize(0.7f);
             sprite.SetDisplayOffsetY(displayHeight - sprite.GetSizeInDisplay().y * sprite.GetSize() * textureRatio);
+            return (depth, sprite);
         }
 
         [HarmonyPatch(typeof(CharaScreen), nameof(CharaScreen.InitializeGlm))]
@@ -463,13 +467,11 @@ namespace GnosiaCustomizer
             {
                 Logger.LogInfo($"CharaScreen.InitializeGlm called");
                 var displayHeight = resourceManager.m_displaySize.height;
-                var textureRatio = GraphicsContext.m_textureRatio;
                 var defaultMat = resourceManager.uiCharaDefaultMat;
-                var colorCoeff = (Color)__instance.GetColorCoeff();
                 for (uint charIndex = 0; charIndex < Consts.CharaFolderNames.Length; charIndex++)
                 {
-                    var absoluteId = charIndex + 1;
-                   LoadCharacterSpritesInScreen((int)absoluteId, __instance, displayHeight, defaultMat, 1, out var sprite);
+                   var absoluteId = charIndex + 1;
+                   LoadCharacterSpritesInScreen((int)absoluteId, __instance, displayHeight, defaultMat);
                 }
             }
         }
@@ -504,47 +506,40 @@ namespace GnosiaCustomizer
             public static bool Prefix(ScriptParser __instance, ref int __result, int chara, int hyojo, int pos = 0, uint depth = 20, bool charaisId = false)
             {
                 Logger.LogInfo($"ShowChara_Patch called (chara: {chara}, hyojo: {hyojo}, pos: {pos}, depth: {depth}, charaisId: {charaisId})");
-                
+                if (GameData == null)
+                {
+                    Logger.LogWarning("Failed to get GameData");
+                    return true;
+                }
                 if (chara <= 0)
                 {
                     return false;
                 }
                 // We need to calculate the sprite index to determine if this should be a custom sprite.
+                int tid = charaisId ? chara : GameData.chara[chara].id;
+                var spriteIndex = (uint) tid * 100U;
                 int thyojo = hyojo % 100;
-                var gameData = Utils.GetGameDataViaReflection();
-                if (gameData == null)
-                {
-                    Logger.LogWarning("Failed to get GameData");
-                    return true;
-                }
-                int tid = charaisId ? chara : gameData.chara[chara].id;
-
-                var defaultSpriteIndex = (uint) tid * 100U;
-                var spriteIndex = defaultSpriteIndex;
                 if (thyojo > 0)
                 {
                     spriteIndex += (uint)thyojo;
                 }
-
-                // For custom sprites, do not draw the default sprite underneath
+                var localIndex = spriteIndex;
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                 {
-                    if (customSpriteAbsIds.Contains(tid))
+                    if (customSpriteAbsIds.Contains(tid) && __instance.m_sb.TryGetValue(depth, out var screen))
                     {
-                        if (__instance.m_sb.TryGetValue(depth, out var screen)
-                            && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                        if (!screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                        {
+                            Logger.LogWarning($"Failed to load custom sprite for character ID {tid} at index {localIndex}.");
+                            return true;
+                        }
+                        if (!sprite.GetVisible())
                         {
                             sprite.SetVisible(true);
-                            var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
-                            var centerY = sprite.GetCenterPosition().y;
-                            sprite.SetCenterPosition(new Vector2(centerX, centerY));
-
-                            if (thyojo > 0)
-                            {
-                                var defaultSprite = __instance.m_sb[depth].m_spriteMap[defaultSpriteIndex];
-                                defaultSprite.SetVisible(false);
-                            }
                         }
+                        var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
+                        var centerY = sprite.GetCenterPosition().y;
+                        sprite.SetCenterPosition(new Vector2(centerX, centerY));
                     }
                     return true;
                 }), (ScriptParser.Script._EndFunc)(e => true), false));
@@ -559,6 +554,13 @@ namespace GnosiaCustomizer
             public static bool Prefix(ScriptParser __instance, ref int __result, uint depth = 20, int chara = -1)
             {
                 Logger.LogInfo($"UnvisibleAllChara_Patch.Prefix called (depth: {depth}, chara: {chara})");
+
+                if (GameData == null)
+                {
+                    Logger.LogWarning("Failed to cast gd instance to GameData");
+                    return true;
+                }
+
                 const uint numHeads = 7U;
                 if (chara <= 0)
                     __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
@@ -584,14 +586,9 @@ namespace GnosiaCustomizer
                 else
                     __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                     {
-                        var gameData = Utils.GetGameDataViaReflection();
-                        if (gameData == null)
-                        {
-                            Logger.LogWarning("Failed to cast gd instance to GameData");
-                            return true;
-                        }
+                        
 
-                        var spriteIndex = gameData.chara[chara].id * 100U;
+                        var spriteIndex = GameData.chara[chara].id * 100U;
                         __instance.m_sb[depth].m_spriteMap[spriteIndex].UnvisibleWithChild();
 
                         // Also iterate through every head
