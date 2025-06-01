@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using static GnosiaCustomizer.patches.TextPatches;
 
 namespace GnosiaCustomizer.utils
 {
@@ -14,6 +17,11 @@ namespace GnosiaCustomizer.utils
 
         private const string Placeholder = "...";
 
+        private const string NameFieldName = "name";
+        private const string PlaceFieldName = "d_place";
+        private const string HonorificFieldName = "t_keisho";
+        private const string JournalFieldName = "d_tokki";
+        private const string PersonalFieldName = "t_personal";
         private static readonly Dictionary<string, int> dialogueCount = new Dictionary<string, int>()
         {
             { "t_aisatu", 1 },
@@ -97,7 +105,20 @@ namespace GnosiaCustomizer.utils
             { "t_skill_h_help", 2 },
             { "t_skill_h_careful", 1 },
             { "t_skill_dogeza", 2 },
+            { "t_temp", 2 }
         };
+
+        public enum Emotion
+        {
+            Neutral = 0,
+            Happy = 1,
+            Annoyed = 2,
+            Hurt = 3,
+            Surprised = 4,
+            Thinking = 5,
+            Smug = 6,
+            Gnosia = 7
+        }
 
         internal static object GetCharaFieldValue(int index, string fieldName)
         {
@@ -118,25 +139,80 @@ namespace GnosiaCustomizer.utils
             return field.GetValue(charaStructBoxed);
         }
 
-        internal static List<string> GetCharaFieldValueAsStringArray(int index, string fieldName)
+        internal static bool GetCharaFieldValueAsStringArray(int index, string fieldName, out List<string> strArray)
         {
+            strArray = null;
             var value = GetCharaFieldValue(index, fieldName);
             if (value is List<string> stringList)
             {
-                return stringList;
-            }
-            else if (value is string singleString)
-            {
-                return new List<string> { singleString };
+                strArray = stringList;
+                return true;
             }
             else
             {
-                throw new Exception($"Field '{fieldName}' is not a List<string> or string.");
+                return false;
             }
         }
 
-        internal static void SetChara(ManualLogSource Logger, int index, CharacterText charaText)
+        internal static bool GetCharaFieldAs2dStringArray(int index, string fieldName, out List<List<string>> strArray)
         {
+            strArray = null;
+            var value = GetCharaFieldValue(index, fieldName);
+            if (value is List<List<string>> string2dList)
+            {
+                strArray = string2dList;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static void PreprocessCustomDialogue(List<DialogueLine> dialogue,
+            out Dictionary<string, DialogueLine> lines1d,
+            out Dictionary<string, List<DialogueLine>> lines2d,
+            out Dictionary<string, List<List<DialogueLine>>> lines3d)
+        {
+            lines1d = new Dictionary<string, DialogueLine>(4); // TODO: Refactor to const
+            lines2d = new Dictionary<string, List<DialogueLine>>(dialogueCount.Count);
+            lines3d = new Dictionary<string, List<List<DialogueLine>>>(100); // TODO: Refactor to const
+
+            foreach (var line in dialogue)
+            {
+                if (line.Index.HasValue)
+                {
+                    if (line.InnerIndex.HasValue)
+                    {
+                        // 2D dialogue
+                        if (!lines3d.TryGetValue(line.Name, out var outerList))
+                        {
+                            outerList = new List<List<DialogueLine>>();
+                            lines3d[line.Name] = outerList;
+                        }
+                        while (outerList.Count <= line.Index.Value)
+                        {
+                            outerList.Add(new List<DialogueLine>());
+                        }
+                        outerList[line.Index.Value].Add(line);
+                    }
+                    else
+                    {
+                        // 1D dialogue
+                        lines1d[line.Name] = line;
+                    }
+                }
+                else
+                {
+                    // No index, treat as 1D dialogue
+                    lines1d[line.Name] = line;
+                }
+            }
+        }
+
+        internal static void SetChara(ManualLogSource Logger, int index, CharacterText charaText, List<DialogueLine> dialogue)
+        {
+            Logger.LogInfo($"Setting character data for index {index}");
             var fieldInfo = AccessTools.Field(DataType, "Chara");
             if (fieldInfo == null)
             {
@@ -153,10 +229,6 @@ namespace GnosiaCustomizer.utils
             }
             var charaStructBoxed = array.GetValue(index);
 
-            if (!string.IsNullOrEmpty(charaText.Name))
-            {
-                SetField(charaStructBoxed, "name", charaText.Name);
-            }
             if (charaText.Sex != null)
             {
                 SetField(charaStructBoxed, "sex", charaText.Sex.Value);
@@ -165,13 +237,17 @@ namespace GnosiaCustomizer.utils
             {
                 SetField(charaStructBoxed, "age", charaText.Age.Value);
             }
-            if (!string.IsNullOrEmpty(charaText.Place))
-            {
-                SetField(charaStructBoxed, "d_place", charaText.Place);
-            }
             if (charaText.NumJournalEntries != null)
             {
                 SetField(charaStructBoxed, "d_tokkiNum", charaText.NumJournalEntries.Value);
+            }
+            if (charaText.HpMin != null)
+            {
+                SetField(charaStructBoxed, "hpMin", charaText.HpMin.Value);
+            }
+            if (charaText.HpWithGnos != null)
+            {
+                SetField(charaStructBoxed, "hpWithGnos", charaText.HpWithGnos.Value);
             }
             if (charaText.Attributes != null)
             {
@@ -224,24 +300,28 @@ namespace GnosiaCustomizer.utils
                 }
             }
 
-            foreach (var skillName in dialogueCount.Keys)
+            // Pad dialogue fields with placeholders
+            foreach (var dialogueName in dialogueCount.Keys)
             {
-                var field = GetCharaFieldFromBoxedStruct(skillName, charaStructBoxed);
+                Logger.LogInfo($"Processing dialogue field '{dialogueName}' for character index {index}.");
+                var field = GetCharaFieldFromBoxedStruct(dialogueName, charaStructBoxed);
                 if (field == null)
                 {
-                    var newList = new List<string>(dialogueCount[skillName]);
-                    for (int i = 0; i < dialogueCount[skillName]; i++)
+                    // Create a new list where none previously existed
+                    var newList = new List<string>(dialogueCount[dialogueName]);
+                    for (int i = 0; i < dialogueCount[dialogueName]; i++)
                     {
                         newList.Add(Placeholder);
                     }
-                    SetField(charaStructBoxed, skillName, newList);
+                    SetField(charaStructBoxed, dialogueName, newList);
                 }
                 else if (field is List<string> stringList)
                 {
-                    if (stringList.Count < dialogueCount[skillName])
+                    // Modify an existing list
+                    if (stringList.Count < dialogueCount[dialogueName])
                     {
-                        var newList = new List<string>(dialogueCount[skillName]);
-                        for (int i = 0; i < dialogueCount[skillName]; i++)
+                        var newList = new List<string>(dialogueCount[dialogueName]);
+                        for (int i = 0; i < dialogueCount[dialogueName]; i++)
                         {
                             newList.Add(Placeholder);
                         }
@@ -253,7 +333,7 @@ namespace GnosiaCustomizer.utils
                             }
                         }
 
-                        SetField(charaStructBoxed, skillName, newList);
+                        SetField(charaStructBoxed, dialogueName, newList);
                     }
                     else
                     {
@@ -264,10 +344,59 @@ namespace GnosiaCustomizer.utils
                                 stringList[i] = Placeholder;
                             }
                         }
-                        SetField(charaStructBoxed, skillName, stringList);
+                        SetField(charaStructBoxed, dialogueName, stringList);
                     }
                 }
             }
+            array.SetValue(charaStructBoxed, index);
+
+            // Go through custom dialogue and replace again (TODO: Optimize second iteration)
+            foreach (var dialogueLine in dialogue)
+            {
+                var dialogueName = dialogueLine.Name;
+
+                if (dialogueCount.TryGetValue(dialogueName, out var count) 
+                    && dialogueLine.Index.HasValue
+                    && GetCharaFieldValueAsStringArray(dialogueLine.Index.Value, dialogueName, out var strArray))
+                {
+                    strArray[dialogueLine.Index.Value] = dialogueLine.Text;
+                    if (!string.IsNullOrEmpty(dialogueLine.Emotion)
+                        && Enum.TryParse<Emotion>(dialogueLine.Emotion, out var emotion))
+                    {
+                        // Append emotion to the string
+                        Logger.LogInfo($"Setting emotion '{emotion}' for dialogue '{dialogueName}' at index {dialogueLine.Index.Value}. String array size: {strArray.Count}.");
+                        strArray[dialogueLine.Index.Value] += $"|{(int) emotion}";
+                    }
+                }
+                else if (dialogueName == PersonalFieldName && GetCharaFieldAs2dStringArray(dialogueLine.Index.Value, dialogueName, out var str2dArray))
+                {
+
+                }
+                else if (dialogueName == NameFieldName || dialogueName == PlaceFieldName || dialogueName == HonorificFieldName)
+                {
+                    var field = GetCharaFieldFromBoxedStruct(dialogueName, charaStructBoxed);
+                    if (field is string name)
+                    {
+                        // Set the name field
+                        SetField(charaStructBoxed, dialogueName, dialogueLine.Text);
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"Dialogue field '{dialogueName}' is not a string. Skipping.");
+                        continue;
+                    }
+                }
+                else if (dialogueName == JournalFieldName)
+                {
+
+                }
+                else
+                {
+                    Logger.LogWarning($"Dialogue field '{dialogueName}' not found in dialogueCount. Skipping.");
+                    continue;
+                }
+            }
+
             array.SetValue(charaStructBoxed, index);
         }
 
@@ -283,39 +412,85 @@ namespace GnosiaCustomizer.utils
         }
 
 
-        internal static void LogCharaFields(int index, ManualLogSource Logger)
+        internal static void LogCharaFieldsToFile(int index, ManualLogSource Logger)
         {
             var charaArray = GetCharaArray();
             var instance = charaArray.GetValue(index);
             var fields = CharaDataType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
+            var csvFileContents = "Name,Index,InnerIndex,Desc,Emotion,Text\n";
             foreach (var field in fields)
             {
                 var value = field.GetValue(instance);
+                var lineIndex = 0;
 
                 if (value is List<string> stringList)
                 {
-                    value = string.Join(", ", stringList);
-                }
-                else if (value is List<float> floatList)
-                {
-                    value = string.Join(", ", floatList);
-                }
-                else if (value is Array array)
-                {
-                    value = string.Join(", ", array);
+                    foreach (var str in stringList)
+                    {
+                        csvFileContents += ParseEmotionString(str, field.Name, lineIndex++);
+                    }
                 }
                 else if (value is List<List<string>> string2dList)
                 {
-                    // Print 2d list
-                    value = string.Join("; ", string2dList.ConvertAll(innerList => string.Join(", ", innerList)));
-                }
-                else if (value is null)
+                    foreach (var innerlist in string2dList)
+                    {
+                        var innerIndex = 0;
+                        foreach (var str in innerlist)
+                        {
+                            csvFileContents += ParseEmotionString(str, field.Name, lineIndex, innerIndex++);
+                        }
+                        lineIndex++;
+                    }
+                } 
+                else if (value is string str)
                 {
-                    value = "null";
+                    csvFileContents += ParseEmotionString(str, field.Name);
                 }
+            }
 
-                 Logger.LogInfo($"{field.Name}: {value}");
+            // Write contents of csv to a file
+            string filePath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, $"CharaFields_{index}.csv");
+            try
+            {
+                File.WriteAllText(filePath, csvFileContents);
+                Logger.LogInfo($"Chara fields logged to {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError($"Failed to write Chara fields to file: {ex.Message}");
+            }
+        }
+
+        private static string SanitizeForCsv(string str)
+        {
+            if (str == null) return "null";
+            // Escape double quotes by doubling them
+            str = str.Replace("\"", "\"\"");
+            // If the string contains a comma, newline, or double quote, wrap it in quotes
+            if (str.Contains(",") || str.Contains("\n") || str.Contains("\""))
+            {
+                str = $"\"{str}\"";
+            }
+            return str;
+        }
+
+        private static string ParseEmotionString(string str, string name, int? index = null, int? innerIndex = null)
+        {
+            var tokens = str.Split('|');
+            var indexOrEmpty = index.HasValue ? index.Value.ToString() : "";
+            var innerIndexOrEmpty = innerIndex.HasValue ? innerIndex.Value.ToString() : "";
+
+            if (tokens.Length > 1)
+            {
+                var emotionInt = int.Parse(tokens[1]) % 100;
+                Enum.TryParse<Emotion>(emotionInt.ToString(), out var emotion);
+                var text = tokens[0].Trim();
+                return $"{name},{indexOrEmpty},{innerIndexOrEmpty},,{emotion},{SanitizeForCsv(text)}\n";
+            }
+            else
+            {
+                return $"{name},{indexOrEmpty},{innerIndexOrEmpty},,,{SanitizeForCsv(str)}\n";
             }
         }
 

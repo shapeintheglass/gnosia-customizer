@@ -1,0 +1,443 @@
+Name,Index,InnerIndex,Desc,Emotion,Text
+name,,,,,Stella
+d_place,,,,,Unknown
+d_tokki,0,,,,"Kind and gentle, somewhat logical."
+d_tokki,1,,,,Likes different types of tea.
+d_tokki,2,,,,Grows flowers in her lab.
+d_tokki,3,,,,Has served Jonas for a long time.
+d_tokki,4,,,,Humanoid computer made by LeVi.
+d_tokki,5,,,,Three Sizes 6
+d_tokki,6,,,,Three Sizes 7
+t_keisho,,,,,
+t_aisatu,0,,,,My name is {0}.
+t_suspect,0,,,Annoyed,"{0}... Be careful!
+Please, trust me...
+You're in danger..."
+t_suspect,1,,,Neutral,"{0}, your comments are viewed as awkward and loud.
+This hinders the collection of crucial information."
+t_suspect,2,,,Neutral,"We are being used by {0}...
+Does nobody else feel this way?"
+t_suspect,3,,,Neutral,"{0}, are you purposely refraining from commenting?"
+t_suspect,4,,,Annoyed,"Probability that {0} is on our side is low.
+Unfortunately, this is the result of my calculations."
+t_suspect,5,,,Hurt,Yes... {0}'s behavior does indeed invite suspicion.
+t_suspect,6,,,Hurt,"{0}...
+I'm afraid I can no longer help you, {0}.
+It's unfortunate, but it's a choice I must make..."
+t_suspect,7,,,Hurt,"Why was {1} attacked...?
+Thinking of a reason leads me to... {0}.
+I have no choice but to suspect you."
+t_suspect_r,0,,,Annoyed,"I've been watching {0} closely...
+I cannot overlook how suspicious {0} seems."
+t_suspect_r,1,,,Hurt,I don't feel that {0} taking over the floor is a healthy way to do this.
+t_suspect_r,2,,,Thinking,"Is it safe to trust {0}?
+I don't feel this would our best course of action..."
+t_suspect_r,3,,,Annoyed,"{0}...
+Why do you not speak up?
+Is there a reason for your silence...?"
+t_suspect_r,4,,,Hurt,"Probability tells me that we should not trust {0}.
+However, I really just don't know..."
+t_suspect_r,5,,,Thinking,"{0}, are you really...
+On our side...?"
+t_suspect_r,6,,,,...
+t_suspect_r,7,,,,...
+t_suspect_add,0,,,Neutral,"I still lack required information, so it's just my impression...
+But {0}'s behavior feels very unnatural."
+t_suspect_t0,0,,,Thinking,Yes... We should be wary of {0}.
+t_suspect_t0,1,,,Neutral,{0} is certainly speaking up too frequently.
+t_suspect_t0,2,,,Neutral,I would like to make my suspicion of {0} known.
+t_suspect_t0,3,,,Annoyed,"Something about this failure to speak up...
+It bothers me."
+t_suspect_t0,4,,,Neutral,"Probability-wise, yes...
+I agree with {1}'s viewpoint."
+t_suspect_t0,5,,,Neutral,I feel it would be beneficial to watch {0} closely.
+t_suspect_t0,6,,,Neutral,"I support {1}.
+I'm afraid I must stand up against {0}."
+t_suspect_t1,0,,,Hurt,So... is {0} dangerous after all?
+t_suspect_t1,1,,,Neutral,I feel there is a high risk of danger.
+t_suspect_t1,2,,,Hurt,"Yes...
+I, too, am hesitant to trust {0}."
+t_suspect_t1,3,,,Hurt,"Oh, {0}... This... will not go well."
+t_suspect_t1,4,,,Annoyed,"My assessment of {0}'s risk level is...
+Not a number we can easily overlook."
+t_suspect_t1,5,,,Thinking,"Hm? {0}...?
+Yes... I cannot deny that possibility."
+t_suspected0,0,,,Thinking,Really...? I... Um...
+t_suspected0,1,,,Annoyed,B-but...
+t_hanron0,0,,,Neutral,"{1}...
+Is it not too soon to start assuming {0} is our enemy?"
+t_hanron0,1,,,Annoyed,"Or, just maybe, by suspecting {0}, {1} is...
+Attempting to divert doubt from themselves?"
+t_hanron1,0,,,Happy,I... I shall trust {0}.
+t_hanron_t0,0,,,Smug,"As stated, we have little reason to doubt {0}."
+t_hanron_t1,0,,,Smug,"Yes, I too see little reason to suspect {0}."
+t_trust,0,,,Thinking,"{0}... I trust you...
+{0}..."
+t_trust,1,,,Neutral,"Probability of being on our side is quite high...
+We should trust {0}."
+t_trust,2,,,Smug,"I trust {0}.
+How about all of you...?"
+t_trust_r,0,,,Hurt,"{0}, you may be deserving of our suspicion...
+However, I want to take a chance and trust you, {0}..."
+t_trust_r,1,,,Neutral,"Can we all take a chance and trust {0}?
+I feel it may help us in the end, and poses little risk."
+t_trust_r,2,,,Smug,"Based on what I've seen and heard here...
+Yes, I feel {0} deserves our trust."
+t_trust_t0,0,,,Smug,"I have no objection.
+Trusting {0} poses little to no risk."
+t_trust_t1,0,,,Happy,It may... be worth it to offer our trust.
+t_trusted0,0,,,Happy,Thank you. I appreciate it...
+t_thanron0,0,,,Hurt,"I, too, want to trust {0}.
+However... it is simply too dangerous."
+t_thanron1,0,,,Annoyed,"Wait.
+Would it not be dangerous to trust {0} unconditionally?"
+t_thanron_t0,0,,,Neutral,"Yes...
+We do not yet have enough evidence that we can trust {0}."
+t_thanron_t1,0,,,Neutral,"As stated, it is still too much of a risk to trust {0}."
+t_hosho,0,,,Smug,"So, {0} has been proven to be {1}.
+Hehe! I'm so happy."
+t_hosho,1,,,Neutral,"{0} poses no danger to us.
+If nothing else, that much at least is certain."
+t_hosho_enemy,0,,,Thinking,"According to my data...
+Chances of {0} being {1} are zero."
+t_hosho_enemy,1,,,Surprised,"Everyone, please listen!
+{0} has been proven to be {1}.
+But, how could..."
+t_hosho_enemy,2,,,Annoyed,"Earlier, it was proven that {0} is {1}.
+That is all I have to say..."
+t_hosho_enemy,3,,,Surprised,"{0} has been proven to be {1}!
+You are an enemy to us all!"
+t_hosho_enemy,4,,,Hurt,"{0}'s account does not match the current data.
+Therefore, {0}'s account cannot be trusted.
+How unfortunate..."
+t_hosho_enemy,5,,,Annoyed,"There is zero possibility that {0} is Gnosia...
+However, {0} has also proven to be untrustworthy."
+t_hosho_miss,0,,,Hurt,"{0}, my apologies...
+But that cannot currently be proven to be true."
+t_hosho_miss,1,,,Thinking,"Yes, that is true.
+However, there is no reason to bring that up again now..."
+t_hosho_get,0,,,Smug,"Thank you for proving my status.
+I appreciate it, {0}."
+t_hosho_get,1,,,Surprised,"Ah...!
+I-I..."
+t_tohyo_go,0,,,Neutral,"Does anyone else have an opinion...?
+If not, we will move on to the vote, is this OK?"
+t_tohyo_mae,0,,,Hurt,"Our time is limited.
+Let's decide who will be sent to cold sleep..."
+t_tohyo_sai,0,,,Thinking,"Let's choose from among those who tied.
+This will not be easy... but we must."
+t_shokei,0,,,Happy,"So... this is your decision. I understand.
+I will be praying for your success while I sleep..."
+t_shokei,1,,,Happy,"This is very... frustrating.
+So this is what frustration feels like..."
+t_wakare,0,,,Hurt,"{0}, I...
+I will be watching over you, from here on..."
+t_karare,0,,,Annoyed,"You're... {0}?!
+No! Stay away!"
+t_imjinro,0,,,Gnosia,"Come with me, to the world of {0}.
+Hehe, let us all go together."
+t_shori,0,,,Smug,"The ship is all clear. No sign of {0}.
+We did it...!"
+t_tohyo_kurikaeshi,0,,,Neutral,"We can't seem to come to a decision...
+What do we do now...?"
+t_tohyo_jeno,0,,,Thinking,"Shall we put all those who tied into cold sleep?
+It's a hard decision to make, but..."
+t_tohyo_alive,0,,,Happy,Rather than rushing to a decision... shall we skip cold sleep this time?
+t_tohyo_jeno_ok,0,,,Hurt,I guess we have no choice but to send everyone to cold sleep...
+t_tohyo_jeno_ng,0,,,Neutral,"Please, wait.
+Putting several people in cold sleep at once could be dangerous."
+t_tohyo_alive_ok,0,,,Happy,"I agree.
+We should avoid rushing into crucial decisions."
+t_tohyo_alive_ng,0,,,Thinking,"However, failing to act now...
+I am against it."
+t_tohyo_jeno_kettei,0,,,Hurt,"The majority agrees.
+In that case, please prepare for cold sleep."
+t_tohyo_alive_kettei,0,,,Smug,"In accordance with the vote, we will skip cold sleep..."
+t_tohyo_hitei,0,,,Neutral,"The majority disagrees, it seems...
+Then I will retract my proposal."
+t_tohyo_dame,0,,,Thinking,"It would be too dangerous to continue to debate this...
+Let us all retire for the night."
+t_tohyo_dame,1,,,,...
+t_co,0,,,,dammy
+t_co,1,,,Smug,"I am the {0}, so I can use the dimensional control core
+to examine a designated target for signs of Gnosia infection."
+t_co,2,,,Neutral,"As {0}, I can examine a patient for signs of Gnosia infection.
+However, this is only possible for those in cold sleep."
+t_co,3,,,Hurt,"I am a {0}, however I am not skilled in battle.
+To be honest, I believe it was a human resources system error..."
+t_co,4,,,Happy,"Um... I have not been infected by Gnosia.
+I stayed on the ship, doing research, when we docked."
+t_co,5,,,,dammy
+t_co,6,,,,dammy
+t_co,7,,,,dammy
+t_co,8,,,,dammy
+t_co_find,0,,,,dammy
+t_co_find,1,,,Hurt,"I hate to announce this, but...
+As {0}, I must make it known that {1} has been infected by Gnosia."
+t_co_find,2,,,Happy,"I... am the {0}.
+Examination of those in cold sleep show that {1} was Gnosia."
+t_co_find,3,,,,dammy
+t_co_find,4,,,,dammy
+t_co_find,5,,,,dammy
+t_co_find,6,,,,dammy
+t_co_find,7,,,,dammy
+t_co_find,8,,,,dammy
+t_co_taiko,0,,,,dammy
+t_co_taiko,1,,,Surprised,"Ah...!
+I am the only {0} on this ship!
+Why would you lie like this...?"
+t_co_taiko,2,,,Hurt,"W-wait...! I am the {0}!
+Please, believe me..."
+t_co_taiko,3,,,,dammy
+t_co_taiko,4,,,Smug,"Yes, {1} also remained onboard the ship.
+I can vouch for this, as I, too, remained onboard."
+t_co_taiko,5,,,,dammy
+t_co_taiko,6,,,,dammy
+t_co_taiko,7,,,,dammy
+t_co_taiko,8,,,,dammy
+t_co_req,0,,,Smug,"First, we must consolidate our information.
+Could the {0} please step forward?"
+t_co_after,0,,,Smug,"So... no one else claims {0} credentials.
+In that case, {1}, I look forward to your results."
+t_co_after,1,,,Neutral,"Well then, {1}, I look forward to your results.
+Regardless of veracity, research results can provide us with crucial information."
+t_co_after,2,,,Neutral,"So multiple people have come forward with the same claim.
+We must watch carefully and work out who the true {0} is."
+t_uranai_o,0,,,Hurt,According to my analysis...
+t_uranai_s,0,,,,"I analyzed the dimensional control core log...
+"
+t_uranai_b,0,,,,"My analysis was performed on a different subject.
+"
+t_uranai_t,0,,,Hurt,"I detected irregularities in {1}'s dimensional waves.
+I'm afraid that {1} has been... infected by {0}."
+t_uranai_f,0,,,Smug,"{1}'s dimensional waves were normal.
+There is no sign of {0} infection."
+t_uranai_n,0,,,Happy,There was no one I felt needed to be analyzed...
+t_reibai_s,0,,,,"I examined those in cold sleep.
+"
+t_reibai_s,1,,,,...
+t_reibai_t,0,,,Thinking,"I confirmed abnormalities in {1}'s associative cortex...
+This is a sympton of mid-level {0} infection."
+t_reibai_f,0,,,Hurt,"{1} showed no symptoms of Gnosia infection.
+It appears we made a mistake..."
+t_reibai_ft,0,,,Thinking,"Among {1}, abnormalities were found in {2}.
+Signs of... {0} infection."
+t_reibai_ff,0,,,Hurt,"{1}. All were clear of signs of infection.
+None of them were {0}..."
+t_houkoku_s,0,,,Neutral,I received the same results.
+t_houkoku_w,0,,,Thinking,That's incorrect! According to the results of my analysis...
+t_okuyami,0,,,Hurt,"Oh, {0}... I...
+It's such a shame..."
+t_okuyami_n,0,,,Smug,"Good morning.
+I'm happy to see that we're all unharmed."
+t_okuyami_f,0,,,Hurt,"It's extremely unfortunate, but...
+One of the victims was a Bug.
+This is a crucial piece of information..."
+t_houkoku_req,0,,,Smug,"Please, offer your reports.
+I will keep record of the results."
+t_houkoku_not,0,,,Annoyed,"The {0} has yet to report.
+We still have maany doubts and suspicions...
+Could we please begin the exchange of information?"
+t_skill_sayNingen,0,,,,...
+t_skill_sayNingen,1,,,Happy,"I... yes, I swear.
+I am not one who would infect a person with Gnosia."
+t_skill_sayNingen,2,,,Neutral,"Do you expect to be able to find the Gnosia like this...?
+I do not agree with this. I cannot see this being useful..."
+t_skill_sayNingen,3,,,,...
+t_skill_sayNingen,4,,,,...
+t_skill_sayNingen,5,,,,...
+t_skill_sayNingen,6,,,,...
+t_skill_zatsudan,0,,,,...
+t_skill_zatsudan,1,,,,...
+t_skill_zatsudan,2,,,,...
+t_skill_zatsudan,3,,,Smug,"Would you like me to bring some vegetables later?
+Hehe, I've been growing them in the lab. They're fresh!"
+t_skill_zatsudan,4,,,Smug,"Yes...
+Everyone on this ship is so wonderful.
+Hehe, how embarrassing!"
+t_skill_zatsudan,5,,,Thinking,"Have you ever heard... singing on this ship?
+I sometimes hear it... from the empty cargo bay..."
+t_skill_zatsudan,6,,,Annoyed,"We have little time before we warp.
+This is not the time for such frivolous conversation..."
+t_skill_roller,0,,,Thinking,"It pains me to propose such a thing, but...\But those who claimed to be the {0} should all be put into cold sleep."
+t_skill_roller,1,,,Neutral,"So you're saying we should all vote for them?
+Alright, I wil do as you ask..."
+t_skill_roller,2,,,Annoyed,"But...
+We will lose our line of information from the {0}.
+I don't think this would be a good idea..."
+t_skill_roller,3,,,Neutral,"I cannot support this. We need as much information as possible.
+Losing the {0} could prove extremely dangerous."
+t_skill_roller,4,,,Happy,"Thank you for your opinions.
+Those who agree, agree to vote for them.
+As for the rest of you... what will you do?"
+t_skill_roller,5,,,Neutral,"I see...
+It was nothing more than my opinion that we should vote for them.
+I only ask that you consider it when voting."
+t_skill_roller,6,,,Thinking,"It pains me to propose such a thing, but...
+Putting all of them into cold sleep, would help greatly reduce risk."
+t_skill_doTohyo,0,,,Neutral,"Considering the results of the {1}'s report...
+Voting for {0} would be our most viable option."
+t_skill_doTohyo,1,,,Hurt,"At the very least, from my research...
+I can be sure that {0} has been infected by the Gnosia.
+I would like to request that all of you vote for {0} as well."
+t_skill_doTohyo,2,,,Hurt,"I've checked the most current data...
+I don't feel we have any other choice but to put {0} into cold sleep."
+t_skill_doTohyo,3,,,Thinking,"{1}, are you perhaps misremembering something...?
+There is no record of an Engineer report stating such things."
+t_skill_doTohyo,4,,,Thinking,"Yes... I feel we should all vote for {0}.
+I support {1}'s proposal."
+t_skill_doTohyo,5,,,Annoyed,Putting me into cold sleep will not afford you any vaulable information...
+t_skill_doTohyo,6,,,Thinking,"I cannot agree with this...
+Negatively affecting the vote can lead to further, unwanted tampering..."
+t_skill_doTohyo,7,,,Neutral,"I agree.
+This is not the time to single anyone out."
+t_skill_dontTohyo,0,,,Neutral,"Considering the potential risks...
+I feel we should avoid voting for {0} right now."
+t_skill_dontTohyo,1,,,Smug,"Yes, I feel the same way.
+We should not be focusing our suspicions on {0} right now."
+t_skill_dontTohyo,2,,,Annoyed,"{1}, I understand what you are trying to convey.
+But there is no need to attempt to control the vote."
+t_skill_dontTohyo,3,,,Neutral,"Yes, I also feel there is no need to attempt to control the vote."
+t_skill_kyoryoku,0,,,,...
+t_skill_kyoryoku,1,,,Smug,"Yes, I would be happy to cooperate.
+Hehe... It feels good to be wanted by someone."
+t_skill_kyoryoku,2,,,Hurt,"I'm afraid I must be too much of a coward....
+{0}, you came all this way to request my help...
+However, I am too afraid to provide it."
+t_skill_t_doui,0,,,,...
+t_skill_t_hanronKinshi,0,,,,...
+t_skill_t_kyakushoku,0,,,,...
+t_skill_t_kyakushoku,1,,,,...
+t_skill_t_kyakushoku,2,,,,...
+t_skill_t_kyakushoku,3,,,,...
+t_skill_h_uyamuya,0,,,,...
+t_skill_h_hangeki,0,,,,...
+t_skill_h_dojo,0,,,,...
+t_skill_h_help,0,,,Thinking,"Oh, I...
+{0}. Could you please tell me what you think?"
+t_skill_h_help,1,,,Hurt,"I'm sorry...
+But I'm afraid I cannot meet your expectations of me, {0}."
+t_skill_h_careful,0,,,,...
+t_skill_dogeza,0,,,Annoyed,"Exemption from cold sleep...?
+This is highly irregular...
+What does everyone else think?"
+t_skill_dogeza,1,,,,...
+t_personal,0,0,,Hurt,"I'm...
+I'm sorry... {0}..."
+t_personal,0,1,,Thinking,"How... extremely unfortunate...
+{0}..."
+t_personal,0,2,,Surprised,"Ah...! {0}...
+I... Excuse me!"
+t_personal,0,3,,Smug,"Oh, {0}... Hehe, what a coincidence.
+I was just looking for you as well, {0}.
+Would you like to talk with me while we wait to warp?"
+t_personal,0,4,,Happy,"{0}, you are needed by everyone onboard.
+So... please, guide us.
+Hehe, please don't worry. I know you have it in you."
+t_personal,0,5,,Smug,"Hehe, {0}. Excellent timing.
+I had just made some tea."
+t_personal,0,6,,Happy,"Would you... like to talk with me awhile?
+I'd like to know more about you, {0}..."
+t_personal,0,7,,Smug,"Oh, {0}. Can I help you?
+Please let me know if there is anything I can do."
+t_personal,0,8,,Hurt,"{0}...
+Unfortunately, I'm afraid there is something I have to do.
+Please excuse me."
+t_personal,0,9,,Happy,"Please don't worry, {0}.
+We will destroy each and every one of these filthy humans."
+t_personal,0,10,,Smug,"Hehe... It feels almost like a dream.
+Working together like this, with you, {0}..."
+t_personal,0,11,,Gnosia,"Considering all the secrets up to now...
+{0} wawawawawawawawa..."
+t_personal,0,12,,Thinking,"How extremely unfortunate...
+{0}..."
+t_personal,0,13,,Smug,"You came to see me?
+{0}, I'm so happy..."
+t_personal,0,14,,Thinking,Can I... help you?
+t_personal,0,15,,Hurt,"I have nothing to say to you, {0}..."
+t_personal,0,16,,Hurt,"Gnosia infection can not be determined visually.
+Everyone, please... be careful."
+t_personal,1,0,,Neutral,
+t_personal,2,0,,Neutral,
+t_personal,3,0,,Smug,"Oh, {0}. Hehe, what a coincidence.
+I was just wondering if you might be around."
+t_personal,3,1,,Thinking,"{0}, are you not too tired?
+I was worried about you during the discussions..."
+t_personal,3,2,,Happy,"If you don't mind...
+Could we possibly collaborate during the discussions?
+I want to help support you, {0}..."
+t_personal,4,0,,Smug,"Oh, really?
+Hehe, I'm so happy..."
+t_personal,4,1,,Happy,"However, {0}.
+Please, don't overexert yourself, alright?"
+t_personal,5,0,,Thinking,"Oh... I see.
+Alright, I understand.
+Please, don't worry about it."
+t_personal,5,1,,Hurt,"However, {0}.
+Please, don't overexert yourself, alright?"
+t_personal,6,0,,Smug,"Oh... {0}.
+Have you come to consult with me, perhaps?
+Hehe, I'm so happy..."
+t_personal,6,1,,Happy,"Thinking as a child of Gnos...
+Tonight, I think {1} should disappear."
+t_personal,6,2,,Smug,"This is only my opinion.
+Please, take it into consideration."
+t_personal,7,0,,Happy,"(Hehehe. So, our talk last night...
+That will be our little secret, OK, {0}?)"
+t_personal,8,0,,Smug,"Gnosia... no longer detected.
+While it's wonderful news, hehe, it's a little disappointing."
+t_personal,8,1,,Happy,"Because, {0}, it means the precious time we spent together...
+It's coming to an end."
+t_personal,9,0,,Smug,"Gnosia... no longer detected!
+We have officially won."
+t_personal,10,0,,Neutral,"Great work, everyone.
+We have overcome the Gnosia threat."
+t_personal,10,1,,Annoyed,"It was difficult for us to trust each other...
+But I apologize to anyone upon whom baseless suspicions were cast."
+t_personal,11,0,,Smug,"Also, {0}...
+Without you, {0}, we would not have been able to overcome this threat."
+t_personal,11,1,,Happy,"I am sure of this.
+I would like to thank you, especially."
+t_personal,12,0,,Neutral,"Our ship is now safe once again.
+I hope to bring you all nothing but comfort and convenience from now on."
+t_personal,12,1,,Smug,"Now, everyone.
+Please enjoy the rest of your journey."
+t_personal,13,0,,Neutral,"Conditions have been cleared.
+Victory has been secured for the children of Gnos."
+t_personal,13,1,,Smug,"Once the remaining humans have been suppressed...
+{0}, let us celebrate together."
+t_personal,14,0,,Smug,"Conditions have been cleared.
+Total victory for the children of Gnos!"
+t_personal,14,1,,Happy,"How wonderful. We all survived...
+{0}, you truly are impressive."
+t_personal,15,0,,Neutral,"Now, let us move into the human eradication phase.
+Target area locked. Oxygen levels dropping..."
+t_personal,15,1,,Smug,"Hehe, this is somewhat fun...
+{0}, doing something naughty like this, together..."
+t_personal,16,0,,Smug,"Please, allow me to deal with the eradication of the humans.
+Hehe, it is quite simple, after all."
+t_personal,17,0,,Gnosia,"Now, the time for discussion is over.
+Hehehe, I'm so happy you remained here with me, {0}."
+t_personal,17,1,,Gnosia,"Hm...? My face?
+You're so strange, {0}. My face is the same as it always is.
+Anyway, would you like some tea?"
+t_personal,17,2,,Gnosia,"Hehehe.
+Go on, drink.
+You'll feel so, sooo good..."
+t_personal,18,0,,Neutral,"It is over, {0}.
+And now... Hm? A Bug...?"
+t_personal,18,1,,Surprised,"Hehe, please don't worry.
+You're just imagining things.
+Destruction of the universe? That's just silly."
+t_personal,18,2,,Hurt,"Just keep telling yourself that you're imagining things...
+OK...?"
+t_personal,19,0,,Neutral,"Well...
+So, {0}, you were an AC Follower after all."
+t_personal,19,1,,Surprised,"Hehehe, I myself am a child of Gnos.
+I had been hoping you might be one as well."
+t_personal,19,2,,Hurt,"Good work, {0}.
+Now, go and rest."
+t_temp,0,,,,"High Logic, other abilities are average.
+Earnest and helpful, she rarely takes risks,
+and is often overlooked by others."
+t_temp,1,,,,...

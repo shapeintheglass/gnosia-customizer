@@ -1,0 +1,451 @@
+Name,Index,InnerIndex,Desc,Emotion,Text
+name,,,,,Sha-Ming
+d_place,,,,,"Planet
+Arsla"
+d_tokki,0,,,,"Speaks casually, but is careful not to stand out."
+d_tokki,1,,,,Has a serious problem with authority.
+d_tokki,2,,,,Raised together with intellectualized bonobos.
+d_tokki,3,,,,Will do anything to survive.
+d_tokki,4,,,,Three Sizes 5
+d_tokki,5,,,,Three Sizes 6
+t_keisho,,,,,
+t_aisatu,0,,,Neutral,"I'm {0}. Last name is Sha, first name is Ming. OK?
+Get it wrong and I'll just refer to you as ""Meat""."
+t_suspect,0,,,Surprised,"Hey, why the hell is {0} even still here?
+Hurry up and put 'em to sleep."
+t_suspect,1,,,Surprised,"Hey, {0}'s lips are all dried out!
+You talk way too much."
+t_suspect,2,,,Smug,"Take a good hard look at {0}'s face.
+Check it out. That face just screams fraud."
+t_suspect,3,,,Neutral,"Anyone staying quiet is suspicious as hell.
+Like {0}, for example."
+t_suspect,4,,,Thinking,"It's about probability. You get that, right?
+{0} is suspicious."
+t_suspect,5,,,Smug,"{0}, you noticed yet?
+You look suspicious as hell from where I'm standing."
+t_suspect,6,,,Annoyed,"{0}, look... you even gonna try to help me out here?
+You know what, nope. Screw it. We're done.
+Now that I think about it, you're sketchy as hell."
+t_suspect,7,,,Smug,"{0} stinks. Smells like guilt to me.
+I bet it was you who did {1}, right?"
+t_suspect_r,0,,,Smug,"Ya know, I trust {0}...
+As in, trust 'em to be the enemy!"
+t_suspect_r,1,,,Surprised,"Hey, {0}, you've been talking too much.
+You're digging your own grave there, pal."
+t_suspect_r,2,,,Thinking,"Something stinks. It's {0}.
+I just can't trust people who need to be liked by everyone."
+t_suspect_r,3,,,Neutral,"{0}...
+You look real suspicious, keeping all quiet like that.
+I just can't trust you, ya know?"
+t_suspect_r,4,,,Happy,"Sorry, {0}. You're real suspicious.
+It's obvious."
+t_suspect_r,5,,,Smug,"Wait a sec, {0} is super sketchy, right?"
+t_suspect_r,6,,,,...
+t_suspect_r,7,,,,...
+t_suspect_add,0,,,Neutral,{0} is looking pretty damn suspicious to me.
+t_suspect_t0,0,,,Neutral,"OK, so {0} is out. You should probably just give up now."
+t_suspect_t0,1,,,Neutral,"Yeah, we gotta watch out for {0} over here."
+t_suspect_t0,2,,,Happy,"{0}, you thought you'd escape suspicion, didn't you?
+Guess that didn't really work out now, did it?"
+t_suspect_t0,3,,,Smug,Shutting up like that makes me think one thing - guilty.
+t_suspect_t0,4,,,Thinking,"I don't like doubting people because of probabilities or whatever.
+I doubt {0} because of straight-up sketchiness."
+t_suspect_t0,5,,,Surprised,"{0}, look at me, lemme get a good look at that face.
+Yeah... you're sketchy as hell."
+t_suspect_t0,6,,,Happy,"You're Public Enemy Number One, {0}! Hahaha!"
+t_suspect_t1,0,,,Happy,"A-ha! Doesn't look like you'll be winning any popularity contests, {0}.
+Well, buy the ticket, take the ride."
+t_suspect_t1,1,,,Thinking,"Huh? {0} needs to shut up?
+Don't be like that. The truth'll come out anyway."
+t_suspect_t1,2,,,Smug,"Hey wait, seriously?! Are we gonna go for {0}?
+OK then, let's do it!"
+t_suspect_t1,3,,,Thinking,"Damn, I just can't back you up anymore."
+t_suspect_t1,4,,,Thinking,"So we're suspecting {0} now, right? OK, cool."
+t_suspect_t1,5,,,Thinking,"{0}? Yeah. To be honest, I've had my suspicions, too."
+t_suspected0,0,,,Thinking,"You're suspecting me? That's just stupid.
+Any way you look at it, I'm in the clear."
+t_suspected0,1,,,Annoyed,"Hey, get off my case.
+You trying to get me depressed or something?"
+t_hanron0,0,,,Annoyed,"Suspecting {0} now, huh? That's just stupid.
+I trust {0}, myself."
+t_hanron0,1,,,Thinking,"It's not {0} but {1} you gotta worry about.
+What do you guys think?"
+t_hanron1,0,,,Thinking,"Huh?
+Oh, OK. I'm gonna take {0}'s side on this one."
+t_hanron_t0,0,,,Neutral,"Don't worry about it, {0}.
+I got your back, OK?"
+t_hanron_t1,0,,,Neutral,"Yeah... I'm taking {0}'s side on this one, myself."
+t_trust,0,,,Neutral,"You guys, quit treating {0} like that.
+We're pals, OK?"
+t_trust,1,,,Happy,"I think {0} is pretty safe, actually.
+Probability-wise, we got nothing to worry about!"
+t_trust,2,,,Thinking,"Hey, {0}, I got your back here.
+Make sure you got mine, too, OK?"
+t_trust_r,0,,,Hurt,"Honestly, I don't really trust {0}.
+But there's just something about {0} that I like..."
+t_trust_r,1,,,Neutral,"Yeah, {0} is probably safe. I had my doubts before, though.
+Chances are high that we got nothing to worry about."
+t_trust_r,2,,,Neutral,"{0}. I trust you.
+So don't go betraying that trust now, got it?"
+t_trust_t0,0,,,Smug,"Listen, I got {0}'s back.
+That means something, don't it?"
+t_trust_t1,0,,,Thinking,"OK, you got my trust, too.
+Make sure to pay that back, got it, {0}?"
+t_trusted0,0,,,Happy,"A-ha! So you trust me?
+OK, cool, I can tell you've got a good eye!"
+t_thanron0,0,,,Hurt,"Trusting {0}...? Nope, I'm cool.
+I don't wanna disappear just yet."
+t_thanron1,0,,,Happy,You still trusting {0}? That's all over - it's all about me now! ME!
+t_thanron_t0,0,,,Thinking,"I've been having my doubts about {0}, too."
+t_thanron_t1,0,,,Happy,"I used to trust {0}, actually.
+But now? HELL no!"
+t_hosho,0,,,Neutral,"It's pretty obvious that {0} is definitely {1}.
+Any objections?"
+t_hosho,1,,,Neutral,{0} is human. I think we can agree on this.
+t_hosho_enemy,0,,,Neutral,"{0} is lying.
+There's no way you're {1}."
+t_hosho_enemy,1,,,Thinking,{0} is... {1}. Has to be.
+t_hosho_enemy,2,,,,{0} is {1}. AC.
+t_hosho_enemy,3,,,,{0} is {1}. Bug.
+t_hosho_enemy,4,,,,Something about {0} is wrong.
+t_hosho_enemy,5,,,Neutral,"{0} is not Gnosia. This is a fact.
+But {0} is lying. This is also a fact."
+t_hosho_miss,0,,,Annoyed,"What the hell, {0}? That's just stupid and you know it."
+t_hosho_miss,1,,,Smug,"Yeah, we already know that.
+What do you think we are? Stupid?!"
+t_hosho_get,0,,,Happy,"I am the Great {1}!
+{0}, you're pretty useful!"
+t_hosho_get,1,,,Hurt,"OK, OK... I'm out, I got it.
+Just go easy on me, OK?"
+t_tohyo_go,0,,,Hurt,"So... you guys got nothing left to say, then?
+Well, neither do I... How about we start the vote?"
+t_tohyo_mae,0,,,Hurt,"Well, let's get voting, I guess.
+OK, so who do we freeze today...?"
+t_tohyo_sai,0,,,Surprised,"A tie?! That's a surprise.
+So we gotta vote again, with {0} then, huh?"
+t_shokei,0,,,Hurt,"So I'm going off to cold sleep, huh...?
+It's gonna get lonely without me, ya know?"
+t_shokei,1,,,Surprised,"And? So I gotta go off to cold sleep then, right?
+No torture, no punishment?
+Damn, could be worse, I guess..."
+t_wakare,0,,,Hurt,"{0}...
+What the hell are you doing, man?"
+t_karare,0,,,Surprised,"Hey hey HEY! {0}!
+You're coming after ME now?!
+That's messed up, man..."
+t_imjinro,0,,,Gnosia,"Well, since the moment I became {0}...
+You guys had already lost..."
+t_shori,0,,,Happy,"A-ha! All the {0}, gone!
+Nice one, me!"
+t_tohyo_kurikaeshi,0,,,Surprised,"Damn! ANOTHER tie?!
+I don't wanna have to vote AGAIN!"
+t_tohyo_jeno,0,,,Neutral,"This is a pretty even tie.
+How about we just freeze 'em all?"
+t_tohyo_alive,0,,,Neutral,"If we can't make a decision, let's just leave it.
+No cold sleep for today - what do you say?"
+t_tohyo_jeno_ok,0,,,Neutral,Fine with me. Freeze 'em.
+t_tohyo_jeno_ng,0,,,Hurt,"Nope, I don't like it.
+Frozen meat starts to stink, ya know."
+t_tohyo_alive_ok,0,,,Neutral,"Yeah, how about we just don't freeze anybody?"
+t_tohyo_alive_ng,0,,,Annoyed,"Nope, I don't like it.
+Your idea just kinda sucks."
+t_tohyo_jeno_kettei,0,,,Happy,"OK, let's get this freeze going before I change my mind.
+The fridge is ready to go, right?"
+t_tohyo_alive_kettei,0,,,Thinking,"So we're just gonna leave it, then?
+Fine, let's call it a day, I guess."
+t_tohyo_hitei,0,,,Hurt,"Wait a second...
+No way... Am I kinda, uh... disliked here?"
+t_tohyo_dame,0,,,Thinking,"Time's up!
+I'm gonna split."
+t_tohyo_dame,1,,,,...
+t_co,0,,,,...
+t_co,1,,,Smug,"The {0} is me, Sha-Ming.
+OK, let's see who I'm gonna check out..."
+t_co,2,,,Neutral,"I can tell if someone frozen was Gnosia or not.
+I'm the {0}.
+You can call me {0} Sha-Ming."
+t_co,3,,,Smug,"I'm a {0}, so I'm gonna protect you guys.
+As long as I'm around, the Gnosia is gonna have to watch out."
+t_co,4,,,Thinking,"Hey listen, I'm no Gnosia, OK?
+I didn't leave the ship the last time we docked.
+I couldn't have been infected."
+t_co,5,,,,dammy
+t_co,6,,,,dammy
+t_co,7,,,,dammy
+t_co,8,,,,dammy
+t_co_find,0,,,,dammy
+t_co_find,1,,,Smug,"Yeah! Here we go!
+My {0} sensors are really going haywire.
+{1} is Gnosia!"
+t_co_find,2,,,Thinking,"Good work, you guys. {1} turned out to be Gnosia.
+That's {0} Sha-Ming's diagnosis. It doesn't get more accurate than this."
+t_co_find,3,,,,dammy
+t_co_find,4,,,,dammy
+t_co_find,5,,,,dammy
+t_co_find,6,,,,dammy
+t_co_find,7,,,,dammy
+t_co_find,8,,,,dammy
+t_co_taiko,0,,,,dammy
+t_co_taiko,1,,,Surprised,"Hey! What a surprise.
+So the Gnosia's gonna use lies to get on the offensive, huh?
+The real {0} is ME!"
+t_co_taiko,2,,,Annoyed,"{1}, just knock it off, OK?
+I'M the {0}. Which means...
+You're gonna make a pretty formidable enemy, ya know?"
+t_co_taiko,3,,,,dammy
+t_co_taiko,4,,,Thinking,"I can vouch - {1} was on the ship the whole time, too.
+No chance of Gnosia infection."
+t_co_taiko,5,,,,dammy
+t_co_taiko,6,,,,dammy
+t_co_taiko,7,,,,dammy
+t_co_taiko,8,,,,dammy
+t_co_req,0,,,Thinking,"And? So who's the {0}?
+Come on out, like, now!"
+t_co_after,0,,,Happy,"So {1}'s the {0}, huh? OK!
+Sniff out that Gnosia for us!"
+t_co_after,1,,,Thinking,"{1}. So you're supposed to be the {0}, huh?
+Well, you're gonna have to try pretty hard to convince me."
+t_co_after,2,,,Happy,"A-ha! Looks like everybody wants to be the {0}!
+{1}.
+You guys ready to get grilled? Hm?"
+t_uranai_o,0,,,Hurt,"Hey, don't just walk away now..."
+t_uranai_s,0,,,,"I did some research.
+"
+t_uranai_b,0,,,,"I checked out someone else.
+"
+t_uranai_t,0,,,Smug,"{1} is {0}, no doubt about it.
+My sensors are sharp as hell."
+t_uranai_f,0,,,Neutral,"{1} wasn't it. Nope, not {0}."
+t_uranai_n,0,,,Neutral,"I, uh... I didn't do anything.
+There's nobody worth checking out."
+t_reibai_s,0,,,,"Time for Dr. Sha-Ming's report!
+"
+t_reibai_s,1,,,,...
+t_reibai_t,0,,,Happy,{1} is {0}... Oh yeah!
+t_reibai_f,0,,,Thinking,{1} is not {0}... Oops!
+t_reibai_ft,0,,,Happy,{2} is {0}! Oh yes!
+t_reibai_ff,0,,,Hurt,"We screwed up this time...
+None of the people we froze were {0}."
+t_houkoku_s,0,,,Smug,"Wow, we matched up. Check out my report."
+t_houkoku_w,0,,,Smug,"Nope. Don't get fooled by this crap, you guys."
+t_okuyami,0,,,Annoyed,"So {0} gets it this time, huh...
+This Gnosia's really choosing their targets."
+t_okuyami_n,0,,,Happy,"A-ha! So nobody got done last night?
+Looks like our little enemy screwed up!"
+t_okuyami_f,0,,,Surprised,"Hey, what the hell?! This wasn't supposed to...
+The Gnosia only takes out one person at a time, right?!
+Isn't that their M.O.?!"
+t_houkoku_req,0,,,Neutral,"Someone hasn't reported yet, huh?"
+t_houkoku_not,0,,,Neutral,"{0}, where's your report, huh?
+You can't get past me, ya know?"
+t_skill_sayNingen,0,,,,...
+t_skill_sayNingen,1,,,Thinking,"Hah, so we're supposed to promise we're human, huh?
+Fine. I'm human. So what?"
+t_skill_sayNingen,2,,,Smug,"What is this nonsense?!
+What's the point in just announcing that you're human?!"
+t_skill_sayNingen,3,,,,...
+t_skill_sayNingen,4,,,,...
+t_skill_sayNingen,5,,,,...
+t_skill_sayNingen,6,,,,...
+t_skill_zatsudan,0,,,Happy,"Come on, let's take it easy, OK?
+How about we all grab a bite to eat?"
+t_skill_zatsudan,1,,,Neutral,"You guys look pretty on edge.
+How about we talk about, I don't know, romance or something?
+Anybody got anything juicy?"
+t_skill_zatsudan,2,,,Thinking,"Come on, you guys! This sucks!
+Let's talk about something more interesting...
+How about, like, something scary as hell?"
+t_skill_zatsudan,3,,,Hurt,"Ya know, the food on this ship is like, too healthy.
+I wanna eat something BAD for me for once! Some chili cheese fries or something!"
+t_skill_zatsudan,4,,,Happy,"Anybody wanna profess their love for me? Go for it!
+No, really... Anybody? I'm open to any takers..."
+t_skill_zatsudan,5,,,Neutral,"You guys ever heard of the face pox? Tiny faces, popping up all over you.
+It's a real thing, seriously. I got them on my belly.
+I'll show ya if you wanna see..."
+t_skill_zatsudan,6,,,Smug,"You trying to get me to drop my guard with this crap?!
+Hah, that kinda thing doesn't work on me!"
+t_skill_roller,0,,,,...
+t_skill_roller,1,,,Smug,"Hey now! Genocide! Nice.
+Now this is what us humans are all about!"
+t_skill_roller,2,,,Neutral,"{1}... Seriously?
+You really wanna burn down the whole village to take out one weirdo?"
+t_skill_roller,3,,,Happy,"A-ha! Good one, {2}!
+Take them ALL out? What are you, stupid?!"
+t_skill_roller,4,,,,...
+t_skill_roller,5,,,,...
+t_skill_roller,6,,,,...
+t_skill_doTohyo,0,,,,...
+t_skill_doTohyo,1,,,,...
+t_skill_doTohyo,2,,,,...
+t_skill_doTohyo,3,,,Smug,"Huh? That's weird, {1}...
+{0} is Gnosia? Did the Engineer say so?
+Hah! I don't think so, pal!"
+t_skill_doTohyo,4,,,Thinking,"Laying some groundwork before the vote, huh?
+Nice try, {1}! That's pretty dirty!
+I'll go with it, don't wanna be on the receiving end myself!"
+t_skill_doTohyo,5,,,Surprised,"Seriously?! I... I guess so, huh..."
+t_skill_doTohyo,6,,,Neutral,"Hey, I can vote for whoever I damn please!
+Don't try to tell me what to do!"
+t_skill_doTohyo,7,,,Thinking,"Listen, {1}.
+I just can't get behind this, OK?"
+t_skill_dontTohyo,0,,,,...
+t_skill_dontTohyo,1,,,Neutral,"Huh, so that's how it's gonna be...
+Yeah, OK. I wasn't gonna vote for {0} anyway."
+t_skill_dontTohyo,2,,,Thinking,"I'm gonna vote for whoever I want.
+Sometimes you end up changing your mind at the last second, ya know?"
+t_skill_dontTohyo,3,,,Happy,"FREEDOM!
+I'm gonna do whatever I want!"
+t_skill_kyoryoku,0,,,Neutral,"{0}. I got your back.
+Just trust me.
+OK...?"
+t_skill_kyoryoku,1,,,Happy,"Nice idea, {0}. I scratch your back, you scratch mine.
+Help me out if I get in trouble, OK?"
+t_skill_kyoryoku,2,,,Hurt,"I don't think so, {0}. I'm, uh...
+Not the kinda dude you seem to think I am."
+t_skill_t_doui,0,,,Happy,"Hey, what the hell, you guys?!
+Just listen to {0} and do what you're told!"
+t_skill_t_hanronKinshi,0,,,,...
+t_skill_t_kyakushoku,0,,,Happy,"A-ha! You're looking pretty sketchy there, {1}!
+Worried you've been found out, huh?!"
+t_skill_t_kyakushoku,1,,,Thinking,"So basically, {0} wants to protect {1}, right?
+Hah! Brings a tear to my eye. What friendship...
+Doesn't it just make you wanna cry?"
+t_skill_t_kyakushoku,2,,,Neutral,"Well, basically, like {2} said...
+I'm just not really feeling it, {0}."
+t_skill_t_kyakushoku,3,,,Smug,"This is no time to be covering for {1}, pal.
+Do you understand what's going on?!"
+t_skill_h_uyamuya,0,,,Smug,"You're gonna have to choose your words a bit better, pal.
+Bring it harder! Come on!"
+t_skill_h_hangeki,0,,,Neutral,"What the hell is wrong with you, {0}?!
+If anyone here is fishy, it's clearly YOU!"
+t_skill_h_dojo,0,,,,...
+t_skill_h_help,0,,,Happy,"{0}! Help me out here!
+Haha, make sure you got my back, OK?"
+t_skill_h_help,1,,,Annoyed,"What the...?! Don't drag ME into this!
+I'm not letting you bring me down with you!"
+t_skill_h_careful,0,,,,...
+t_skill_dogeza,0,,,Surprised,"Really?! Like, seriously...?
+Groveling like that, that's just sad, man…"
+t_skill_dogeza,1,,,Thinking,"I... I... I'M SORRY...!
+I'll kiss your ass, I'll do ANYTHING!
+Hehe... Can we just let this slide, just this once...?"
+t_personal,0,0,,Annoyed,"YOU! So you've come for me now, huh?!
+Hey! Guardian Angel! LeVi! HELP...!
+Wh-what...? Oh, hey, if that's not what's going on, then say so!"
+t_personal,0,1,,Neutral,"You've already been found out, pal.
+Don't think you haven't."
+t_personal,0,2,,Surprised,"Hey, {0}. We're supposed to be enemies, right?
+Keep your distance, pal. Don't try to get me all shook up like that."
+t_personal,0,3,,Hurt,"Well, everyone knows I'm human, so...
+Hopefully the Gnosia will go after you instead..."
+t_personal,0,4,,Neutral,"Don't let your guard down just because you proved you're human.
+That just makes you an easier target, ya know?"
+t_personal,0,5,,Thinking,"Trust me. Seriously.
+I totally trust you, just so you know."
+t_personal,0,6,,Annoyed,"Listen, {0}... If I trust you, I'm worried I'm gonna take one in the back.
+How about you? You get what I mean, right?"
+t_personal,0,7,,Neutral,"What's wrong, {0}? You get attacked or something?
+Better watch your step, or you just might be!"
+t_personal,0,8,,Happy,"Damn, you smell that...? Smells like... LIES.
+Where's that coming from...? Oh, it's YOU, {0}!"
+t_personal,0,9,,Happy,"A-ha! It's party time!
+Almost time for us to do our thing!"
+t_personal,0,10,,Neutral,"You just waltz on in here like that? Be careful, pal...
+You never know who's watching, right?"
+t_personal,0,11,,Happy,"Hey! Time for the runway, ding-dong!
+I'm the eel, and the eel is me! Right?!"
+t_personal,0,12,,Neutral,"You've already been found out, pal.
+Don't think you haven't."
+t_personal,0,13,,Thinking,"Keep your guard up, {0}.
+You never know what's gonna happen next..."
+t_personal,0,14,,Surprised,"ASSASSINS!
+Oh... it's just you, huh? {0}, don't come sneaking up on me like that."
+t_personal,0,15,,Thinking,"Ya know, there's just something about you...
+Like, you got this aura... This brown, stinky, crap-like aura."
+t_personal,0,16,,Thinking,"OK, so everyone's here.
+Yeah, I know, I know - the Gnosia, right?
+OK, let's just get this started."
+t_personal,1,0,,Neutral,"Hey, {0}.
+You know what color a lie is?"
+t_personal,1,1,,Annoyed,"It's white. Pure white.
+It's the ones who look most in the clear that are hiding something."
+t_personal,1,2,,Thinking,"Yeah, I picked up on it.
+During the discussions, {1}'s teeth flashed white.
+Those are the teeth of a liar, no doubt about it."
+t_personal,1,3,,Smug,"Hey, why don't we take out {1}?
+Before we gotta deal with anymore lies, let's put 'em to sleep."
+t_personal,2,0,,Happy,"OK, that's one down.
+Haha! Nice one, {0}!"
+t_personal,2,1,,Smug,"I'm glad I opened up to you.
+Let's keep this going, OK?"
+t_personal,3,0,,Neutral,
+t_personal,4,0,,Neutral,
+t_personal,5,0,,Neutral,
+t_personal,6,0,,Happy,"Sha-Ming Presents!
+The Gnosia Cup! Who gets the honor?!
+Stay tuned to find out!"
+t_personal,6,1,,Gnosia,"Hm...
+OK, so like..."
+t_personal,6,2,,Neutral,"How about we get rid of {1}?
+Feels like a good place to start."
+t_personal,7,0,,Thinking,"(OK.
+Let's pick 'em off one at a time.)"
+t_personal,8,0,,Surprised,"Hey now. Looks like we won.
+All thanks to the great {0}!"
+t_personal,8,1,,Happy,"To be honest, I took a pretty big risk teaming up with you.
+But hey, it turned out to be a success!"
+t_personal,8,2,,Thinking,"But seriously though, I'm really grateful.
+Let me pay you back... physically!"
+t_personal,8,3,,Smug,PHYSICALLY!
+t_personal,9,0,,Surprised,"Really? Like, for reals really?! We win?
+A-ha! Nice one!"
+t_personal,10,0,,Neutral,"So, hey, {0}...
+I guess you weren't Gnosia after all."
+t_personal,10,1,,Hurt,"Why didn't you say something?!
+If only you would've told me...
+I mean, I wouldn't have believed you anyway, so... yeah."
+t_personal,11,0,,Happy,"You know what that means, right?!
+LET'S PAAAAARTYYYYY!"
+t_personal,11,1,,Smug,"Hurry up! Get ready, you guys!
+Let's get this party started!"
+t_personal,12,0,,Thinking,"Man, that Gnosia was pretty weak, huh?
+Who was it that was all scared of getting taken out?"
+t_personal,12,1,,Smug,"It was ME! Yup, me!
+So what? Get off my back!"
+t_personal,13,0,,Thinking,"Okey-dokey!
+So, we win, huh?"
+t_personal,14,0,,Happy,"A-ha! That was too easy!
+We all survived!"
+t_personal,15,0,,Smug,"We gotta make a decision!
+The Most Valuable Gnosia is..."
+t_personal,15,1,,Happy,"{0}! YEAH!
+It's You, buddy! ALRIGHT!"
+t_personal,15,2,,Gnosia,So anyway... nice work.
+t_personal,16,0,,Neutral,"Oh, and don't do anything to the remaining humans just yet.
+I'll take care of them."
+t_personal,16,1,,Thinking,"I mean, they let us win and all, right?
+The least we can do is kill them nicely."
+t_personal,17,0,,Happy,"Game OVER!
+The winner is... GNOSIA! YEEEAAAH!"
+t_personal,17,1,,Neutral,"Aw, what's wrong there, {0}?
+You upset because you guys LOST?"
+t_personal,17,2,,Hurt,"Buck up, pal.
+I'll be gentle, OK.
+I promise."
+t_personal,18,0,,Annoyed,"Hah, what a load of crap.
+Right, {0}?"
+t_personal,18,1,,Hurt,"Yeah, I'm a Bug, so what?
+My being here means the whole universe has to go.
+Not that I care or anything."
+t_personal,18,2,,Annoyed,"I bet some of you don't believe it, huh?
+You think I'm joking? Well, just wait a second..."
+t_personal,19,0,,Surprised,"Huh? So you were one of them AC Followers?
+Daaamn! You're a good liar!"
+t_personal,19,1,,Thinking,"I mean, I'm Gnosia, so...
+I guess I'm not so bad at it myself, either."
+t_personal,19,2,,Smug,"Anyway, we both survived.
+Yay us, right? Right?!"
+t_temp,0,,,,"High Stealth and low Intuition and Logic.
+Focused on self-preservation,
+he is very good at surviving."
+t_temp,1,,,,...
