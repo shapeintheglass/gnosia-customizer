@@ -123,8 +123,7 @@ namespace GnosiaCustomizer.patches
             }
         }
 
-        // ScriptParser.SetText
-        //[HarmonyPatch(typeof(ScriptParser), "SetText")]
+        [HarmonyPatch(typeof(ScriptParser), "SetText")]
         public class ScriptParserSetTextPatch
         {
             static void Prefix(ScriptParser __instance,
@@ -134,7 +133,7 @@ namespace GnosiaCustomizer.patches
                 if (string.IsNullOrEmpty(message))
                 {
                     Logger.LogInfo("Using placeholder for empty message.");
-                    message = "placeholder...";
+                    message = "...";
                 }
             }
         }
