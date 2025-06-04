@@ -218,8 +218,7 @@ namespace GnosiaCustomizer.patches
             }
         }
 
-        // ScriptParser.SetText
-        //[HarmonyPatch(typeof(ScriptParser), "SetText")]
+        [HarmonyPatch(typeof(ScriptParser), "SetText")]
         public class ScriptParserSetTextPatch
         {
             static void Prefix(ScriptParser __instance,
