@@ -16,5 +16,6 @@ namespace GnosiaCustomizer.utils
         public static readonly string[] HeadNames = ["body", "h01", "h02", "h03", "h04", "h05", "h06", "h07"];
 
         public static readonly Vector2 ZeroOne = new Vector2(0.0f, 1.0f);
+        public const uint Order = 10U;
     }
 }
