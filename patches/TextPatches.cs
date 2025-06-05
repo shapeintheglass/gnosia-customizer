@@ -26,8 +26,6 @@ namespace GnosiaCustomizer.patches
         public class CsvRow
         {
             public string Name { get; set; }
-            public string Index { get; set; }
-            public string InnerIndex { get; set; }
             public string Desc { get; set; }
             public string Emotion { get; set; }
             public string Text { get; set; }
