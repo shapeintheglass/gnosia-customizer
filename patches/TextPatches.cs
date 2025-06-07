@@ -2,8 +2,6 @@
 using System.IO;
 using BepInEx;
 using BepInEx.Logging;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization;
 using System.Linq;
 using System;
 using HarmonyLib;
@@ -12,8 +10,6 @@ using GnosiaCustomizer.utils;
 using coreSystem;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using UnityEngine;
-using YamlDotNet.RepresentationModel;
 
 namespace GnosiaCustomizer.patches
 {
@@ -22,7 +18,7 @@ namespace GnosiaCustomizer.patches
         internal static new ManualLogSource Logger;
         private const string ConfigFileName = "config.yaml";
 
-        private static ConcurrentDictionary<int, CharacterText> characterTexts = new ConcurrentDictionary<int, CharacterText>();
+        private static ConcurrentDictionary<int, CharacterText> characterTexts = new();
 
         internal static void Initialize()
         {
@@ -55,7 +51,6 @@ namespace GnosiaCustomizer.patches
                             characterTexts[localCharacterId] = character;
                             skillMap[localCharacterId] = character.KnownSkills;
                         }
-                        Logger.LogInfo($"name is {character.Name}");
                     }
                     catch (Exception ex)
                     {
@@ -113,42 +108,39 @@ namespace GnosiaCustomizer.patches
                     {
                         Logger.LogInfo($"Dogeza test: No lines found for character {absoluteId}.");
                     }
-                    //CharacterSetter.LogCharaFieldsToFile(absoluteId, Logger);
+                    if (character.SingleLines.TryGetValue("night_friend_and_high_trust", out var personalLine))
+                    {
+                        Logger.LogInfo($"Personal lines test: {personalLine.Line}");
+                    } else
+                    {
+                        Logger.LogInfo($"Personal lines test: No personal line found for character {absoluteId}.");
+                    }
                 }
-                //CharacterSetter.LogCharaFieldsToFile(0, Logger);
-            }
-        }
-
-        //[HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
-        public class ScriptParserSetNormalSerifuPatch
-        {
-            static void Prefix(ScriptParser __instance, 
-                int main,
-                int tgt,
-                int pos,
-                List<string> lang,
-                bool waitNextText = false,
-                bool withoutTrans = false,
-                bool withoutCharaChange = false,
-                bool vRole = true)
-            {
-                Logger.LogInfo($"ScriptParser.SetNormalSerifu called with main={main}, tgt={tgt}, pos={pos}, lang={lang.Join()}, waitNextText={waitNextText}, " +
-                    $"withoutTrans={withoutTrans}, withoutCharaChange={withoutCharaChange}, vrole={vRole}");
             }
         }
 
         [HarmonyPatch(typeof(ScriptParser), "SetText")]
         public class ScriptParserSetTextPatch
         {
-            static void Prefix(ScriptParser __instance,
-                ref string message, bool waitFinish = false, uint depth = 50, string targetText = "test")
+            static bool Prefix(ScriptParser __instance, ref string message)
             {
-                Logger.LogInfo($"ScriptParser.SetText called with message='{message}', waitFinish={waitFinish}, depth={depth}, targetText='{targetText}'");
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrWhiteSpace(message))
                 {
-                    Logger.LogInfo("Using placeholder for empty message.");
                     message = "...";
                 }
+                else if (message.StartsWith(CharacterSetter.SubstitutionPrefix))
+                {
+                    var tokens = message.Split(CharacterSetter.Delimiter);
+                    if (tokens.Length > 0)
+                    {
+                        // 0 - Prefix
+                        // 1 - Character name
+                        // 2 - Message name
+                        // 3+ - Parameters
+                        message = tokens[2];
+                    }
+                }
+                return true;
             }
         }
     }

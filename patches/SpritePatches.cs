@@ -51,6 +51,7 @@ namespace GnosiaCustomizer
 
         internal static void Initialize()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var texturesPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, Consts.TextureAssetsFolder);
             if (!Directory.Exists(texturesPath))
             {
@@ -95,11 +96,14 @@ namespace GnosiaCustomizer
 
             // We can asynchronously load the bytes from file
             var filePathToBytesMap = LoadTexturesAsynchronously(textureFilePaths);
-
+            Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} texture files in {sw.ElapsedMilliseconds} ms.");
+            sw.Restart();
             // Unity libraries are not thread-safe and must be executed synchronously
             CreateTextureReplacements(filePathToBytesMap);
+            Logger.LogInfo($"Created texture replacements in {sw.ElapsedMilliseconds} ms.");
+            sw.Restart();
             CreateSpriteReplacements(filePathToBytesMap);
-            Logger.LogInfo($"Loaded sprites for {CharaSprites.Keys.Count}/{Consts.CharaFolderNames.Length} characters.");
+            Logger.LogInfo($"Loaded sprites for {CharaSprites.Keys.Count}/{Consts.CharaFolderNames.Length} characters in {sw.ElapsedMilliseconds} ms.");
         }
 
         // Loads all character and non-character textures from file asynchronously and caches their bytes in a ConcurrentDictionary.
@@ -112,7 +116,6 @@ namespace GnosiaCustomizer
                 filePathToBytesMap[Path.GetFullPath(file)] = File.ReadAllBytes(file);
             });
 
-            Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} textures.");
             return filePathToBytesMap;
         }
 

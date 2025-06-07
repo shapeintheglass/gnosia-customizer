@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BepInEx.Logging;
 using YamlDotNet.RepresentationModel;
 using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace GnosiaCustomizer.utils
 {
@@ -98,19 +96,44 @@ namespace GnosiaCustomizer.utils
                         {
                             if (mapNode.Children.ContainsKey("line"))
                             {
-                                var nodeStream = new YamlStream(new YamlDocument(mapNode));
-                                using var writer = new StringWriter();
-                                nodeStream.Save(writer, false);
-                                var singleText = deserializer.Deserialize<LocalizedText>(new StringReader(writer.ToString()));
+                                var singleText = new LocalizedText();
+
+                                if (mapNode.Children.TryGetValue("line", out var lineNode))
+                                    singleText.Line = lineNode.ToString();
+
+                                if (mapNode.Children.TryGetValue("sprite", out var spriteNode) && int.TryParse(spriteNode.ToString(), out var sprite))
+                                    singleText.Sprite = sprite;
+
                                 SingleLines[key] = singleText;
                             }
                             else if (mapNode.Children.ContainsKey("lines"))
                             {
-                                var nodeStream = new YamlStream(new YamlDocument(mapNode));
-                                using var writer = new StringWriter();
-                                nodeStream.Save(writer, false);
-                                var multiText = deserializer.Deserialize<MultilineLocalizedText>(new StringReader(writer.ToString()));
+                                var multiText = new MultilineLocalizedText();
+
+                                if (mapNode.Children.TryGetValue("lines", out var linesNode) && linesNode is YamlSequenceNode sequence)
+                                {
+                                    foreach (var item in sequence)
+                                    {
+                                        if (item is YamlMappingNode lineMap)
+                                        {
+                                            var line = new LocalizedText();
+                                            if (lineMap.Children.TryGetValue("line", out var lineStr))
+                                            {
+                                                line.Line = lineStr.ToString();
+                                            }
+
+                                            if (lineMap.Children.TryGetValue("sprite", out var spriteVal) && int.TryParse(spriteVal.ToString(), out var spr))
+                                            {
+                                                line.Sprite = spr;
+                                            }
+
+                                            multiText.Lines.Add(line);
+                                        }
+                                    }
+                                }
+
                                 MultiLines[key] = multiText;
+
                             }
                         }
                         break;
@@ -126,7 +149,9 @@ namespace GnosiaCustomizer.utils
                 foreach (var kv in map.Children)
                 {
                     if (float.TryParse(kv.Value.ToString(), out var val))
+                    {
                         result[kv.Key.ToString()] = val;
+                    }
                 }
             }
             return result;
@@ -140,7 +165,9 @@ namespace GnosiaCustomizer.utils
                 foreach (var kv in map.Children)
                 {
                     if (bool.TryParse(kv.Value.ToString(), out var val))
+                    {
                         result[kv.Key.ToString()] = val;
+                    }
                 }
             }
             return result;

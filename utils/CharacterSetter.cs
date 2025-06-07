@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using static GnosiaCustomizer.patches.TextPatches;
 
 namespace GnosiaCustomizer.utils
 {
@@ -15,8 +12,8 @@ namespace GnosiaCustomizer.utils
         private static readonly Type CharaDataType = AccessTools.Inner(DataType, "CharaData");
         private static readonly FieldInfo CharaField = AccessTools.Field(DataType, "Chara");
 
-        private const string SubstitutionPrefix = "gc";
-        private const char Delimiter = '%';
+        public const string SubstitutionPrefix = "gc%";
+        public const char Delimiter = '%';
         private const string NameFieldName = "name";
         private const string SexFieldName = "sex";
         private const string AgeFieldName = "age";
@@ -132,29 +129,6 @@ namespace GnosiaCustomizer.utils
             "opening_statement",
         };
 
-        private static Dictionary<int, string> MultilineDialogueReplacements = new Dictionary<int, string>
-        {
-            { 1, "multiline_night_liar_found%{0}%{1}" },
-            { 2, "multiline_liar_found_followup%{0}%{1}" },
-            { 3, "multiline_night_lets_collaborate%{0}" },
-            { 4, "multiline_night_lets_collaborate_accepted%{0}" },
-            { 5, "multiline_night_lets_collaborate_declined%{0}" },
-            { 6, "multiline_night_gnosia_lets_eliminate%{0}%{1}" },
-            { 7, "multiline_gnosia_lets_eliminate_followup%{0}%{1}" },
-            { 8, "multiline_end_human_win_with_collaborator%{0}" },
-            { 9, "multiline_end_human_win%{0}" },
-            { 10, "multiline_end_human_win_not_trusted%{0}" },
-            { 11, "multiline_end_human_win_somewhat_friends%{0}" },
-            { 12, "multiline_end_human_win_not_friends%{0}" },
-            { 13, "multiline_end_gnosia_win_together_0%{0}" },
-            { 14, "multiline_end_gnosia_perfect_win_together_0%{0}" },
-            { 15, "multiline_end_gnosia_win_together_1%{0}" },
-            { 16, "multiline_end_gnosia_perfect_win_together_1%{0}" },
-            { 17, "multiline_end_char_is_opposing_gnosia%{0}" },
-            { 18, "multiline_end_char_is_bug%{0}" },
-            { 19, "multiline_end_player_is_ac%{0}" }
-        };
-
         private static List<string> PersonalLines1AndUp = new List<string>
         {
             "multiline_night_liar_found%{0}%{1}",
@@ -263,6 +237,10 @@ namespace GnosiaCustomizer.utils
             {
                 SetField(charaStructBoxed, AgeFieldName, charaText.Age.Value);
             }
+            if (charaText.Honorific != null)
+            {
+                SetField(charaStructBoxed, HonorificFieldName, charaText.Honorific);
+            }
             if (charaText.DefenseMin != null)
             {
                 SetField(charaStructBoxed, DefenseMinFieldName, charaText.DefenseMin.Value);
@@ -325,11 +303,39 @@ namespace GnosiaCustomizer.utils
             // Replace dialogue with placeholders
             foreach (var fieldName in DialogueInitialization.Keys)
             {
-                var toAdd = new List<string>();
+                // Get the original dialogue
+                var toAdd = new List<string>(DialogueInitialization[fieldName].Count);
+                GetCharaFieldValueAsStringArray(index, fieldName, out var strArray);
 
+                // If the original array is null or shorter than desired, pad it out.
+                int lineIndex = 0;
                 foreach (var sub in DialogueInitialization[fieldName])
                 {
-                    toAdd.Add($"{SubstitutionPrefix}{Delimiter}{charaText.Name}{Delimiter}{sub}");
+                    var tokens = sub.Split(Delimiter);
+                    var modDialogueName = tokens[0];
+                    Console.WriteLine($"Processing dialogue for {fieldName}: {sub}");
+                    // Check if we have a replacement for this dialogue
+                    if (charaText.SingleLines.TryGetValue(modDialogueName, out var singleLine))
+                    {
+                        var newLine = $"{singleLine.Line}|{singleLine.Sprite}";
+                        toAdd.Add(newLine);
+                        Console.WriteLine($"Setting dialogue for {fieldName}: {newLine}");
+                    }
+                    else
+                    {
+                        // No custom line- use the original
+                        if (strArray == null || lineIndex >= strArray.Count)
+                        {
+                            Console.WriteLine($"No custom line found for {fieldName}, using placeholder.");
+                            toAdd.Add("...");
+                        }
+                        else if (lineIndex < strArray.Count) 
+                        {
+                            Console.WriteLine($"Using original dialogue for {fieldName}: {strArray[lineIndex]}");
+                            toAdd.Add(strArray[lineIndex]);
+                        }
+                    }
+                    lineIndex++;
                 }
                 SetField(charaStructBoxed, fieldName, toAdd);
             }
@@ -338,17 +344,63 @@ namespace GnosiaCustomizer.utils
             var personalField = GetCharaFieldFromBoxedStruct(PersonalFieldName, charaStructBoxed);
             var personalArray = new List<List<string>>(PersonalArrayLength);
 
-            var personal0 = new List<string>();
+            var personal0 = new List<string>(PersonalLines0.Count);
+            GetCharaFieldAs2dStringArray(index, PersonalFieldName, out var originalPersonalArray);
+            var personal0Index = 0;
             foreach (var personal in PersonalLines0)
             {
-                var substitution = $"{SubstitutionPrefix}{Delimiter}{charaText.Name}{Delimiter}{personal}";
-                personal0.Add(substitution);
+                var tokens = personal.Split(Delimiter);
+                var modDialogueName = tokens[0];
+                // Check if we have a replacement for this dialogue
+                if (charaText.SingleLines.TryGetValue(modDialogueName, out var singleLine))
+                {
+                    var newLine = $"{singleLine.Line}|{singleLine.Sprite}";
+                    personal0.Add(newLine);
+                }
+                else
+                {
+                    if (originalPersonalArray[0] == null || personal0Index >= originalPersonalArray[0].Count)
+                    {
+                        personal0.Add("...");
+                        Console.WriteLine($"No custom line found for personal line {personal0Index}, using placeholder.");
+                    }
+                    else if (personal0Index < originalPersonalArray.Count)
+                    {
+                        personal0.Add(originalPersonalArray[0][personal0Index]);
+                        Console.WriteLine($"Using original personal line {personal0Index}: {originalPersonalArray[0][personal0Index]}");
+                    }
+                }
+                personal0Index++;
             }
             personalArray.Add(personal0);
+
+            var personalIndex = 1;
             foreach (var dialogueName in PersonalLines1AndUp)
             {
-                var substitution = $"{SubstitutionPrefix}{Delimiter}{charaText.Name}{Delimiter}{dialogueName}";
-                personalArray.Add(new List<string>() { substitution });
+                var newList = new List<string>();
+
+                if (charaText.MultiLines.TryGetValue(dialogueName, out var multiLine))
+                {
+                    // If we have a custom multiline, use it
+                    foreach (var line in multiLine.Lines)
+                    {
+                        newList.Add($"{line.Line}|{line.Sprite}");
+                    }
+                    Console.WriteLine($"Setting custom multiline for {dialogueName}: {string.Join(", ", newList)}");
+                }
+                else if (personalIndex < originalPersonalArray.Count)
+                {
+                    // Otherwise, use the original dialogue if available
+                    newList = originalPersonalArray[personalIndex];
+                }
+                else
+                {
+                    // If no custom or original line, use placeholder
+                    newList.Add("...");
+                    Console.WriteLine($"No custom or original line found for {dialogueName}, using placeholder.");
+                }
+                personalArray.Add(newList);
+                personalIndex++;
             }
 
             SetField(charaStructBoxed, PersonalFieldName, personalArray);
