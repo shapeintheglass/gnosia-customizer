@@ -12,6 +12,8 @@ using GnosiaCustomizer.utils;
 using coreSystem;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using UnityEngine;
+using YamlDotNet.RepresentationModel;
 
 namespace GnosiaCustomizer.patches
 {
@@ -25,7 +27,7 @@ namespace GnosiaCustomizer.patches
         internal static void Initialize()
         {
             Logger.LogInfo("LoadCustomText called");
-
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             // Read from each character folder asynchronously
             var tasks = new List<Task>();
             int characterId = 1;
@@ -44,36 +46,30 @@ namespace GnosiaCustomizer.patches
                 var yamlPath = Path.Combine(charaPath, ConfigFileName);
                 if (File.Exists(yamlPath))
                 {
-                    tasks.Add(Task.Run(() =>
+                    try
                     {
-                        string yamlContent = File.ReadAllText(yamlPath);
-                        var deserializer = new DeserializerBuilder()
-                            .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                            .Build();
-                        try
+                        var character = new CharacterText();
+                        character.LoadFromFile(yamlPath);
+                        if (localCharacterId != 0)
                         {
-                            var character = deserializer.Deserialize<CharacterText>(yamlContent);
-                            if (localCharacterId != 0)
-                            {
-                                characterTexts[localCharacterId] = character;
-                                skillMap[localCharacterId] = character.KnownSkills;
-                            }
+                            characterTexts[localCharacterId] = character;
+                            skillMap[localCharacterId] = character.KnownSkills;
                         }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError($"Failed to deserialize {charaFolder}: {ex.Message}");
-                        }
-
-                    }));
+                        Logger.LogInfo($"name is {character.Name}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError($"Failed to deserialize {charaFolder}: {ex.Message}");
+                    }
                 }
                 characterId++;
             }
 
             try
             {
-                Task.WhenAll(tasks).GetAwaiter().GetResult();
                 Logger.LogInfo($"Loaded {characterTexts.Count}/{Consts.CharaFolderNames.Length} character configs");
                 Logger.LogInfo($"Loaded {skillMap.Count}/{Consts.CharaFolderNames.Length} character skills");
+                Logger.LogInfo($"LoadCustomText completed in {sw.ElapsedMilliseconds} ms");
 
                 JinroPatches.SkillMap = skillMap.ToDictionary(kv => kv.Key, kv => kv.Value);
             }

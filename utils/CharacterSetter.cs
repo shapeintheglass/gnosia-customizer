@@ -15,13 +15,19 @@ namespace GnosiaCustomizer.utils
         private static readonly Type CharaDataType = AccessTools.Inner(DataType, "CharaData");
         private static readonly FieldInfo CharaField = AccessTools.Field(DataType, "Chara");
 
-        private const string Placeholder = "...";
-
+        private const string SubstitutionPrefix = "gc";
+        private const char Delimiter = '%';
         private const string NameFieldName = "name";
-        private const string PlaceFieldName = "d_place";
+        private const string SexFieldName = "sex";
+        private const string AgeFieldName = "age";
+        private const string OriginFieldName = "d_place";
         private const string HonorificFieldName = "t_keisho";
-        private const string JournalFieldName = "d_tokki";
+        private const string DefenseMinFieldName = "hpMin";
+        private const string DefenseWithGnosFieldName = "hpWithGnos";
         private const string PersonalFieldName = "t_personal";
+        private const int PersonalArrayLength = 20;
+
+
         private static readonly Dictionary<string, List<string>> DialogueInitialization = new Dictionary<string, List<string>>()
         {
             { "t_aisatu", [ "introduction" ] },
@@ -69,25 +75,25 @@ namespace GnosiaCustomizer.utils
             { "t_co_taiko", ["", "reveal_own_role_engineer%{0}%{1}", "reveal_own_role_doctor%{0}%{1}", "", "reveal_role_guard_duty_response%{0}%{1}"] },
             { "t_co_req", ["step_forward%{0}"] },
             { "t_co_after", ["step_forward_1_claim_reaction%{0}%{1}", "step_forward_2_claims_reaction%{0}%{1}", "step_forward_3_claims_reaction%{0}%{1}"] },
-            { "t_uranai_o", ["report_engineer_pt1_target_killed%{0}%{1}"] },
-            { "t_uranai_s", ["report_engineer_pt1%{0}%{1}"] },
-            { "t_uranai_b", ["report_engineer_pt1_different_target%{0}%{1}"] },
+            { "t_uranai_o", ["report_engineer_pt1_target_killed%{0}%{1}%"] },
+            { "t_uranai_s", ["report_engineer_pt1%{0}%{1}%"] },
+            { "t_uranai_b", ["report_engineer_pt1_different_target%{0}%{1}%"] },
             { "t_uranai_t", ["report_engineer_pt2_gnosia_result%{0}%{1}"] },
             { "t_uranai_f", ["report_engineer_pt2_human_result%{0}%{1}"] },
             { "t_uranai_n", ["report_engineer_no_result"] },
-            { "t_reibai_s", ["report_doctor_pt1%{0}%{1}%{2}%{3}%{4}%{5}"] },
+            { "t_reibai_s", ["report_doctor_pt1%{0}%{1}%{2}%{3}%{4}%{5}%"] },
             { "t_reibai_t", ["report_doctor_pt2_single_gnosia_result%{0}%{1}%{2}%{3}%{4}%{5}"] },
             { "t_reibai_f", ["report_doctor_pt2_single_human_result%{0}%{1}%{2}%{3}%{4}%{5}"] },
             { "t_reibai_ft", ["report_doctor_pt2_multiple_gnosia_result%{0}%{1}%{2}%{3}%{4}%{5}"] },
             { "t_reibai_ff", ["report_doctor_pt2_oops_all_humans_result%{0}%{1}%{2}%{3}%{4}%{5}"] },
-            { "t_houkoku_s", ["report_preface_matching_result%{0}%{1}"] },
-            { "t_houkoku_w", ["report_preface_conflicting_result%{0}%{1}"] },
+            { "t_houkoku_s", ["report_pt1_matching_result%{0}%{1}%"] },
+            { "t_houkoku_w", ["report_pt1_conflicting_result%{0}%{1}%"] },
             { "t_okuyami", ["opening_remarks_condolences%{0}"] },
             { "t_okuyami_n", ["opening_remarks_no_deaths"] },
             { "t_okuyami_f", ["opening_remarks_two_deaths%{0}"] },
             { "t_houkoku_req", ["request_report"] },
             { "t_houkoku_not", ["request_report_no_response%{0}"] },
-            { "t_skill_sayNingen", ["sk_intui_say_human_proposal", "sk_intui_say_human_yes_im_human", "sk_intui_say_human_stop_it|{0}", "sk_intui_say_human_no_one_responded", "sk_intui_say_human_some_responded", "sk_intui_say_human_all_responded", "sk_intui_say_human_stopped_reaction%{0}"] },
+            { "t_skill_sayNingen", ["sk_intui_say_human_proposal", "sk_intui_say_human_yes_im_human", "sk_intui_say_human_stop_it%{0}", "sk_intui_say_human_no_one_responded", "sk_intui_say_human_some_responded", "sk_intui_say_human_all_responded", "sk_intui_say_human_stopped_reaction%{0}"] },
             { "t_skill_zatsudan", ["sk_steal_small_talk_start_food", "sk_steal_small_talk_start_love", "sk_steal_small_talk_start_scary", "sk_steal_small_talk_join_food", "sk_steal_small_talk_join_love", "sk_steal_small_talk_join_scary", "sk_steal_small_talk_stop%{0}"] },
             { "t_skill_roller", ["sk_logic_freeze_all_initial_proposal%{0}", "sk_logic_freeze_all_agree%{0}%{1}%{2}", "sk_logic_freeze_all_disagree%{0}%{1}", "sk_logic_freeze_all_disagree_followup%{0}%{1}%{2}", "sk_logic_freeze_all_proposal_accepted%{0}", "sk_logic_freeze_all_proposal_denied%{0}", "sk_logic_freeze_all_initial_proposal_some_missing%{0}" ] },
             { "t_skill_doTohyo", ["sk_logic_vote_proposal_from_eng_report%{0}%{1}", "sk_logic_vote_proposal_with_self_basis%{0}", "sk_logic_vote_proposal_for_definite_enemy%{0}", "sk_logic_vote_point_out_mistake%{0}%{1}", "sk_logic_vote_agree%{0}", "sk_logic_vote_defend_self%{0}%{1}", "sk_logic_vote_disagree%{0}%{1}", "sk_logic_vote_disagree_also%{0}%{1}%{2}"] },
@@ -102,7 +108,7 @@ namespace GnosiaCustomizer.utils
             { "t_skill_h_help", ["sk_perfo_seek_help%{0}", "sk_perfo_seek_help_reaction%{0}"] },
             { "t_skill_h_careful", ["sk_intui_dont_be_fooled%{0}"] },
             { "t_skill_dogeza", ["sk_stealth_grovel_reaction%{0}", "sk_stealth_grovel%{0}"] },
-            { "t_temp", ["crew_data_0", "crew_data_1"] }
+            { "t_temp", ["bio1", "bio2"] }
         };
 
         private static List<string> PersonalLines0 = new List<string>
@@ -147,6 +153,29 @@ namespace GnosiaCustomizer.utils
             { 17, "multiline_end_char_is_opposing_gnosia%{0}" },
             { 18, "multiline_end_char_is_bug%{0}" },
             { 19, "multiline_end_player_is_ac%{0}" }
+        };
+
+        private static List<string> PersonalLines1AndUp = new List<string>
+        {
+            "multiline_night_liar_found%{0}%{1}",
+            "multiline_liar_found_followup%{0}%{1}",
+            "multiline_night_lets_collaborate%{0}",
+            "multiline_night_lets_collaborate_accepted%{0}",
+            "multiline_night_lets_collaborate_declined%{0}",
+            "multiline_night_gnosia_lets_eliminate%{0}%{1}",
+            "multiline_gnosia_lets_eliminate_followup%{0}%{1}",
+            "multiline_end_human_win_with_collaborator%{0}",
+            "multiline_end_human_win%{0}",
+            "multiline_end_human_win_not_trusted%{0}",
+            "multiline_end_human_win_somewhat_friends%{0}",
+            "multiline_end_human_win_not_friends%{0}",
+            "multiline_end_gnosia_win_together_0%{0}",
+            "multiline_end_gnosia_perfect_win_together_0%{0}",
+            "multiline_end_gnosia_win_together_1%{0}",
+            "multiline_end_gnosia_perfect_win_together_1%{0}",
+            "multiline_end_char_is_opposing_gnosia%{0}",
+            "multiline_end_char_is_bug%{0}",
+            "multiline_end_player_is_ac%{0}"
         };
 
         internal static object GetCharaFieldValue(int index, string fieldName)
@@ -217,25 +246,30 @@ namespace GnosiaCustomizer.utils
             }
             var charaStructBoxed = array.GetValue(index);
 
+            if (charaText.Name != null)
+            {
+                Logger.LogInfo($"Setting character name to: {charaText.Name}");
+                SetField(charaStructBoxed, NameFieldName, charaText.Name);
+            }
             if (charaText.Sex != null)
             {
-                SetField(charaStructBoxed, "sex", charaText.Sex.Value);
+                SetField(charaStructBoxed, SexFieldName, charaText.Sex.Value);
+            }
+            if (charaText.Origin != null)
+            {
+                SetField(charaStructBoxed, OriginFieldName, charaText.Origin);
             }
             if (charaText.Age != null)
             {
-                SetField(charaStructBoxed, "age", charaText.Age.Value);
-            }
-            if (charaText.NumJournalEntries != null)
-            {
-                SetField(charaStructBoxed, "d_tokkiNum", charaText.NumJournalEntries.Value);
+                SetField(charaStructBoxed, AgeFieldName, charaText.Age.Value);
             }
             if (charaText.DefenseMin != null)
             {
-                SetField(charaStructBoxed, "hpMin", charaText.DefenseMin.Value);
+                SetField(charaStructBoxed, DefenseMinFieldName, charaText.DefenseMin.Value);
             }
             if (charaText.DefenseWithGnos != null)
             {
-                SetField(charaStructBoxed, "hpWithGnos", charaText.DefenseWithGnos.Value);
+                SetField(charaStructBoxed, DefenseWithGnosFieldName, charaText.DefenseWithGnos.Value);
             }
             if (charaText.Attributes != null)
             {
@@ -288,46 +322,36 @@ namespace GnosiaCustomizer.utils
                 }
             }
 
-            var personal = GetCharaFieldFromBoxedStruct(PersonalFieldName, charaStructBoxed);
-            
-
-            // Pad dialogue fields with placeholders
-            foreach (var fieldName in dialogueCount.Keys)
+            // Replace dialogue with placeholders
+            foreach (var fieldName in DialogueInitialization.Keys)
             {
-                Logger.LogInfo($"Processing dialogue field '{fieldName}' for character index {index}.");
-                var field = GetCharaFieldFromBoxedStruct(fieldName, charaStructBoxed);
-                SetField(charaStructBoxed, fieldName, replacements);
+                var toAdd = new List<string>();
+
+                foreach (var sub in DialogueInitialization[fieldName])
+                {
+                    toAdd.Add($"{SubstitutionPrefix}{Delimiter}{charaText.Name}{Delimiter}{sub}");
+                }
+                SetField(charaStructBoxed, fieldName, toAdd);
             }
 
-            //// Go through custom dialogue and replace again
-            //foreach (var internalName in DialogueUtils.InternalNameToModName.Keys)
-            //{
-            //    var dialogueName = DialogueUtils.InternalNameToModName[internalName];
-            //    var tokens = internalName.Split(DialogueUtils.Delimiter);
+            // Recreate personal 2D array
+            var personalField = GetCharaFieldFromBoxedStruct(PersonalFieldName, charaStructBoxed);
+            var personalArray = new List<List<string>>(PersonalArrayLength);
 
-            //    switch (tokens.Length)
-            //    {
-            //        case 1:
-            //            // Single token, e.g. "t_aisatu"
-            //            if (charaText.Attributes.TryGetValue(dialogueName, out var singleLine))
-            //            {
-            //                SetField(charaStructBoxed, internalName, dialogueName);
-            //            }
-            //            break;
-            //        case 2:
-            //            // Two tokens, e.g. "t_suspect_t0"
-            //            if (charaText.Attributes.TryGetValue(dialogueName, out var multiLine))
-            //            {
-            //                var lines = multiLine.Split('\n');
-            //                SetField(charaStructBoxed, internalName, new List<string>(lines));
-            //            }
-            //            break;
-            //        case 3:
-            //            // Three tokens, e.g. "t_personal"
-            //        default:
-            //            throw new Exception($"Unexpected dialogue format: {internalName}");
-            //    }
-            //}
+            var personal0 = new List<string>();
+            foreach (var personal in PersonalLines0)
+            {
+                var substitution = $"{SubstitutionPrefix}{Delimiter}{charaText.Name}{Delimiter}{personal}";
+                personal0.Add(substitution);
+            }
+            personalArray.Add(personal0);
+            foreach (var dialogueName in PersonalLines1AndUp)
+            {
+                var substitution = $"{SubstitutionPrefix}{Delimiter}{charaText.Name}{Delimiter}{dialogueName}";
+                personalArray.Add(new List<string>() { substitution });
+            }
+
+            SetField(charaStructBoxed, PersonalFieldName, personalArray);
 
             array.SetValue(charaStructBoxed, index);
         }
