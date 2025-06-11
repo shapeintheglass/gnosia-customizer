@@ -25,7 +25,7 @@ namespace GnosiaCustomizer
         internal static ManualLogSource Logger;
 
         // Individual sprites for each character, indexed by character folder name and head name
-        private static Dictionary<string, Dictionary<string, CharaSpriteInfo>> CharaSprites = [];
+        private static Dictionary<string, Dictionary<string, Lazy<CharaSpriteInfo>>> CharaSprites = [];
 
         // Keeping track of which sprites we have modified
         private static HashSet<uint> ModifiedSpriteIndeces = [];
@@ -175,12 +175,14 @@ namespace GnosiaCustomizer
                     }
 
                     var textureDimensions = new Vector2(texture.width, texture.height);
-                    CharaSprites[charaFolder][Consts.HeadNames[headIndex]] = new CharaSpriteInfo
-                    {
-                        sprite = Sprite.Create(texture, new Rect(Vector2.zero, textureDimensions), Consts.ZeroOne),
-                        texture = texture,
-                        size = textureDimensions
-                    };
+                    CharaSprites[charaFolder][Consts.HeadNames[headIndex]] = new Lazy<CharaSpriteInfo>(() =>
+                        new CharaSpriteInfo
+                        {
+                            sprite = Sprite.Create(texture, new Rect(Vector2.zero, textureDimensions), Consts.ZeroOne),
+                            texture = texture,
+                            size = textureDimensions
+                        }
+                    );
                 }
             }
         }
@@ -189,89 +191,73 @@ namespace GnosiaCustomizer
         public static class CharaScreen_InitializeGlm_Patch
         {
             [HarmonyPostfix]
-            public static void Postfix(CharaScreen __instance, ResourceManager resourceManager, ScriptParser scriptParser, GameLogManager gameLogManager)
+            public static void Postfix(CharaScreen __instance, 
+                ResourceManager resourceManager, ScriptParser scriptParser, GameLogManager gameLogManager)
             {
-                Logger.LogInfo($"CharaScreen.InitializeGlm called");
-
-                // Assert required reflection fields are available
-                if (DisplayOffsetField == null
-                    || DisplayOffsetObjField == null
-                    || SizeInDisplayField == null
-                    || TextureOffsetField == null
-                    || SizeInTextureField == null
-                    || ImageField == null)
+                for (var charId = 1U; charId <= Consts.NumCharacters; charId++)
                 {
-                    throw new Exception($"One or more field types in Sprite2dEffectArg could not be found." +
-                        $"DisplayOffsetField: {DisplayOffsetField == null}, DisplayOffsetObjField: {DisplayOffsetObjField == null} " +
-                        $"SizeInDisplayField: {SizeInDisplayField == null}, TextureOffsetField: {TextureOffsetField == null} " +
-                        $"SizeInTextureField: {SizeInTextureField == null}, ImageField: {ImageField == null}");
-                }
-
-                var displayHeight = resourceManager.m_displaySize.height;
-                var textureRatio = GraphicsContext.m_textureRatio;
-                var defaultMat = resourceManager.uiCharaDefaultMat;
-                var colorCoeff = (Color)__instance.GetColorCoeff();
-
-                for (uint charIndex = 0; charIndex < Consts.NumCharacters; charIndex++)
-                {
-                    var packedName = Consts.CharaFolderNames[charIndex];
-                    var headOffset = 0;
-                    for (int headIndex = 0; headIndex < Consts.NumHeads; headIndex++)
+                    for (var headId = 0U; headId < Consts.NumHeads; headId++)
                     {
-                        var headName = Consts.HeadNames[headIndex];
-
-                        if (!CharaSprites.TryGetValue(packedName, out Dictionary<string, CharaSpriteInfo> value)
-                            || !value.TryGetValue(headName, out var sprite))
-                        {
-                            Logger.LogWarning($"Custom sprite {packedName} not found in {CharaSprites.Keys.Join()}. Skipping.");
-                            continue;
-                        }
-
-                        var spriteIndex = Consts.CharSpriteIndeces[charIndex] + (uint) headOffset++;
-                        var absoluteId = charIndex + 1;
-                        var position = new Vector2(50f * absoluteId - 200f, 0f);
-                        SetPackedTextureWithCache(
-                            __instance,
-                            __instance.transform,
-                            packedName,
-                            headName,
-                            spriteIndex,
-                            Consts.Order,
-                            position,
-                            sprite,
-                            defaultMat,
-                            colorCoeff,
-                            displayHeight,
-                            textureRatio);
-                        ModifiedSpriteIndeces.Add(spriteIndex);
+                        var spriteIndex = (uint)(charId * 100U) + headId;
+                        SetPackedTextureWithCache(__instance, resourceManager, spriteIndex);
                     }
                 }
             }
         }
 
-        private static void SetPackedTextureWithCache(
+        private static Sprite2dEffectArg SetPackedTextureWithCache(
             application.Screen __instance,
-            Transform parentTrans,
-            string packedName,
-            string textureName,
-            uint depth,
-            uint order,
-            Vector2 position,
-            CharaSpriteInfo spriteInfo,
-            Material mat,
-            Color colorCoeff,
-            float displayHeight,
-            float textureRatio)
+            ResourceManager resourceManager,
+            uint spriteIndex)
         {
-            Logger.LogInfo($"SetPackedTextureWithCache called (packedName: {packedName}, textureName: {textureName}, depth: {depth}, order: {order}, _position: {position})");
+            Logger.LogInfo($"Setting packed texture for sprite index {spriteIndex}");
+            // Assert required reflection fields are available
+            if (DisplayOffsetField == null
+                || DisplayOffsetObjField == null
+                || SizeInDisplayField == null
+                || TextureOffsetField == null
+                || SizeInTextureField == null
+                || ImageField == null)
+            {
+                throw new Exception($"One or more field types in Sprite2dEffectArg could not be found." +
+                    $"DisplayOffsetField: {DisplayOffsetField == null}, DisplayOffsetObjField: {DisplayOffsetObjField == null} " +
+                    $"SizeInDisplayField: {SizeInDisplayField == null}, TextureOffsetField: {TextureOffsetField == null} " +
+                    $"SizeInTextureField: {SizeInTextureField == null}, ImageField: {ImageField == null}");
+            }
 
-            GameObject gameObject = new GameObject(textureName);
+            // Determine the character ID from the sprite index
+            var absoluteId = spriteIndex / 100;
+            var headId = spriteIndex % 100;
+
+            var packedName = Consts.CharaFolderNames[absoluteId - 1];
+            var headName = Consts.HeadNames[headId];
+
+            Logger.LogInfo($"Derived from sprite index {spriteIndex}: " +
+                $"absoluteId: {absoluteId}, headId: {headId}, packedName: {packedName}, headName: {headName}");
+
+            if (!CharaSprites.TryGetValue(packedName, out var value)
+                || !value.TryGetValue(headName, out var lazySpriteInfo))
+            {
+                Logger.LogWarning($"Custom sprite {packedName} not found in {CharaSprites.Keys.Join()}. Skipping.");
+                return null;
+            }
+
+            var spriteInfo = lazySpriteInfo.Value;
+            var position = new Vector2(50f * absoluteId - 200f, 0f);
+
+            var parentTrans = __instance.transform;
+            var colorCoeff = (Color)__instance.GetColorCoeff();
+            var textureRatio = GraphicsContext.m_textureRatio;
+            var displayHeight = resourceManager.m_displaySize.height;
+            var mat = resourceManager.uiCharaDefaultMat;
+
+            GameObject gameObject = new GameObject(headName);
             gameObject.transform.SetParent(parentTrans);
             gameObject.SetActive(false);
 
             // Game object sprite
             var sprite = gameObject.AddComponent<Sprite2dEffectArg>();
-            __instance.m_spriteMap[depth] = sprite;
+            __instance.m_spriteMap[spriteIndex] = sprite;
             sprite.m_type = 0;
             sprite.m_texture = new ResTextureList
             {
@@ -307,6 +293,8 @@ namespace GnosiaCustomizer
 
             sprite.SetSize(0.7f);
             sprite.SetDisplayOffsetY(displayHeight - sprite.GetSizeInDisplay().y * sprite.GetSize() * textureRatio);
+            ModifiedSpriteIndeces.Add((uint)spriteIndex);
+            return sprite;
         }
 
         [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.GetTexture))]
@@ -356,14 +344,18 @@ namespace GnosiaCustomizer
                 // For custom sprites, do not draw the default sprite underneath
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                 {
-                    if (thyojo > 0 && ModifiedSpriteIndeces.Contains(spriteIndex)
-                        && __instance.m_sb.TryGetValue(depth, out var screen) && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
+                    if (thyojo > 0 
+                        && ModifiedSpriteIndeces.Contains(spriteIndex)
+                        && __instance.m_sb.TryGetValue(depth, out var screen) 
+                        && screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite))
                     {
-                        var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint)tid * 100U];
+                        // Reposition the "head" so it's centered like the body sprite
                         var centerX = (__instance.m_rs.m_displaySize.width / 4 * (pos + 1)) + sprite.m_faceCenter * sprite.GetSize();
                         var centerY = sprite.GetCenterPosition().y;
-                        defaultSprite.SetVisible(false);
                         sprite.SetCenterPosition(new Vector2(centerX, centerY));
+
+                        var defaultSprite = __instance.m_sb[depth].m_spriteMap[(uint)tid * 100U];
+                        defaultSprite.SetVisible(false);
                     }
                     return true;
                 }), (ScriptParser.Script._EndFunc)(e => true), false));
