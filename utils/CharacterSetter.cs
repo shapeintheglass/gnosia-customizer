@@ -313,25 +313,21 @@ namespace GnosiaCustomizer.utils
                 {
                     var tokens = sub.Split(Delimiter);
                     var modDialogueName = tokens[0];
-                    Console.WriteLine($"Processing dialogue for {fieldName}: {sub}");
                     // Check if we have a replacement for this dialogue
                     if (charaText.SingleLines.TryGetValue(modDialogueName, out var singleLine))
                     {
                         var newLine = $"{singleLine.Line}|{singleLine.Sprite}";
                         toAdd.Add(newLine);
-                        Console.WriteLine($"Setting dialogue for {fieldName}: {newLine}");
                     }
                     else
                     {
                         // No custom line- use the original
                         if (strArray == null || lineIndex >= strArray.Count)
                         {
-                            Console.WriteLine($"No custom line found for {fieldName}, using placeholder.");
                             toAdd.Add("...");
                         }
                         else if (lineIndex < strArray.Count) 
                         {
-                            Console.WriteLine($"Using original dialogue for {fieldName}: {strArray[lineIndex]}");
                             toAdd.Add(strArray[lineIndex]);
                         }
                     }
@@ -362,12 +358,10 @@ namespace GnosiaCustomizer.utils
                     if (originalPersonalArray[0] == null || personal0Index >= originalPersonalArray[0].Count)
                     {
                         personal0.Add("...");
-                        Console.WriteLine($"No custom line found for personal line {personal0Index}, using placeholder.");
                     }
                     else if (personal0Index < originalPersonalArray.Count)
                     {
                         personal0.Add(originalPersonalArray[0][personal0Index]);
-                        Console.WriteLine($"Using original personal line {personal0Index}: {originalPersonalArray[0][personal0Index]}");
                     }
                 }
                 personal0Index++;
@@ -378,15 +372,16 @@ namespace GnosiaCustomizer.utils
             foreach (var dialogueName in PersonalLines1AndUp)
             {
                 var newList = new List<string>();
+                var tokens = dialogueName.Split(Delimiter);
+                var modDialogueName = tokens[0];
 
-                if (charaText.MultiLines.TryGetValue(dialogueName, out var multiLine))
+                if (charaText.MultiLines.TryGetValue(modDialogueName, out var multiLine))
                 {
                     // If we have a custom multiline, use it
                     foreach (var line in multiLine.Lines)
                     {
                         newList.Add($"{line.Line}|{line.Sprite}");
                     }
-                    Console.WriteLine($"Setting custom multiline for {dialogueName}: {string.Join(", ", newList)}");
                 }
                 else if (personalIndex < originalPersonalArray.Count)
                 {
@@ -397,7 +392,6 @@ namespace GnosiaCustomizer.utils
                 {
                     // If no custom or original line, use placeholder
                     newList.Add("...");
-                    Console.WriteLine($"No custom or original line found for {dialogueName}, using placeholder.");
                 }
                 personalArray.Add(newList);
                 personalIndex++;
