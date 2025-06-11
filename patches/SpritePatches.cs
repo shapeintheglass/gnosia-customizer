@@ -49,16 +49,9 @@ namespace GnosiaCustomizer
             public Vector2 size;
         }
 
-        public struct CharaFileInfo
-        {
-            public bool hasCustomTexture;
-            public Vector2[] sizes;
-            public string[] headNamesNoExt;
-            public byte[][] bytes;
-        }
-
         internal static void Initialize()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var texturesPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, Consts.TextureAssetsFolder);
             if (!Directory.Exists(texturesPath))
             {
@@ -103,11 +96,14 @@ namespace GnosiaCustomizer
 
             // We can asynchronously load the bytes from file
             var filePathToBytesMap = LoadTexturesAsynchronously(textureFilePaths);
-
+            Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} texture files in {sw.ElapsedMilliseconds} ms.");
+            sw.Restart();
             // Unity libraries are not thread-safe and must be executed synchronously
             CreateTextureReplacements(filePathToBytesMap);
+            Logger.LogInfo($"Created texture replacements in {sw.ElapsedMilliseconds} ms.");
+            sw.Restart();
             CreateSpriteReplacements(filePathToBytesMap);
-            Logger.LogInfo($"Loaded sprites for {CharaSprites.Keys.Count}/{Consts.CharaFolderNames.Length} characters.");
+            Logger.LogInfo($"Loaded sprites for {CharaSprites.Keys.Count}/{Consts.CharaFolderNames.Length} characters in {sw.ElapsedMilliseconds} ms.");
         }
 
         // Loads all character and non-character textures from file asynchronously and caches their bytes in a ConcurrentDictionary.
@@ -120,7 +116,6 @@ namespace GnosiaCustomizer
                 filePathToBytesMap[Path.GetFullPath(file)] = File.ReadAllBytes(file);
             });
 
-            Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} textures.");
             return filePathToBytesMap;
         }
 
@@ -441,8 +436,8 @@ namespace GnosiaCustomizer
                 Logger.LogInfo($"SetTexture_Patch.Prefix called (__instance: {__instance?.GetType().Name}, textureType: {textureType}, parentTrans: {parentTrans?.GetType().Name}, depth: {depth}, textureName: {textureName}, _position: {_position}, texture: {(texture != null ? texture.GetType().Name : "null")})");
                 if (ReplacementTextures.TryGetValue(textureName, out var resTextureList))
                 {
-                    Vector2 display = _position ?? Vector2.zero;
-                    GameObject gameObject = new GameObject(textureName);
+                    var display = _position ?? Vector2.zero;
+                    var gameObject = new GameObject(textureName);
                     gameObject.AddComponent<Sprite2dEffectArg>();
                     gameObject.AddComponent<Image>();
                     gameObject.transform.SetParent(parentTrans);
@@ -462,7 +457,7 @@ namespace GnosiaCustomizer
             }
         }
 
-        //[HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
+        [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
         public static class LoadTexture_Patch
         {
             [HarmonyPrefix]

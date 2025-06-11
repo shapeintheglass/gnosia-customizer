@@ -1,0 +1,170 @@
+Name,Index,InnerIndex,Desc,Emotion,Text
+name,,,,,Player
+t_keisho,,,,,
+t_aisatu,0,,,,You greeted the crew.
+t_suspect,0,,,,You stated your dislike of {0}.
+t_suspect,1,,,,You pointed out that {0} is acting conspicuously.
+t_suspect,2,,,,You pointed out that {0} is trying suspiciously hard to gain trust.
+t_suspect,3,,,,You pointed out that {0} has been suspiciously quiet.
+t_suspect,4,,,,"You pointed out that probabilistically, {0} is suspicious."
+t_suspect,5,,,,You pointed out some questionable points about {0}.
+t_suspect,6,,,,You stated that you will no longer cooperate with {0} due to suspiscion.
+t_suspect,7,,,,"You pointed out that considering {1}'s disappearance, {0} is suspicious."
+t_suspect_t0,0,,,,You stated that you too had been doubting {0}.
+t_suspected0,0,,,,Some seem to be doubting you...
+t_suspected0,1,,,,People seem to dislike you...
+t_hanron0,0,,,,You refuted the doubts against {0}.
+t_hanron0,1,,,,You refuted the doubts against {0}.
+t_hanron_t0,0,,,,You stated that you too trust {0}.
+t_trust,0,,,,You stated your fondness for {0}.
+t_trust,1,,,,"You pointed out that probabilistically, {0} is not suspicious."
+t_trust,2,,,,You announced that you trust {0}.
+t_trust_t0,0,,,,You stated that you too trust {0}.
+t_trusted0,0,,,,People seem to trust you...
+t_thanron0,0,,,,You stated that {0} is suspicious after all.
+t_thanron_t0,0,,,,You stated that you too doubt {0}.
+t_hosho,0,,,,You pointed out that {0} is definitely {1}.
+t_hosho,1,,,,You stated that {0} is definitely human.
+t_hosho_enemy,0,,,,You pointed out that {0} couldn't possibly be {1}.
+t_hosho_enemy,1,,,,You pointed out that {0} is definitely {1}.
+t_hosho_enemy,2,,,,You pointed out that {0} is definitely {1}.
+t_hosho_enemy,3,,,,You pointed out that {0} is definitely {1}.
+t_hosho_enemy,4,,,,You pointed out the inconsistencies in {0}'s comments.
+t_hosho_enemy,5,,,,You pointed out that {0} is an AC Follower or a Bug.
+t_hosho_miss,0,,,,You pointed out that {0}'s logic is flawed.
+t_hosho_miss,1,,,,You stated that it's a bit late for comments like that.
+t_hosho_get,0,,,,You thanked {0} for vouching for you.
+t_hosho_get,1,,,,They've seen through your lie...
+t_tohyo_mae,0,,,,It's about time to vote...
+t_tohyo_sai,0,,,,A decisive vote is about to begin...
+t_shokei,0,,,,You've been selected for cold sleep...
+t_shokei,1,,,,You've been selected for cold sleep after all...
+t_wakare,0,,,,You bid farewell to {0}.
+t_karare,0,,,Surprised,"Y-you...!
+So you were {0}!"
+t_imjinro,0,,,Gnosia,You announced to everyone that you are {0}.
+t_shori,0,,,Smug,"The threat of {0} is gone from the ship.
+Victory...!"
+t_tohyo_kurikaeshi,0,,,,"You said ""Let's think of a plan instead of going around in circles."""
+t_tohyo_jeno,0,,,,You proposed putting all candidates into cold sleep.
+t_tohyo_alive,0,,,,You proposed skipping cold sleep.
+t_tohyo_jeno_ok,0,,,,You agreed to putting everyone into cold sleep.
+t_tohyo_jeno_ng,0,,,,You spoke out against putting everyone into cold sleep.
+t_tohyo_alive_ok,0,,,,You agreed with skipping cold sleep.
+t_tohyo_alive_ng,0,,,,You spoke out against skipping cold sleep.
+t_tohyo_jeno_kettei,0,,,,Cold sleep for all was decided via majority vote.
+t_tohyo_alive_kettei,0,,,,Skipping cold sleep was decided via majority vote.
+t_tohyo_hitei,0,,,,"Due to the number of disagreements, a conclusion could not be reached..."
+t_tohyo_dame,0,,,,"Time has run out, so nothing will be done for the time being..."
+t_co,0,,,,dammy
+t_co,1,,,Neutral,You announced your role as {0}.
+t_co,2,,,Neutral,You announced your role as {0}.
+t_co,3,,,Neutral,You announced your role as {0}.
+t_co,4,,,Neutral,"You stated that, being {0}, you couldn't possibly be Gnosia, and that the other {0} could prove it."
+t_co,5,,,,dammy
+t_co,6,,,,dammy
+t_co,7,,,,dammy
+t_co,8,,,,dammy
+t_co_find,0,,,,dammy
+t_co_find,1,,,,"You announced your role as {0}.
+You also pointed out that {1} is Gnosia."
+t_co_find,2,,,,"You announced your role as {0}.
+You also pointed out that {1} is Gnosia."
+t_co_find,3,,,,dammy
+t_co_find,4,,,,dammy
+t_co_find,5,,,,dammy
+t_co_find,6,,,,dammy
+t_co_find,7,,,,dammy
+t_co_find,8,,,,dammy
+t_co_taiko,0,,,,dammy
+t_co_taiko,1,,,Neutral,"You stated that you are the real {0}, and that {1} is a fake."
+t_co_taiko,2,,,Neutral,"You stated that you are the real {0}, and that {1} is a fake."
+t_co_taiko,3,,,,dammy
+t_co_taiko,4,,,Neutral,"You stated that you are also {0}, and that like {1}, you couldn't be Gnosia."
+t_co_taiko,5,,,,dammy
+t_co_taiko,6,,,,dammy
+t_co_taiko,7,,,,dammy
+t_co_taiko,8,,,,dammy
+t_co_req,0,,,,You urged the {0} to come forward.
+t_co_after,0,,,,Only {1} claimed the role of {0}.
+t_co_after,1,,,,{1} claimed the role of {0}.
+t_co_after,2,,,,{1} claimed the role of {0}.
+t_uranai_o,0,,,,"As Engineer,
+"
+t_uranai_s,0,,,,"As Engineer,
+"
+t_uranai_b,0,,,,"As Engineer,
+"
+t_uranai_t,0,,,Neutral,you reported that {1} turned out to be {0}.
+t_uranai_f,0,,,Neutral,you reported that {1} turned out not to be {0}.
+t_uranai_n,0,,,Neutral,You reported that there was no one to investigate.
+t_uranai_change,0,,,,"Having been attacked last night, {1} couldn't be {0}.
+You reluctantly report that {1} wasn't {0}."
+t_reibai_s,0,,,,"As Doctor,
+"
+t_reibai_t,0,,,Neutral,you reported that {1} was {0}.
+t_reibai_f,0,,,Neutral,you reported that {1} was not {0}.
+t_reibai_ft,0,,,Neutral,"You reported that among {1}, {2} was {0}."
+t_reibai_ff,0,,,Neutral,You reported that there was no {0} among {1}.
+t_houkoku_s,0,,,Neutral,"As previously reported,"
+t_houkoku_w,0,,,Neutral,"Contrary to the previous report,"
+t_okuyami,0,,,Surprised,You mourned {0}'s death...
+t_okuyami_n,0,,,Surprised,You were happy to find that nobody had been attacked.
+t_okuyami_f,0,,,Surprised,You mourned {0}'s death...
+t_houkoku_req,0,,,Neutral,You requested anyone who has not yet reported to come forward.
+t_houkoku_not,0,,,Neutral,You requested anyone who has not yet reported to come forward.
+t_skill_sayNingen,0,,,,You asked everyone to step up and state that they really are human.
+t_skill_sayNingen,1,,,,You asserted that you really are human.
+t_skill_sayNingen,2,,,,You told everyone to stop this.
+t_skill_sayNingen,3,,,,Nobody stepped up...
+t_skill_sayNingen,4,,,,"Apparently that's all...
+Some people failed to step up..."
+t_skill_sayNingen,5,,,,Everyone seems to have stepped up...
+t_skill_sayNingen,6,,,,You were interrupted...
+t_skill_zatsudan,0,,,,You tried to lighten the mood by talking about food.
+t_skill_zatsudan,1,,,,You tried to lighten the mood by talking about romance.
+t_skill_zatsudan,2,,,,You proposed telling ghost stories to lighten the mood.
+t_skill_zatsudan,3,,,,"You joined in, talking about food."
+t_skill_zatsudan,4,,,,"You joined in, talking about your first love."
+t_skill_zatsudan,5,,,,"You joined in, telling a scary story from your childhood."
+t_skill_zatsudan,6,,,,You stated that this isn't the time for such talk.
+t_skill_roller,0,,,,You proposed putting all who claimed to be the {0} into cold sleep.
+t_skill_roller,1,,,,You agreed to putting all who claimed to be the {0} into cold sleep.
+t_skill_roller,2,,,,You spoke out against putting all who claimed to be the {0} into cold sleep.
+t_skill_roller,3,,,,You stated that you too disagree with putting all who claimed to be the {0} into cold sleep.
+t_skill_roller,4,,,,"Now, at least a few people will vote for them..."
+t_skill_roller,5,,,,"Everyone rejected your proposal.
+You're unsure how it will affect the vote..."
+t_skill_roller,6,,,,You proposed putting all who claimed to be the {0} into cold sleep.
+t_skill_doTohyo,0,,,,"{1} reports that {0} is Gnosia.
+You proposed putting them in cold sleep."
+t_skill_doTohyo,1,,,,"According to your investigation, {0} is Gnosia.
+You proposed putting them in cold sleep."
+t_skill_doTohyo,2,,,,"Knowing {0} to be a fake, you proposed putting them in cold sleep."
+t_skill_doTohyo,3,,,,"The Engineer reports that {0} is Gnosia.
+You proposed putting them in cold sleep."
+t_skill_doTohyo,4,,,,You agreed to the vote against {0}.
+t_skill_doTohyo,5,,,,You spoke out against being put into cold sleep.
+t_skill_doTohyo,6,,,,You disagreed with the vote against {0}.
+t_skill_doTohyo,7,,,,You stated that you too disagree with the vote against {0}.
+t_skill_dontTohyo,0,,,,You stated that someone else should be prioritized over {0}.
+t_skill_dontTohyo,1,,,,You agreed that a vote against {0} should be avoided for now.
+t_skill_dontTohyo,2,,,,You stated that the vote against {0} should not be prevented.
+t_skill_dontTohyo,3,,,,You stated that you have no problem voting against {0}.
+t_skill_kyoryoku,0,,,,You asked {0} to help you out.
+t_skill_kyoryoku,1,,,,You agreed to cooperate with {0}.
+t_skill_kyoryoku,2,,,,You told {0} that you can't help them.
+t_skill_t_doui,0,,,,You suggested that everyone should trust {0}'s judgment.
+t_skill_t_hanronKinshi,0,,,,You stated that defiance against {0} would not be tolerated.
+t_skill_t_kyakushoku,0,,,,You exaggerated the danger posed by {1}.
+t_skill_t_kyakushoku,1,,,,"You loudly stated that everyone should protect {1}, as {0} says."
+t_skill_t_kyakushoku,2,,,,"You strongly agreed with {2}, stating that they are exactly right."
+t_skill_t_kyakushoku,3,,,,You exaggerated the danger of voting against {1}.
+t_skill_h_uyamuya,0,,,,"You changed the subject, diverting negative attention from yourself."
+t_skill_h_hangeki,0,,,,You stated that {0} is more suspicious than yourself.
+t_skill_h_dojo,0,,,,You stated how sad you are to be doubted like this.
+t_skill_h_help,0,,,,You asked {0} to help you out.
+t_skill_h_help,1,,,,You rejected {0}'s help.
+t_skill_h_careful,0,,,,"You warned everyone to be cautious of {0}, who is lying."
+t_skill_dogeza,0,,,,
+t_skill_dogeza,1,,,,You begged and groveled to be spared from cold sleep.

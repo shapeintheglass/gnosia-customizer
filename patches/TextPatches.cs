@@ -2,8 +2,6 @@
 using System.IO;
 using BepInEx;
 using BepInEx.Logging;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization;
 using System.Linq;
 using System;
 using HarmonyLib;
@@ -20,36 +18,34 @@ namespace GnosiaCustomizer.patches
         internal static new ManualLogSource Logger;
         private const string ConfigFileName = "config.yaml";
 
-        private static ConcurrentDictionary<int, CharacterText> characterTexts = new ConcurrentDictionary<int, CharacterText>();
+        private static ConcurrentDictionary<int, CharacterText> characterTexts = new();
 
         internal static void Initialize()
         {
             Logger.LogInfo("LoadCustomText called");
-
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             // Read from each character folder asynchronously
             var tasks = new List<Task>();
             int characterId = 1;
             var skillMap = new ConcurrentDictionary<int, Dictionary<string, bool>>();
             foreach (var charaFolder in Consts.CharaFolderNames)
             {
-                var charaPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, ConfigFileName);
-                if (!File.Exists(charaPath))
+                var charaPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder);
+                if (!Directory.Exists(charaPath))
                 {
+                    Logger.LogInfo($"Could not find path {charaPath}");
                     characterId++;
                     continue;
                 }
 
                 var localCharacterId = characterId; // Capture the current characterId for the task
-                tasks.Add(Task.Run(() =>
+                var yamlPath = Path.Combine(charaPath, ConfigFileName);
+                if (File.Exists(yamlPath))
                 {
-                    string yamlContent = File.ReadAllText(charaPath);
-
-                    var deserializer = new DeserializerBuilder()
-                        .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                        .Build();
                     try
                     {
-                        var character = deserializer.Deserialize<CharacterText>(yamlContent);
+                        var character = new CharacterText();
+                        character.LoadFromFile(yamlPath);
                         if (localCharacterId != 0)
                         {
                             characterTexts[localCharacterId] = character;
@@ -60,14 +56,16 @@ namespace GnosiaCustomizer.patches
                     {
                         Logger.LogError($"Failed to deserialize {charaFolder}: {ex.Message}");
                     }
-
-                }));
+                }
                 characterId++;
             }
+
             try
             {
-                Task.WhenAll(tasks).GetAwaiter().GetResult();
-                Logger.LogInfo($"Loaded {characterTexts.Count}/{Consts.CharaFolderNames.Length} character configs and initialized {skillMap.Count}/{Consts.CharaFolderNames.Length} character skills");
+                Logger.LogInfo($"Loaded {characterTexts.Count}/{Consts.CharaFolderNames.Length} character configs");
+                Logger.LogInfo($"Loaded {skillMap.Count}/{Consts.CharaFolderNames.Length} character skills");
+                Logger.LogInfo($"LoadCustomText completed in {sw.ElapsedMilliseconds} ms");
+
                 JinroPatches.SkillMap = skillMap.ToDictionary(kv => kv.Key, kv => kv.Value);
             }
             catch (AggregateException ex)
@@ -96,45 +94,53 @@ namespace GnosiaCustomizer.patches
             {
                 foreach (var absoluteId in Consts.CharaFolderIds)
                 {
-                    if (characterTexts.TryGetValue(absoluteId, out var character) && !string.IsNullOrEmpty(character.Name))
+                    if (characterTexts.TryGetValue(absoluteId, out var character))
                     {
                         CharacterSetter.SetChara(Logger, absoluteId, character);
                     }
                     Logger.LogInfo($"Character ID {absoluteId} name is now: {CharacterSetter.GetCharaFieldValue(absoluteId, "name")}");
-                }
-            }
-        }
 
-        //[HarmonyPatch(typeof(ScriptParser), "SetNormalSerifu")]
-        public class ScriptParserSetNormalSerifuPatch
-        {
-            static void Prefix(ScriptParser __instance, 
-                int main,
-                int tgt,
-                int pos,
-                List<string> lang,
-                bool waitNextText = false,
-                bool withoutTrans = false,
-                bool withoutCharaChange = false,
-                bool vRole = true)
-            {
-                Logger.LogInfo($"ScriptParser.SetNormalSerifu called with main={main}, tgt={tgt}, pos={pos}, lang={lang.Join()}, waitNextText={waitNextText}, " +
-                    $"withoutTrans={withoutTrans}, withoutCharaChange={withoutCharaChange}, vrole={vRole}");
+                    if (CharacterSetter.GetCharaFieldValueAsStringArray(absoluteId, "t_skill_dogeza", out var strArray))
+                    {
+                        Logger.LogInfo($"Dogeza test: Want 2 lines, got: {strArray.Count}");
+                    }
+                    else
+                    {
+                        Logger.LogInfo($"Dogeza test: No lines found for character {absoluteId}.");
+                    }
+                    if (character.SingleLines.TryGetValue("night_friend_and_high_trust", out var personalLine))
+                    {
+                        Logger.LogInfo($"Personal lines test: {personalLine.Line}");
+                    } else
+                    {
+                        Logger.LogInfo($"Personal lines test: No personal line found for character {absoluteId}.");
+                    }
+                }
             }
         }
 
         [HarmonyPatch(typeof(ScriptParser), "SetText")]
         public class ScriptParserSetTextPatch
         {
-            static void Prefix(ScriptParser __instance,
-                ref string message, bool waitFinish = false, uint depth = 50, string targetText = "test")
+            static bool Prefix(ScriptParser __instance, ref string message)
             {
-                Logger.LogInfo($"ScriptParser.SetText called with message='{message}', waitFinish={waitFinish}, depth={depth}, targetText='{targetText}'");
-                if (string.IsNullOrEmpty(message))
+                if (string.IsNullOrWhiteSpace(message))
                 {
-                    Logger.LogInfo("Using placeholder for empty message.");
                     message = "...";
                 }
+                else if (message.StartsWith(CharacterSetter.SubstitutionPrefix))
+                {
+                    var tokens = message.Split(CharacterSetter.Delimiter);
+                    if (tokens.Length > 0)
+                    {
+                        // 0 - Prefix
+                        // 1 - Character name
+                        // 2 - Message name
+                        // 3+ - Parameters
+                        message = tokens[2];
+                    }
+                }
+                return true;
             }
         }
     }

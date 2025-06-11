@@ -57,9 +57,8 @@ namespace GnosiaCustomizer.patches
                     return false;
                 }
 
-                if (cid < 0 || cid >= (int)gameData.baseData.totalNum || !Jinro.CanGetSkill(cid, skill)) {
+                if (cid < 0 || cid >= (int)gameData.baseData.totalNum) {
                     __result = false;
-                    Logger.LogInfo($"Character {cid} cannot have skill {skill}. Returning false.");
                     return false;
                 }
                 if (cid == 0)

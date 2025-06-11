@@ -1,0 +1,417 @@
+Name,Index,InnerIndex,Desc,Emotion,Text
+name,,,,,Kukrushka
+d_place,,,,,Unknown
+d_tokki,0,,,,"Very intuitive, acts on her emotions."
+d_tokki,1,,,,"Communicates via facial expressions, body language."
+d_tokki,2,,,,"Not human, according to Yuriko."
+d_tokki,3,,,,"When on guard duty with Remnan, murders everyone."
+d_tokki,4,,,,Two-body autonomous doll; other body is in storage.
+d_tokki,5,,,,Jonas' doll; personality moves between bodies.
+d_tokki,6,,,,Three Sizes 8
+t_keisho,,,,,
+t_aisatu,0,,,Neutral,"(This girl's name is {0}.
+{0} doesn't speak. No one has ever heard her voice.
+However {0} is quite eloquent, using expression and gestures to speak.)"
+t_suspect,0,,,Smug,(Kukrushka's expression shows contempt toward {0}.)
+t_suspect,1,,,Thinking,"(She's tired of hearing {0} speak.
+This much is clear.)"
+t_suspect,2,,,Surprised,"(Can {0} be trusted? Really...?
+You can feel her questioning everyone.)"
+t_suspect,3,,,Annoyed,"({0} is too quiet, and can't be trusted,
+say her expression and gestures.)"
+t_suspect,4,,,Annoyed,"(Kukrushka thinks for a moment and points to {0}.
+Her calculations indicate that {0} is suspicious.)"
+t_suspect,5,,,Annoyed,"({0} cannot be trusted,
+says Kukrushka with her eyes.)"
+t_suspect,6,,,Hurt,"(I can't cooperate with {0} any longer,
+says Kukrushka's sorrowful gaze.)"
+t_suspect,7,,,Annoyed,"({0} attacked {1}? Why?
+Kukrushka stares with contempt.)"
+t_suspect_r,0,,,Thinking,"(I should never have trusted {0},
+sighs Kukrushka.)"
+t_suspect_r,1,,,Neutral,"(Noticing that {0} has been overly talkative, Kukrushka scowls in dismay.)"
+t_suspect_r,2,,,Annoyed,"(We can no longer trust {0}.
+No, it's too dangerous...
+Kukrushka emotes to the group.)"
+t_suspect_r,3,,,Neutral,"({0}, you should speak up more,
+Kukrushka seems to be saying.)"
+t_suspect_r,4,,,Hurt,"(Kukrushka looks at {0}, and delves into thought.
+Stochastically speaking, {0} is suspicious.
+Apparently she no longer trusts them.)"
+t_suspect_r,5,,,Annoyed,"(It seems {0} can't be trusted after all,
+Kukrushka seems to be saying.)"
+t_suspect_r,6,,,,...
+t_suspect_r,7,,,,...
+t_suspect_add,0,,,Surprised,"(I feel {0} may be suspicious...
+Kukrushka's body language says as much.)"
+t_suspect_t0,0,,,Annoyed,"(Kukrushka also turned against {0}.
+Her stare says as much.)"
+t_suspect_t0,1,,,Thinking,"({0}, just stop,
+says Kukrushka with a gaze.)"
+t_suspect_t0,2,,,Smug,(Kukrushka looks upon {0} with sorrow...)
+t_suspect_t0,3,,,Surprised,"(Kukrushka stares at {0},
+as if to warn the group of danger.)"
+t_suspect_t0,4,,,Neutral,"(Yes, {0} is definitely suspicious,
+agrees Kukrushka.)"
+t_suspect_t0,5,,,Annoyed,(Kukrushka's eyes are filled with suspicion toward {0}.)
+t_suspect_t0,6,,,Annoyed,(Kukrushka stares at {0} sternly...)
+t_suspect_t1,0,,,Smug,"({0}, I'm sorry, but...
+Kukrushka appears to have given up.)"
+t_suspect_t1,1,,,Neutral,"({1} is right,
+Kukrushka nods.)"
+t_suspect_t1,2,,,Surprised,"(No way... {0}...?
+Kukrushka's surprise turns to suspicion.)"
+t_suspect_t1,3,,,Surprised,"(Kukrushka seems taken aback.
+She seems to have forgotten all about {0}.)"
+t_suspect_t1,4,,,Hurt,"(We have no choice but to suspect {0},
+Kukrushka passively agrees.)"
+t_suspect_t1,5,,,Hurt,(Apparently Kukrushka has yet to fully trust {0}.)
+t_suspected0,0,,,Hurt,"(Kukrushka, under suspicion,
+stands quietly, watching things play out...)"
+t_suspected0,1,,,Hurt,"(Feeling she has lost the favor of the group,
+Kukrushka averts her gaze...)"
+t_hanron0,0,,,Happy,"(It's OK. I trust you, {0},
+Kukrushka smiles, attempting to lift her friend's spirits.)"
+t_hanron0,1,,,Annoyed,"(No. Don't listen to {1}...
+Kukrushka's expression turns severe.)"
+t_hanron1,0,,,Happy,"(I trust you, {0},
+emotes Kukrushka with a smile.)"
+t_hanron_t0,0,,,Happy,"(Smiling brightly,
+Kukrushka clearly trusts {0}.)"
+t_hanron_t1,0,,,Neutral,"(I don't doubt {0} at all,
+Kukrushka seems to be saying.)"
+t_trust,0,,,Happy,"(Kukrushka smiles at {0}.
+Her unwavering trust is clear.)"
+t_trust,1,,,Neutral,"(By my calculations, {0} can be trusted,
+Kukrushka seems to be saying.)"
+t_trust,2,,,Happy,"(We can trust {0}...
+Kukrushka seems to want everyone else to trust {0}, too.)"
+t_trust_r,0,,,Happy,"(Kukrushka once again expresses her faith in {0}.
+She flashes a beaming smile.)"
+t_trust_r,1,,,Hurt,"(I should never have doubted you, {0},
+apologizes Kukrushka.)"
+t_trust_r,2,,,Neutral,"(Let's stop doubting {0},
+emotes Kukrushka to the group.)"
+t_trust_t0,0,,,Neutral,(Kukrushka nods in agreement.)
+t_trust_t1,0,,,Happy,"(Kukrushka agrees, and seems to have stopped doubting {0}.)"
+t_trusted0,0,,,Happy,(Kukrushka expresses her gratitude via body language.)
+t_thanron0,0,,,Hurt,"(You can't trust {0},
+warns Kukrushka, shaking her head.)"
+t_thanron1,0,,,Annoyed,"(We can't afford to trust {0} right now,
+warns Kukrushka.)"
+t_thanron_t0,0,,,Smug,"(Kukrushka shoots a glance at {0}.
+Her eyes show no sign of trust.)"
+t_thanron_t1,0,,,Neutral,"(I don't think we should do this.
+Let's wait and see what happens, Kukrushka seems to say.)"
+t_hosho,0,,,Neutral,"It's pretty obvious that {0} is definitely {1}.
+Any objections?"
+t_hosho,1,,,Neutral,{0} is human. I think we can agree on this.
+t_hosho_enemy,0,,,Neutral,"{0} is lying.
+There's no way you're {1}."
+t_hosho_enemy,1,,,Thinking,{0} is... {1}. They have to be.
+t_hosho_enemy,2,,,,{0} is {1}. AC.
+t_hosho_enemy,3,,,,{0} is {1}. Bug.
+t_hosho_enemy,4,,,,Something about {0} is wrong.
+t_hosho_enemy,5,,,Neutral,"{0} is not Gnosia. This is a fact.
+But {0} is lying. This is also a fact."
+t_hosho_miss,0,,,Hurt,"({0} is mistaken,
+Kukrushka seems to say, shaking her head.)"
+t_hosho_miss,1,,,Thinking,"(Yes, we're already aware of that...
+Kukrushka seems to say, looking annoyed.)"
+t_hosho_get,0,,,Happy,"(Kukrushka seems happy to have been recognized as {1}.
+Her joy is palpable.)"
+t_hosho_get,1,,,Annoyed,"(Seemingly realizing that she's been pushed into a corner,
+Kukrushka stares at {0}, frustratedly.)"
+t_tohyo_go,0,,,Thinking,"(So, nobody has anything to say...?
+Kukrushka looks away, silently.
+It's about time to vote.)"
+t_tohyo_mae,0,,,Annoyed,"(Kukrushka's expression turns serious.
+The time to vote has come...)"
+t_tohyo_sai,0,,,Surprised,(Kukrushka is surprised that a vote must be taken again.)
+t_shokei,0,,,Smug,(Kukrushka is going off to sleep...)
+t_shokei,1,,,Hurt,"(Kukrushka will be sent off to cold sleep.
+She looks down at the floor in shame.)"
+t_wakare,0,,,Hurt,(You can feel the sadness in Kukrushka's heart...)
+t_karare,0,,,Smug,"(Kukrushka, under attack by {0},
+smiles faintly, but frighteningly...)"
+t_imjinro,0,,,Gnosia,(Kukrushka was {0}...)
+t_shori,0,,,Happy,(Kukrushka quietly enjoys the victory.)
+t_tohyo_kurikaeshi,0,,,Hurt,"(A tie, yet again.
+Exhaustion is beginning to show on Kukrushka's face.)"
+t_tohyo_jeno,0,,,Neutral,"(Let's send all of those selected off to cold sleep,
+Kukrushka seems to be saying.)"
+t_tohyo_alive,0,,,Smug,(Kukrushka expresses her desire to give this up and rest for the day.)
+t_tohyo_jeno_ok,0,,,Hurt,"(We have no choice but to send everyone to cold sleep...
+Kukrushka seems to agree.)"
+t_tohyo_jeno_ng,0,,,Annoyed,"(Kukrushka shakes her head.
+She seems to be against this.)"
+t_tohyo_alive_ok,0,,,Happy,"(Kukrushka nods her head.
+She agrees to skipping cold sleep.)"
+t_tohyo_alive_ng,0,,,Hurt,"(Kukrushka's expression looks dire.
+Apparently she is against the idea.)"
+t_tohyo_jeno_kettei,0,,,Neutral,"(Kukrushka's idea was accepted,
+and all those selected will be sent off to cold sleep.)"
+t_tohyo_alive_kettei,0,,,Happy,"(Kukrushka's idea was accepted,
+and this time, nobody will go into cold sleep.)"
+t_tohyo_hitei,0,,,Hurt,(Kukrushka signs in disappointment at her idea being rejected.)
+t_tohyo_dame,0,,,Thinking,"(Kukrushka seems ready to fall asleep at any moment.
+She's about at her limit for the day...)"
+t_tohyo_dame,1,,,,...
+t_co,0,,,,dammy
+t_co,1,,,Neutral,"(Kukrushka raises her hand.
+It seems she's the {0}.)"
+t_co,2,,,Neutral,"(It seems Kukrushka is the {0}.
+Her body language says as much.)"
+t_co,3,,,Smug,"(The {0} is Kukrushka, it would seem.)"
+t_co,4,,,Neutral,"(I haven't left the ship, so I couldn't be Gnosia,
+she seems to say.)"
+t_co,5,,,,dammy
+t_co,6,,,,dammy
+t_co,7,,,,dammy
+t_co,8,,,,dammy
+t_co_find,0,,,,dammy
+t_co_find,1,,,Annoyed,"(Kukrushka indicates that she is the {0}...
+Then - strongly - that {1} is Gnosia.)"
+t_co_find,2,,,Neutral,"(Kukrushka asserts that she is the {0}.
+Then, she indicates that {1} was Gnosia.)"
+t_co_find,3,,,,dammy
+t_co_find,4,,,,dammy
+t_co_find,5,,,,dammy
+t_co_find,6,,,,dammy
+t_co_find,7,,,,dammy
+t_co_find,8,,,,dammy
+t_co_taiko,0,,,,dammy
+t_co_taiko,1,,,Annoyed,"(Kukrushka glares at {1} sternly.
+She herself, is the {0}.
+Her body language makes this apparent.)"
+t_co_taiko,2,,,Annoyed,"(The {0} is me. Not {1}.
+Kukrushka expresses this through facial expressions.)"
+t_co_taiko,3,,,,dammy
+t_co_taiko,4,,,Happy,"(Kukrushka looks at {1} kindly.
+She, too, remained on the ship.)"
+t_co_taiko,5,,,,dammy
+t_co_taiko,6,,,,dammy
+t_co_taiko,7,,,,dammy
+t_co_taiko,8,,,,dammy
+t_co_req,0,,,Surprised,"(Who is the {0}?
+Kukrushka looks around at everyone.)"
+t_co_after,0,,,Happy,(Kukrushka seems happy that the {1} has appeared.)
+t_co_after,1,,,Annoyed,"(Kukrushka sizes up the two people claiming to be the {0}.
+One is definitely lying... She stares them down sternly.)"
+t_co_after,2,,,Hurt,(She's confused by the number of people claiming to be the {0}...)
+t_uranai_o,0,,,Hurt,(Kukrushka sighs.
+t_uranai_s,0,,,,"(Kukrushka reports.
+"
+t_uranai_b,0,,,,"(Kukrushka seems to have investigated someone else.
+"
+t_uranai_t,0,,,Surprised,She implies that she found {1} to be {0}.)
+t_uranai_f,0,,,Happy,"According to her findings, {1} was not {0}.)"
+t_uranai_n,0,,,Thinking,"(Kukrushka implies...
+that she didn't know whom to investigate.)"
+t_reibai_s,0,,,,"(Claiming to be the Doctor, Kukrushka reports.
+"
+t_reibai_s,1,,,,...
+t_reibai_t,0,,,Annoyed,Apparently she found that {1} {3} {0}.)
+t_reibai_f,0,,,Hurt,Apparently {1} {3} not {0}.)
+t_reibai_ft,0,,,Happy,"{2} {4} {0}, according to her report.)"
+t_reibai_ff,0,,,Hurt,Apparently there were no {0} among those frozen last night.)
+t_houkoku_s,0,,,Smug,(Kukrushka nods.
+t_houkoku_w,0,,,Annoyed,"(Don't be fooled, emotes Kukrushka."
+t_okuyami,0,,,Hurt,(You can feel Kukrushka mourning for {0}...)
+t_okuyami_n,0,,,Happy,(She's happy nobody was attacked.)
+t_okuyami_f,0,,,Surprised,(She's shocked that two people were attacked in one night.)
+t_houkoku_req,0,,,Neutral,"(She looks around at the group, encouraging them to report.)"
+t_houkoku_not,0,,,Surprised,"(Wait, the {0} has yet to report,
+Kukrushka implies to the group.)"
+t_skill_sayNingen,0,,,,...
+t_skill_sayNingen,1,,,Happy,"(Kukrushka nods.
+She's gesturing that she, too, is human.)"
+t_skill_sayNingen,2,,,Hurt,"(It's not good to test people like that...
+Kukrushka doesn't like this.)"
+t_skill_sayNingen,3,,,,...
+t_skill_sayNingen,4,,,,...
+t_skill_sayNingen,5,,,,...
+t_skill_sayNingen,6,,,,...
+t_skill_zatsudan,0,,,,...
+t_skill_zatsudan,1,,,,...
+t_skill_zatsudan,2,,,,...
+t_skill_zatsudan,3,,,Happy,"(Somehow, you can picture the food Kukrushka is imagining.
+It's... borscht, definitely borscht.)"
+t_skill_zatsudan,4,,,Neutral,"(You can feel love in Kukrushka's eyes.
+However, you can't tell toward whom it is felt...)"
+t_skill_zatsudan,5,,,Hurt,"(Kukrushka seems frightened.
+She seems to dislike scary stories.)"
+t_skill_zatsudan,6,,,Annoyed,"(Is this really the time for this kind of talk...?
+Kukrushka glares at {0}, who started the small talk.)"
+t_skill_roller,0,,,,...
+t_skill_roller,1,,,Thinking,"(I guess we have no choice...
+Kukrushka seems to reluctantly agree.)"
+t_skill_roller,2,,,Annoyed,"(I don't want to have to do that...
+Kukrushka seems to be against it.)"
+t_skill_roller,3,,,Hurt,"(Kukrushka seems to be against it.
+It's clear by the look in her eyes.)"
+t_skill_roller,4,,,,...
+t_skill_roller,5,,,,...
+t_skill_roller,6,,,,...
+t_skill_doTohyo,0,,,,...
+t_skill_doTohyo,1,,,,...
+t_skill_doTohyo,2,,,,...
+t_skill_doTohyo,3,,,Hurt,"(But, nobody reported such a thing...
+Kukrushka shakes her head.)"
+t_skill_doTohyo,4,,,Neutral,"(Kukrushka nods her head...
+She, too, agrees with the vote against {0}.)"
+t_skill_doTohyo,5,,,Annoyed,"(Kukrushka says nothing.
+She simply stares at {1}...)"
+t_skill_doTohyo,6,,,Annoyed,"(Kukrushka can't accept this...
+She stares at {1}, expressing her disagreement.)"
+t_skill_doTohyo,7,,,Happy,"(Kukrushka smiles, trying to make {0} feel better.
+She's showing that she's against the vote for {0}.)"
+t_skill_dontTohyo,0,,,,...
+t_skill_dontTohyo,1,,,Neutral,"(Kukrushka nods, implying that she understands...
+She is not going to vote against {0}.)"
+t_skill_dontTohyo,2,,,Thinking,"(We should be able to choose for ourselves...
+Kukrushka is against this.)"
+t_skill_dontTohyo,3,,,Annoyed,"(Kukrushka nods with a severe expression on her face...
+She, too, seems to be against {1}'s proposal.)"
+t_skill_kyoryoku,0,,,Neutral,"(Help me, {0}...
+Kukrushka's gaze says as much.)"
+t_skill_kyoryoku,1,,,Happy,"(Let's get through this together...
+Kukrushka smiles like a blossoming flower.)"
+t_skill_kyoryoku,2,,,Smug,"(Kukrushka shakes her head as if to say...
+I'm sorry, {0}, but I can't help you...)"
+t_skill_t_doui,0,,,,...
+t_skill_t_hanronKinshi,0,,,,...
+t_skill_t_kyakushoku,0,,,Hurt,"({1} scares me...
+Kukrushka's body language says as much, as she shivers.)"
+t_skill_t_kyakushoku,1,,,Happy,"({1} helped me, so...
+Kukrushka's warm smile expresses as much.)"
+t_skill_t_kyakushoku,2,,,Neutral,"(Kukrushka seems to agree with {2}...
+She seems very trusting.)"
+t_skill_t_kyakushoku,3,,,Annoyed,"(It's not {1} who's dangerous...
+Kukrushka seems to be warning the group with her expression.)"
+t_skill_h_uyamuya,0,,,,...
+t_skill_h_hangeki,0,,,,...
+t_skill_h_dojo,0,,,Hurt,"(Kukrushka seems overcome with sadness...
+She seems as if she's about to disappear.)"
+t_skill_h_help,0,,,Neutral,"({0}, I know you'll help me...
+Kukrushka's eyes gleam with trust.)"
+t_skill_h_help,1,,,Thinking,"(Kukrushka shakes her head.
+She seems to have no intention of helping.)"
+t_skill_h_careful,0,,,,...
+t_skill_dogeza,0,,,Hurt,(Kukrushka seems confused...)
+t_skill_dogeza,1,,,,...
+t_personal,0,0,,Thinking,"(Kukrushka...
+seems to be staring off into space...)"
+t_personal,0,1,,Thinking,"(Hm...? Maybe she hasn't noticed...?
+Kukrushka doesn't even look at you.)"
+t_personal,0,2,,Annoyed,"(I can't forgive {0}...
+Kukrushka's animosity is apparent in her expression.)"
+t_personal,0,3,,Happy,"(We can trust each other, {0}...
+Kukrushka looks very happy.)"
+t_personal,0,4,,Happy,"(Kukrushka smiles.
+She seems to like you.)"
+t_personal,0,5,,Happy,"(Kukrushka looks toward you and bows.
+Apparently she had been waiting for you to come see her.)"
+t_personal,0,6,,Neutral,"({0}, I want to hear you talk...
+Kukrushka touches your shoulder in a familiar manner.)"
+t_personal,0,7,,Happy,(Kukrushka greets you with a smile.)
+t_personal,0,8,,Annoyed,"(Kukrushka seems to be...
+wary of you.)"
+t_personal,0,9,,Smug,"(Kukrushka seems completely unfazed...
+She's simply smiling.)"
+t_personal,0,10,,Neutral,"(Kukrushka holds your hand to greet you.
+You can feel a deep trust in her touch.)"
+t_personal,0,11,,Happy,"(Kukrushka is spinning her head around quickly with a smile.
+You have no idea what she's trying to say...)"
+t_personal,0,12,,Thinking,"(Hm...? Maybe she hasn't noticed...?
+Kukrushka doesn't even look at you.)"
+t_personal,0,13,,Neutral,"(Kukrushka looks at you quietly.
+You can feel her fondness for you in her eyes.)"
+t_personal,0,14,,Hurt,"(Kukrushka's expression darkens.
+Apparently you aren't very welcome here...)"
+t_personal,0,15,,Smug,"(Kukrushka's gaze...
+It's filled with contempt, and a sort of sadness.)"
+t_personal,0,16,,Happy,"(Kukrushka smiles,
+as if to invite everyone to talk together.)"
+t_personal,1,0,,Hurt,"(Listen, {0}...
+Kukrushka seems to say.)"
+t_personal,1,1,,Annoyed,"({1} is lying.
+Kukrushka tells you this.)"
+t_personal,1,2,,Neutral,"(So {0}, I need your help.
+Let's put {1} into cold sleep.
+Kukrushka is counting on you.)"
+t_personal,2,0,,Happy,"(Good...
+Kukrushka seems to feel more at ease.)"
+t_personal,2,1,,Neutral,"(Thank you, {0}.
+You can feel Kukrushka's appreciation.)"
+t_personal,3,0,,Neutral,"(Kukrushka looks toward you...
+She seems to want to say something.)"
+t_personal,3,1,,Smug,"(I feel I can trust you, {0}...
+Kukrushka seems to want to form an alliance.)"
+t_personal,4,0,,Happy,"(Kukrushka smiles like a blossoming flower.
+You can feel her happiness...)"
+t_personal,4,1,,Neutral,"(Let's dance together, OK?
+You'll likely be dancing with Kukrushka till late.)"
+t_personal,5,0,,Hurt,"(How unfortunate...
+Kukrushka shakes her head, sadly.)"
+t_personal,5,1,,Happy,"(But, I trust you...
+Kukrushka smiles as you part ways.)"
+t_personal,6,0,,Hurt,"(Kukrushka seems to...
+be worried about something...)"
+t_personal,6,1,,Annoyed,"({1} is dangerous...
+I want you to eliminate {1} tonight.)"
+t_personal,6,2,,Hurt,"(Please, {0}...
+Kukrushka begs you.)"
+t_personal,7,0,,Happy,"(Kukrushka seems to be happy to have {1} out of the way.
+You can feel her joy.)"
+t_personal,7,1,,Smug,"(Kukrushka glances at you.
+She smiles, ever so slightly.)"
+t_personal,8,0,,Happy,"(We won! We won!
+Kukrushka's entire body expresses her joy.)"
+t_personal,8,1,,Neutral,"(It's all thanks to you, {0}
+Thank you.
+You can feel Kukrushka's appreciation.)"
+t_personal,9,0,,Smug,"(Kukrushka smiles quietly.
+She's happy to have won.)"
+t_personal,10,0,,Hurt,(Kukrushka seems somehow restless.)
+t_personal,10,1,,Hurt,"(I'm sorry for not trusting you, {0}.
+Please forgive me...?
+You can feel the sadness in her apology.)"
+t_personal,11,0,,Happy,"(Let's spend lots more time together, OK?
+Kukrushka's smile seems somehow more childlike than usual.)"
+t_personal,12,0,,Thinking,"(But, what do we do now...?
+Kukrushka, suddenly having lost purpose,
+seems to be somewhat confused.)"
+t_personal,12,1,,Neutral,"(We're done playing with the Gnosia.
+We have to find something else to have fun with.)"
+t_personal,13,0,,Happy,"(The Gnosia side has won.
+Kukrushka is smiling happily.)"
+t_personal,14,0,,Happy,"(Yay, {0}!
+Kukrushka's body language shows how happy she is.)"
+t_personal,15,0,,Neutral,"(It's all thanks to you, {0}. Thank you...
+You can feel Kukrushka's appreciation.)"
+t_personal,16,0,,Smug,"(That was fun, {0}.
+Let's dance together again...
+Kukrushka smiles.)"
+t_personal,17,0,,Happy,"(It's over now.
+Kukrushka laughs...)"
+t_personal,17,1,,Gnosia,"(What is it about Kukrushka...?
+This strange, evil smile...)"
+t_personal,18,0,,Happy,"(Wow, that feels good!
+Kukrushka smiles brightly.)"
+t_personal,18,1,,Neutral,"(Now, everything will be gone.
+Every single thing.
+Doesn't it feel refreshing?)"
+t_personal,18,2,,Happy,"(Kukrushka implies this,
+looking extremely happy.)"
+t_personal,19,0,,Neutral,"({0}, you like Gnosia, do you?
+Kukrushka asks with her eyes.)"
+t_personal,19,1,,Happy,"(In that case, I'll get rid of you personally.
+As thanks for trying so hard.
+Kukrushka smiles happily.)"
+t_personal,19,2,,Smug,"(Bye-bye, {0}.)"
+t_temp,0,,,,"High Charm and Performance abilities make her
+hard to target for cold sleep, even when doubted.
+Acting mainly on emotion, she targets those she
+dislikes over dangerous enemies."
+t_temp,1,,,,...

@@ -1,0 +1,394 @@
+Name,Index,InnerIndex,Desc,Emotion,Text
+name,,,,,Yuriko
+d_place,,,,,Unknown
+d_tokki,0,,,,High abilities & strong influence. Stands out.
+d_tokki,1,,,,"Cyberized shrine maiden of the ""Hoshibune"" spaceship."
+d_tokki,2,,,,Escaped from the Hoshibune; will be killed if caught.
+d_tokki,3,,,,Knows the truth about what Gnos really is.
+d_tokki,4,,,,Gnos is actually an assembly of cyberized humans.
+d_tokki,5,,,,Able to interfere with & distort human perception.
+d_tokki,6,,,,Three Sizes 7
+t_keisho,,,,,
+t_aisatu,0,,,Neutral,"My name is {0}. A pleasure, I'm sure."
+t_suspect,0,,,Neutral,{0} is unneeded and should be frozen.
+t_suspect,1,,,Thinking,"How loud and boisterous...
+Shut {0} up."
+t_suspect,2,,,Smug,"Hehe, {0}.
+It must be fun making everyone dance to your tune."
+t_suspect,3,,,Smug,"Is this some sort of sabotage, {0}?
+Heh, do you think this will be overlooked?"
+t_suspect,4,,,Surprised,"If we freeze those who are to be viewed with suspicion...
+{0}. It's your turn."
+t_suspect,5,,,Surprised,"Excuse me, {0}. Just what is it that you want?
+Decimation of the humans aboard this ship?"
+t_suspect,6,,,Thinking,"This is as far as it goes...
+I'm finished with {0}. Freeze them, kill them, do as you like."
+t_suspect,7,,,Happy,"Excuse me, {0}.
+Are you happy that {1} has been done away with?"
+t_suspect_r,0,,,Annoyed,"We have no more use for you, {0}. Be gone."
+t_suspect_r,1,,,Annoyed,"You seem to greatly overestimate the usefulness of your tongue.
+{0}, silence it for the time being."
+t_suspect_r,2,,,Annoyed,"{0} is to hereby be cut off.
+Those who distrust {0}, continue to do so."
+t_suspect_r,3,,,Surprised,"Hoping to remain quiet and await the storm's passing?
+{0}, the storm will not pass you over gently."
+t_suspect_r,4,,,Neutral,"{0}, you've no one to blame but yourself for being distrusted.
+Prove us wrong."
+t_suspect_r,5,,,Neutral,"Are you misunderstanding something, {0}?
+I've never trusted you to begin with."
+t_suspect_r,6,,,,...
+t_suspect_r,7,,,,...
+t_suspect_add,0,,,Neutral,"Are we confused as to whom should be doubted?
+Then let it be {0}."
+t_suspect_t0,0,,,Neutral,To lose {0} would not prove to be much of a loss at all.
+t_suspect_t0,1,,,Smug,"Without {0}, it would certainly be more quiet."
+t_suspect_t0,2,,,Happy,"Hehe, it ends here, {0}.
+Is there anyone left who would still trust you?"
+t_suspect_t0,3,,,Smug,"Hehe, why not just stay quiet and be gone?"
+t_suspect_t0,4,,,Neutral,"Distrust of {0} is the correct path.
+Stay on it."
+t_suspect_t0,5,,,Smug,"Hehe, {0}.
+Being distrusted is itself a sin, you know."
+t_suspect_t0,6,,,Happy,"Hehe, {0}.
+Curse yourself for your foul ways."
+t_suspect_t1,0,,,Hurt,No question. Let {0} be removed immediately.
+t_suspect_t1,1,,,Neutral,"{0}, your time is over.
+Back down, now."
+t_suspect_t1,2,,,Happy,"Did you feel you were moving smoothly?
+Hehe, your path has proven rough, {0}."
+t_suspect_t1,3,,,Hurt,"Those for whom we have no use may freeze.
+It's that simple."
+t_suspect_t1,4,,,Annoyed,I have no reason to question distrust of {0}.
+t_suspect_t1,5,,,Thinking,"So the next sacrifice is to be {0}...
+I see. I have no objection."
+t_suspected0,0,,,Neutral,Are you satisfied now...?
+t_suspected0,1,,,Neutral,...
+t_hanron0,0,,,Happy,"Would {0} be your sacrificial lamb?
+Even if {0} bears no burden of sin?"
+t_hanron0,1,,,Thinking,"So you doubt {0}...
+The fate of this ship will be lamentable."
+t_hanron1,0,,,Annoyed,"I have no objection to doubting {0}... However.
+No further. Freezing {0} will prove problematic."
+t_hanron_t0,0,,,Annoyed,"Cast constant doubt upon others, and it will come back to you."
+t_hanron_t1,0,,,Neutral,"For {0}, I believe we can make an exception."
+t_trust,0,,,Hurt,"I entrust my fate to {0}.
+Even if {0} were to end up leading this ship to its doom."
+t_trust,1,,,Annoyed,Reason dictates that we should not yet doubt {0}.
+t_trust,2,,,Neutral,{0}. I hold high expectations of you.
+t_trust_r,0,,,Smug,"Freezing {0} is not the answer.
+Let them continue to dance."
+t_trust_r,1,,,Neutral,"Would you like a logical choice?
+Then do away with suspicions of {0}."
+t_trust_r,2,,,Surprised,"Allow {0} to do as they please.
+Casting doubt is a waste of time."
+t_trust_t0,0,,,Surprised,It would be a mistake to cut off {0}.
+t_trust_t1,0,,,Thinking,"Yes...
+{0}'s efforts should be allowed to continue."
+t_trusted0,0,,,Neutral,Hmph... Do as you please.
+t_thanron0,0,,,Surprised,Does {0} really hold that much value?
+t_thanron1,0,,,Neutral,"Trust {0}, you say...?
+Allow me to ask again. Right now, you really want us to trust {0}?"
+t_thanron_t0,0,,,Thinking,Cling onto {0} and you will only go down with them.
+t_thanron_t1,0,,,Surprised,Now is not the time to trust {0}.
+t_hosho,0,,,Neutral,"{0} has proven to be {1}.
+No more opinions on {0} are needed."
+t_hosho,1,,,Neutral,"Clearly, {0} is human.
+There is no danger in leaving them be."
+t_hosho_enemy,0,,,Neutral,"You're going to need to work on your acting ability to play a {1}, {0}.
+You've clearly failed. Leave."
+t_hosho_enemy,1,,,Neutral,{0} is {1}. To the freezer.
+t_hosho_enemy,2,,,Neutral,"{0} is {1}.
+Not even worth the effort to freeze..."
+t_hosho_enemy,3,,,Hurt,"{0}, you should no exist.
+You are {1}, a cause of disorder in this world."
+t_hosho_enemy,4,,,Smug,"You've made a fatal mistake, {0}.
+Your inconsistencies in speech and behavior have proven to be your downfall."
+t_hosho_enemy,5,,,Surprised,"{0} is an impostor. While certainly not Gnosia, they must be frozen."
+t_hosho_miss,0,,,Happy,"Hehe, you've failed, {0}.
+Your assertion cannot be proven, can it?"
+t_hosho_miss,1,,,Thinking,You say this as if we aren't already fully aware...
+t_hosho_get,0,,,Annoyed,Exactly. There is absolutely no reason for doubt.
+t_hosho_get,1,,,Neutral,That is correct...
+t_tohyo_go,0,,,Annoyed,"It is clear whom we need to freeze.
+Let the vote commence."
+t_tohyo_mae,0,,,Neutral,"Now, let us decide on whom we freeze.
+This vote may be barbaric, but it serves our purpose."
+t_tohyo_sai,0,,,Happy,"We will vote again, among {0}.
+Do you all look forward to the results as much as I?"
+t_shokei,0,,,Thinking,Damned humans...
+t_shokei,1,,,Annoyed,It was inevitable. Off to the deep freeze.
+t_wakare,0,,,Thinking,You serve no purpose anyhow.
+t_karare,0,,,Neutral,"{0}...
+Hehe, do as you please.
+This will change nothing..."
+t_imjinro,0,,,Neutral,"Face me... Yes, that's good.
+Rejoice. You are gazing upon the face of {0}."
+t_shori,0,,,Thinking,"{0} is a fragile thing after all.
+Much like humans..."
+t_tohyo_kurikaeshi,0,,,Smug,We could simply repeat the vote over and over till we are all dead.
+t_tohyo_jeno,0,,,Surprised,"{0}.
+All we ask of you is to freeze."
+t_tohyo_alive,0,,,Neutral,"Inaction may prove to be our best course of action at the moment.
+A fool left alone will eventually begin to dance."
+t_tohyo_jeno_ok,0,,,Neutral,"So we are to freeze those who may be without sin?
+How very human - I like it."
+t_tohyo_jeno_ng,0,,,Happy,I object.
+t_tohyo_alive_ok,0,,,Neutral,Let us do nothing. I am fine with this.
+t_tohyo_alive_ng,0,,,Happy,I object.
+t_tohyo_jeno_kettei,0,,,Thinking,"Let it begin, then.
+Prepare {0} for cold sleep."
+t_tohyo_alive_kettei,0,,,Neutral,"If we are finished here, I shall return to my room.
+Gnosia, you may do as you like."
+t_tohyo_hitei,0,,,Hurt,Rejected? Hmph...
+t_tohyo_dame,0,,,Surprised,"The time allotted to the humans has expired.
+Let us return to our rooms."
+t_tohyo_dame,1,,,,...
+t_co,0,,,,...
+t_co,1,,,Neutral,"The {0} is akin a shrine maiden, controlling the ship's nerve center.
+For all of your sakes, I shall seek out the Gnosia."
+t_co,2,,,Smug,"Humans infected by Gnosia emit a reactive signal.
+Even if their body has been frozen...  Hehe, how noble.
+As {0}, I shall determine whether or not the signal is present."
+t_co,3,,,Neutral,"As {0}, I shall make my own determination...
+Who is to be protected, and who is to be forsaken."
+t_co,4,,,Neutral,"Look at me. Would you claim that I have been infected by the Gnosia?
+I, who have not set foot off of this ship in years?"
+t_co,5,,,,dammy
+t_co,6,,,,dammy
+t_co,7,,,,dammy
+t_co,8,,,,dammy
+t_co_find,0,,,,dammy
+t_co_find,1,,,Happy,"Rejoice. As {0}, I have determined who the Gnosia is.
+Hehe, I'm referring to you, of course, {1}."
+t_co_find,2,,,Neutral,"We were correct to freeze {1}.
+As {0} of this ship, I applaud your decision."
+t_co_find,3,,,,dammy
+t_co_find,4,,,,dammy
+t_co_find,5,,,,dammy
+t_co_find,6,,,,dammy
+t_co_find,7,,,,dammy
+t_co_find,8,,,,dammy
+t_co_taiko,0,,,,dammy
+t_co_taiko,1,,,Happy,"Are you attempting to usurp the title of {0}?
+Hehe, if you want a fight, I'll give you one."
+t_co_taiko,2,,,Neutral,"Hehe, {1}. You're trying so hard.
+I hereby assert my claim to the title of {0}, and accuse {1} of fraud."
+t_co_taiko,3,,,,dammy
+t_co_taiko,4,,,Thinking,"Ah, that's right. {1} had also remained aboard the ship.
+We can be sure there is no risk of Gnosia infection there."
+t_co_taiko,5,,,,dammy
+t_co_taiko,6,,,,dammy
+t_co_taiko,7,,,,dammy
+t_co_taiko,8,,,,dammy
+t_co_req,0,,,Annoyed,"{0}, make yourself known.
+Fulfill your duties."
+t_co_after,0,,,Hurt,"You've got your work cut out for you, {1}..."
+t_co_after,1,,,Neutral,"{1}.
+The burden of proof is on you.
+Prove that you are the ship's true {0}."
+t_co_after,2,,,Smug,"{1}.
+Maybe it would be wise to freeze them all."
+t_uranai_o,0,,,Hurt,I wonder if that was a wasted move...
+t_uranai_s,0,,,,"Listen closely. These are the results of my research.
+"
+t_uranai_b,0,,,,"I feel it's time to reveal the results of my investigation.
+"
+t_uranai_t,0,,,Neutral,{1} is infected by {0}. To the freezer.
+t_uranai_f,0,,,Annoyed,"{1} showed no signs of {0} infection.
+Nothing significant whatsoever."
+t_uranai_n,0,,,Surprised,"There was nobody worth investigating.
+Is everything not clear enough?"
+t_reibai_s,0,,,,"I analyzed the brain tissue of those frozen yesterday.
+"
+t_reibai_s,1,,,,...
+t_reibai_t,0,,,Neutral,"Hehe, congratulations.
+{1} {3} {0}."
+t_reibai_f,0,,,Hurt,"{1} {3} not {0}.
+Cold sleep was meaningless."
+t_reibai_ft,0,,,Smug,"Among {1}, {2} {4} infected by {0}.
+Ensnared in our net, just as expected."
+t_reibai_ff,0,,,Neutral,"{1} were all normal humans...
+It appears the {0} has hidden themselves well."
+t_houkoku_s,0,,,Surprised,My findings were the same...
+t_houkoku_w,0,,,Neutral,"So your role is clearly to spread misinformation, I see..."
+t_okuyami,0,,,Surprised,"{0} is of no more use to us.
+Reorganize the work system to avoid any problems with our flight.
+Human or Gnosia, either way, this is necessary - is it not?"
+t_okuyami_n,0,,,Smug,"So, Gnosia, it appears as though you failed last night, hm?
+Is it a failure from which you can return, I wonder?"
+t_okuyami_f,0,,,Happy,"So, two victims... Hehehe.
+What a hero the Engineer is, saving the ship from the Bug's destruction."
+t_houkoku_req,0,,,Annoyed,Report... Now.
+t_houkoku_not,0,,,Neutral,"So, {0}'s breach of trust is now clear...
+What an enlightening report, {0}."
+t_skill_sayNingen,0,,,Neutral,"Let's play a little game.
+Each of you, try declaring your humanity. One at a time."
+t_skill_sayNingen,1,,,Surprised,"Yes, I am human. Unfortunately."
+t_skill_sayNingen,2,,,Annoyed,"{0}.
+I have no intention of playing along with your farce."
+t_skill_sayNingen,3,,,Hurt,"Apparently only cowards remain on this ship.
+How unfortunate. For all of you."
+t_skill_sayNingen,4,,,Neutral,"Good work...
+Now we know whom to doubt, do we not?
+Those who refused to declare their humanity..."
+t_skill_sayNingen,5,,,Smug,"Good work...
+Fearing discovery, the savage is clever enough to lie brazenly.
+I feel I should commend the Gnosia on their bravery."
+t_skill_sayNingen,6,,,Happy,"Hehe, {0}. So, you want to avoid having to make the declaration...
+You're either a brave Gnosia, or a coward not worthy of life.
+I wonder which it is?"
+t_skill_zatsudan,0,,,,...
+t_skill_zatsudan,1,,,,...
+t_skill_zatsudan,2,,,,...
+t_skill_zatsudan,3,,,Happy,I wonder which of us will become tonight's dinner?
+t_skill_zatsudan,4,,,Neutral,"I am a miko, a shrine maiden. I have been defiled by none.
+However, I know more about fun and pleasure than all of you combined."
+t_skill_zatsudan,5,,,Surprised,"Do you know of the cursed pig-people of the Shia-Meng system?
+They spend their entire lives counting their own fingers..."
+t_skill_zatsudan,6,,,Hurt,"Trying to distract everyone with fun and games?
+{0}. You are a filthy being indeed..."
+t_skill_roller,0,,,Neutral,"This ship has no more need for the {0}.
+Freeze all who claim to be so."
+t_skill_roller,1,,,Happy,"A good proposal, {1}.
+Let us rid ourselves of this Gnosia."
+t_skill_roller,2,,,Annoyed,How stupid. I reject this proposal.
+t_skill_roller,3,,,Neutral,"{2} has a point.
+This is not the time to act rashly."
+t_skill_roller,4,,,Smug,"Hehe, how will you move now?
+I look forward to the vote."
+t_skill_roller,5,,,Thinking,Then do as you please...
+t_skill_roller,6,,,Neutral,"This ship has no more need for the {0}.
+Freeze all who claim to be so."
+t_skill_doTohyo,0,,,Neutral,"{0}. We should freeze you, and verify {1}'s veracity.
+Be thankful you are able to serve a purpose."
+t_skill_doTohyo,1,,,Surprised,"As Engineer, I declare.
+You must cast your votes for {0}."
+t_skill_doTohyo,2,,,Hurt,"{0} is but a sad clown.
+Cast your votes, and end this farce."
+t_skill_doTohyo,3,,,Smug,"You've made a mistake, {1}.
+No report claimed that {0} is Gnosia.
+Hehe, how should we punish {1}?"
+t_skill_doTohyo,4,,,Neutral,"{1}. I support your proposal.
+Do as you see fit."
+t_skill_doTohyo,5,,,Surprised,That sounds interesting. Let's try it.
+t_skill_doTohyo,6,,,Smug,"Vote for {0}, you say?
+Hehe, I don't think it works that way."
+t_skill_doTohyo,7,,,Annoyed,I object.
+t_skill_dontTohyo,0,,,Neutral,"{0}, I have no intention of freezing you.
+There is someone else who should be sacrificed tonight.
+You shall continue to live, in shame."
+t_skill_dontTohyo,1,,,Hurt,"So let {0} continue to thrive...
+Not a bad idea."
+t_skill_dontTohyo,2,,,Annoyed,"I object.
+{1}. Speak in a way that befits your actual status."
+t_skill_dontTohyo,3,,,Happy,"Hehe, {1}. At least you tried."
+t_skill_kyoryoku,0,,,Neutral,"Follow me, {0}.
+I'll put your life and abilities to good use.
+A fortunate servant. This is how you were meant to exist."
+t_skill_kyoryoku,1,,,Hurt,"Cooperate with you...?
+That may not be bad... I'll agree."
+t_skill_kyoryoku,2,,,Happy,"Cooperate with you...?
+Hehe, are you serious...?"
+t_skill_t_doui,0,,,Neutral,"I support {0}'s statement.
+You all should as well."
+t_skill_t_hanronKinshi,0,,,Surprised,"Any of those who object to {0}, step forward.
+We shall end this here."
+t_skill_t_kyakushoku,0,,,,...
+t_skill_t_kyakushoku,1,,,,...
+t_skill_t_kyakushoku,2,,,,...
+t_skill_t_kyakushoku,3,,,,...
+t_skill_h_uyamuya,0,,,,...
+t_skill_h_hangeki,0,,,Neutral,"I would say the same to you.
+{0} - it is you who should freeze."
+t_skill_h_dojo,0,,,,...
+t_skill_h_help,0,,,Annoyed,{0}.
+t_skill_h_help,1,,,Neutral,...
+t_skill_h_careful,0,,,,...
+t_skill_dogeza,0,,,Surprised,Garbage...
+t_skill_dogeza,1,,,,...
+t_personal,0,0,,Neutral,"You came all this way.
+You might as well make the kill."
+t_personal,0,1,,Happy,"Hehe, wasn't that an entertaining farce?
+Watching it all fall apart like that..."
+t_personal,0,2,,Neutral,"Now, let us kill each other.
+No...? Then leave."
+t_personal,0,3,,Surprised,"Yes, both you and I are indeed human.
+So what?"
+t_personal,0,4,,Smug,"Whether you being human is good or bad for this ship...
+I don't know, but I'll enjoy finding out."
+t_personal,0,5,,Thinking,"Hmph, if I were to actually trust you...
+Just where would that get me?"
+t_personal,0,6,,Surprised,"If we continue down this path...
+You are going to freeze anyway."
+t_personal,0,7,,Neutral,"You are somewhat of an interesting specimen.
+A sort of curio."
+t_personal,0,8,,Annoyed,"Back down.
+Know your place."
+t_personal,0,9,,Thinking,"I just hope we can eliminate the humans and all like them.
+Heh, if that is possible, I guess we should go as well."
+t_personal,0,10,,Surprised,"{0}. I have no need for your opinion.
+Just know that I do not fear you."
+t_personal,0,11,,Thinking,"So, it's over...
+This universe shall show you no mercy for your sins."
+t_personal,0,12,,Happy,"Hehe, wasn't that an entertaining farce?
+Watching it all fall apart like that..."
+t_personal,0,13,,Hurt,"{0}...
+I was... just thinking."
+t_personal,0,14,,Hurt,"What, are you not going to attack me?
+Heh, how unfortunate."
+t_personal,0,15,,Surprised,Leave.
+t_personal,0,16,,Hurt,"Let it begin...
+Heh, how many acts shall play out this time?"
+t_personal,1,0,,Neutral,
+t_personal,1,1,,Neutral,
+t_personal,2,0,,Neutral,
+t_personal,3,0,,Neutral,
+t_personal,4,0,,Neutral,
+t_personal,5,0,,Neutral,
+t_personal,6,0,,Neutral,
+t_personal,7,0,,Neutral,
+t_personal,8,0,,Annoyed,"It all ends here.
+The Gnosia, and my connection to you."
+t_personal,8,1,,Hurt,"If only I could follow you.
+Hmph, actually, I wouldn't want that after all."
+t_personal,8,2,,Neutral,"Now, be off. To anywhere you please.
+Have a good journey..."
+t_personal,9,0,,Smug,"We seem to have crushed them.
+Heh, how weak they are."
+t_personal,10,0,,Happy,"Hehe.
+How unfortunate."
+t_personal,10,1,,Neutral,"{0}... I meant to destroy you.
+Unfortunately, it seems we're out of time."
+t_personal,11,0,,Neutral,"{0}, you did well."
+t_personal,11,1,,Smug,"Thanks to you, the Gnosia have been destroyed.
+Rejoice."
+t_personal,12,0,,Thinking,"Either way, the curtain has been drawn.
+Now let this end."
+t_personal,13,0,,Annoyed,"The humans were as weak as expected.
+The curtain has fallen."
+t_personal,14,0,,Happy,"Hmph...
+What a lovely genocide, wasn't it, {0}?"
+t_personal,15,0,,Neutral,"Is your role here at an end...?
+Hmph, then go..."
+t_personal,16,0,,Neutral,"Was that fun, {0}?
+Or was it pointless and unsatisfiyng??"
+t_personal,16,1,,Smug,"Heh, hehehe...
+Completely unsalvageable. Both you and myself."
+t_personal,17,0,,Happy,"It seems as though we've reached a conclusion.
+You lose. Hehe, how unfortunate."
+t_personal,17,1,,Neutral,"That wasn't bad.
+As a parting gift, the least I can do is destroy you myself."
+t_personal,18,0,,Thinking,"Ah, so this is the end, then?
+How banal."
+t_personal,18,1,,Neutral,"With that, I shall now destroy this universe...
+But don't feel bad.
+Hehe, it's all just so trifling and stupid."
+t_personal,19,0,,Smug,"Hmph...
+Apparently I was right not to kill you."
+t_personal,19,1,,Surprised,"Good work.
+I shall remember your contribution to Gnos."
+t_temp,0,,,,"Other than Stealth, all abilities are very high.
+Extremely dangerous as an enemy, but also quite
+cold & distant, making her a worrisome ally
+as well."
+t_temp,1,,,,...
