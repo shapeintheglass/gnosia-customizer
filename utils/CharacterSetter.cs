@@ -203,7 +203,7 @@ namespace GnosiaCustomizer.utils
 
         internal static void SetChara(ManualLogSource Logger, int index, CharacterText charaText)
         {
-            Logger.LogInfo($"Setting character data for index {index}");
+            //Logger.LogInfo($"Setting character data for index {index}");
             var fieldInfo = AccessTools.Field(DataType, "Chara");
             if (fieldInfo == null)
             {
@@ -222,7 +222,7 @@ namespace GnosiaCustomizer.utils
 
             if (charaText.Name != null)
             {
-                Logger.LogInfo($"Setting character name to: {charaText.Name}");
+                //Logger.LogInfo($"Setting character name to: {charaText.Name}");
                 SetField(charaStructBoxed, NameFieldName, charaText.Name);
             }
             if (charaText.Sex != null)

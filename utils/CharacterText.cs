@@ -44,7 +44,6 @@ namespace GnosiaCustomizer.utils
             {
                 var key = entry.Key.ToString();
                 var value = entry.Value;
-                Console.WriteLine($"Processing key: {key}, value: {value}");
 
                 switch (key)
                 {
