@@ -45,7 +45,7 @@ namespace GnosiaCustomizer.patches
                 }
                 if (!SkillMap.ContainsKey(cid) || SkillMap[cid] == null)
                 {
-                    Logger.LogWarning($"Character {cid} not found in SkillMap. Falling back to original skills.");
+                    //Logger.LogWarning($"Character {cid} not found in SkillMap. Falling back to original skills.");
                     return true;
                 }
 
