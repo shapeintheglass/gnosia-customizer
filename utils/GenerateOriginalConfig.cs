@@ -369,9 +369,9 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("night_both_gnosia", "Nighttime chatter when both the player ({0}) and character are Gnosia (different from the 'who to kill' event').", personalArray[0][9]);
             contents += WriteDialogue("time_clam", "Nonsensical statement when the game logic is irrevocably broken. {0} = Player name", personalArray[0][11]);
 
-            contents += WriteMultilineDialogue("multiline_night_liar_found", "Night conversation that the character has discovered a liar. {0} = Player name, {1} = Target name.", personalArray[1]);
+            contents += WriteMultilineDialogue("multiline_night_liar_found", "Night conversation that the character has discovered a liar. {0} = Player name, {1} = Target name.\n\r# Add 100 to the sprite index to trigger the sound effect.", personalArray[1]);
             contents += WriteMultilineDialogue("multiline_liar_found_followup", "Follow-up if the player has voted out the selected liar. {0} = Player name, {1} = Target name.", personalArray[2]);
-            contents += WriteMultilineDialogue("multiline_night_lets_collaborate", "Night conversation if the character wishes to team up. {0} = Player name.", personalArray[3]);
+            contents += WriteMultilineDialogue("multiline_night_lets_collaborate", "Night conversation if the character wishes to team up. {0} = Player name..\n\r# Add 100 to the sprite index to trigger the sound effect.", personalArray[3]);
             contents += WriteMultilineDialogue("multiline_night_lets_collaborate_accepted", "Night conversation if the player accepts the collaboration. {0} = Player name.", personalArray[4]);
             contents += WriteMultilineDialogue("multiline_night_lets_collaborate_declined", "Night conversation if the player declines the collaboration. {0} = Player name.", personalArray[5]);
             contents += WriteMultilineDialogue("multiline_night_gnosia_lets_eliminate", "Night conversation with fellow Gnosia on who to eliminate. {0} = Player name, {1} = Target name.", personalArray[6]);
@@ -433,10 +433,10 @@ namespace GnosiaCustomizer.utils
             {
                 var textToDisplay = "...";
                 var sprite = "0";
-                if (!string.IsNullOrEmpty(text))
+                if (!string.IsNullOrWhiteSpace(text))
                 {
                     var tokens = text.Split('|');
-                    if (tokens.Length > 0)
+                    if (tokens.Length > 0 && !string.IsNullOrWhiteSpace(tokens[0]))
                     {
                         textToDisplay = tokens[0];
                     }
