@@ -95,7 +95,7 @@ namespace GnosiaCustomizer.patches
                 foreach (var absoluteId in Consts.CharaFolderIds)
                 {
                     // Uncomment to re-generate the original character config
-                    GenerateOriginalConfig.WriteCharaDataToFile(absoluteId);
+                    //GenerateOriginalConfig.WriteCharaDataToFile(absoluteId);
 
                     if (characterTexts.TryGetValue(absoluteId, out var character))
                     {
