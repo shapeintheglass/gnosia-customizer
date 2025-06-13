@@ -8,9 +8,9 @@ namespace GnosiaCustomizer.utils
 {
     internal class CharacterSetter
     {
-        private static readonly Type DataType = AccessTools.TypeByName("gnosia.Data");
-        private static readonly Type CharaDataType = AccessTools.Inner(DataType, "CharaData");
-        private static readonly FieldInfo CharaField = AccessTools.Field(DataType, "Chara");
+        internal static readonly Type DataType = AccessTools.TypeByName("gnosia.Data");
+        internal static readonly Type CharaDataType = AccessTools.Inner(DataType, "CharaData");
+        internal static readonly FieldInfo CharaField = AccessTools.Field(DataType, "Chara");
 
         public const string SubstitutionPrefix = "gc%";
         public const char Delimiter = '%';
@@ -24,8 +24,7 @@ namespace GnosiaCustomizer.utils
         private const string PersonalFieldName = "t_personal";
         private const int PersonalArrayLength = 20;
 
-
-        private static readonly Dictionary<string, List<string>> DialogueInitialization = new Dictionary<string, List<string>>()
+        internal static readonly Dictionary<string, List<string>> DialogueInitialization = new Dictionary<string, List<string>>()
         {
             { "t_aisatu", [ "introduction" ] },
             { "t_suspect", [ "doubt_dislike%{0}", "doubt_too_chatty%{0}", "doubt_too_popular%{0}", "doubt_too_quiet%{0}", "doubt_prob%{0}", "doubt_trusted%{0}", "doubt_collaborator%{0}", "doubt_avenge%{0}" ] },
@@ -108,7 +107,7 @@ namespace GnosiaCustomizer.utils
             { "t_temp", ["bio1", "bio2"] }
         };
 
-        private static List<string> PersonalLines0 = new List<string>
+        private static readonly List<string> PersonalLines0 = new List<string>
         {
             "night_char_definite_enemy%{0}",
             "night_player_definite_enemy%{0}",
@@ -129,7 +128,7 @@ namespace GnosiaCustomizer.utils
             "opening_statement",
         };
 
-        private static List<string> PersonalLines1AndUp = new List<string>
+        private static readonly List<string> PersonalLines1AndUp = new List<string>
         {
             "multiline_night_liar_found%{0}%{1}",
             "multiline_liar_found_followup%{0}%{1}",
@@ -152,53 +151,78 @@ namespace GnosiaCustomizer.utils
             "multiline_end_player_is_ac%{0}"
         };
 
-        internal static object GetCharaFieldValue(int index, string fieldName)
+        // Gets the value for the given field name for the given character absolute id
+        internal static bool GetCharaFieldValue(int absoluteId, string fieldName, out object value)
         {
-            var charaArray = GetCharaArray();
-            if (charaArray == null || index < 0 || index >= charaArray.Length)
-                throw new IndexOutOfRangeException($"Invalid CharaData index: {index}");
+            var charaArray = (Array)CharaField.GetValue(null);
+            if (charaArray == null || absoluteId < 0 || absoluteId >= charaArray.Length)
+                throw new IndexOutOfRangeException($"Invalid CharaData index: {absoluteId}");
 
-            return GetCharaFieldFromBoxedStruct(fieldName, charaArray.GetValue(index));
-        }
-
-        internal static object GetCharaFieldFromBoxedStruct(string fieldName, object charaStructBoxed)
-        {
             var field = AccessTools.Field(CharaDataType, fieldName);
             if (field == null)
             {
-                throw new Exception($"Field '{fieldName}' not found in CharaData struct.");
+                value = null;
+                return false;
             }
-            return field.GetValue(charaStructBoxed);
+            value = field.GetValue(charaArray.GetValue(absoluteId));
+            return true;
         }
 
-        internal static bool GetCharaFieldValueAsStringArray(int index, string fieldName, out List<string> strArray)
+        // Retrieves the given field for the given character absolute id as a string
+        internal static bool GetCharaFieldValueAsString(int absoluteId, string fieldName, out string value)
         {
-            strArray = null;
-            var value = GetCharaFieldValue(index, fieldName);
-            if (value is List<string> stringList)
+            if (GetCharaFieldValue(absoluteId, fieldName, out var charaValue) && charaValue is string strValue)
+            {
+                value = strValue;
+                return true;
+            }
+            else
+            {
+                value = null;
+                return false;
+            }
+        }
+
+        // Retrieves the given field for the given character absolute id as a List<string>
+        internal static bool GetCharaFieldValueAsStringArray(int absoluteId, string fieldName, out List<string> strArray)
+        {
+            if (GetCharaFieldValue(absoluteId, fieldName, out var value) && value is List<string> stringList)
             {
                 strArray = stringList;
                 return true;
             }
             else
             {
+                strArray = null;
                 return false;
             }
         }
 
-        internal static bool GetCharaFieldAs2dStringArray(int index, string fieldName, out List<List<string>> strArray)
+        // Retrieves the given field for the given character absolute id as a List<List<string>>
+        internal static bool GetCharaFieldAs2dStringArray(int absoluteId, string fieldName, out List<List<string>> strArray)
         {
-            strArray = null;
-            var value = GetCharaFieldValue(index, fieldName);
-            if (value is List<List<string>> string2dList)
+            if (GetCharaFieldValue(absoluteId, fieldName, out var value) && value is List<List<string>> string2dList)
             {
                 strArray = string2dList;
                 return true;
             }
             else
             {
+                strArray = null;
                 return false;
             }
+        }
+
+        // Sets the value of a field in the CharaData struct
+        private static void SetField(object charaStruct, string fieldName, object value)
+        {
+            var structType = charaStruct.GetType();
+            var targetField = AccessTools.Field(structType, fieldName);
+            if (targetField == null)
+            {
+                throw new Exception($"Field '{fieldName}' not found in CharaData struct.");
+            }
+            targetField.SetValue(charaStruct, value);
         }
 
         internal static void SetChara(ManualLogSource Logger, int index, CharacterText charaText)
@@ -337,9 +361,7 @@ namespace GnosiaCustomizer.utils
             }
 
             // Recreate personal 2D array
-            var personalField = GetCharaFieldFromBoxedStruct(PersonalFieldName, charaStructBoxed);
             var personalArray = new List<List<string>>(PersonalArrayLength);
-
             var personal0 = new List<string>(PersonalLines0.Count);
             GetCharaFieldAs2dStringArray(index, PersonalFieldName, out var originalPersonalArray);
             var personal0Index = 0;
@@ -400,49 +422,6 @@ namespace GnosiaCustomizer.utils
             SetField(charaStructBoxed, PersonalFieldName, personalArray);
 
             array.SetValue(charaStructBoxed, index);
-        }
-
-        private static void SetField(object charaStruct, string fieldName, object value)
-        {
-            var structType = charaStruct.GetType();
-            var targetField = AccessTools.Field(structType, fieldName);
-            if (targetField == null)
-            {
-                throw new Exception($"Field '{fieldName}' not found in CharaData struct.");
-            }
-            targetField.SetValue(charaStruct, value);
-        }
-
-        internal static Dictionary<string, int> GetFieldCounts(int index, ManualLogSource Logger)
-        {
-            var counts = new Dictionary<string, int>();
-            var charaArray = GetCharaArray();
-            var instance = charaArray.GetValue(index);
-            var fields = CharaDataType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-            foreach (var field in fields)
-            {
-                var value = field.GetValue(instance);
-
-                if (value is List<string> stringList)
-                {
-                    counts[field.Name.ToString()] = stringList.Count;
-                }
-                else if (value is List<float> floatList)
-                {
-                    counts[field.Name.ToString()] = floatList.Count;
-                }
-                else if (value is List<List<string>> string2dList)
-                {
-                    counts[field.Name.ToString()] = string2dList.Count;
-                }
-            }
-            return counts;
-        }
-
-        private static Array GetCharaArray()
-        {
-            return (Array)CharaField.GetValue(null); // static field = null instance
         }
     }
 }

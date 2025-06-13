@@ -94,11 +94,15 @@ namespace GnosiaCustomizer.patches
             {
                 foreach (var absoluteId in Consts.CharaFolderIds)
                 {
+                    // Uncomment to re-generate the original character config
+                    GenerateOriginalConfig.WriteCharaDataToFile(absoluteId);
+
                     if (characterTexts.TryGetValue(absoluteId, out var character))
                     {
                         CharacterSetter.SetChara(Logger, absoluteId, character);
                     }
-                    Logger.LogInfo($"Character ID {absoluteId} name is now: {CharacterSetter.GetCharaFieldValue(absoluteId, "name")}");
+                    CharacterSetter.GetCharaFieldValueAsString(absoluteId, "name", out var name);
+                    Logger.LogInfo($"Character ID {absoluteId} name is now: {name}");
 
                     if (CharacterSetter.GetCharaFieldValueAsStringArray(absoluteId, "t_skill_dogeza", out var strArray))
                     {
