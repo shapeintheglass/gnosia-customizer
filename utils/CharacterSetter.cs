@@ -32,7 +32,7 @@ namespace GnosiaCustomizer.utils
             { "t_suspect_add", [ "doubt_day_one%{0}" ] },
             { "t_suspect_t0", [ "doubt_affirm_dislike%{0}%{1}", "doubt_affirm_too_chatty%{0}%{1}",  "doubt_affirm_too_popular%{0}%{1}", "doubt_affirm_too_quiet%{0}%{1}", "doubt_affirm_prob%{0}%{1}", "doubt_affirm_trusted%{0}%{1}", "doubt_affirm_negative_trust%{0}%{1}" ]},
             { "t_suspect_t1", [ "doubt_affirm_trust_variant_dislike%{0}%{1}", "doubt_affirm_trust_variant_too_chatty%{0}%{1}", "doubt_affirm_trust_variant_too_popular%{0}%{1}", "doubt_affirm_trust_variant_too_quiet%{0}%{1}", "doubt_affirm_trust_variant_prob%{0}%{1}", "doubt_affirm_trust_variant_trusted%{0}%{1}" ] },
-            { "t_suspected0", [ "deny_weak_doubt", "deny_strong_doubt" ] },
+            { "t_suspected0", [ "refute_weak_doubt", "refute_strong_doubt"] },
             { "t_hanron0", [ "defend_generic%{0}%{1}", "defend_trusted_target%{0}%{1}"] },
             { "t_hanron1", [ "defend_untrusted_target%{0}%{1}" ] },
             { "t_hanron_t0", [ "join_defense_trusted_target%{0}%{1}%{2}" ] },

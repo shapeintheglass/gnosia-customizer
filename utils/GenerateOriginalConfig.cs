@@ -158,19 +158,21 @@ namespace GnosiaCustomizer.utils
             }
 
             // Skills
-            contents += "# Skills the character is capable of using. If a skill is not present here, false is assumed.\n";
-            contents += "known_skills:\n";
-            var skillSet = OriginalSkills[(uint)absoluteId];
-            foreach (var skillName in AllSkills)
+            if (absoluteId > 0)
             {
-                contents += $"  {skillName}: {skillSet.Contains(skillName).ToString().ToLower()}\n";
+                contents += "# Skills the character is capable of using. If a skill is not present here, false is assumed.\n";
+                contents += "known_skills:\n";
+                var skillSet = OriginalSkills[(uint)absoluteId];
+                foreach (var skillName in AllSkills)
+                {
+                    contents += $"  {skillName}: {skillSet.Contains(skillName).ToString().ToLower()}\n";
+                }
+                contents += "\n\n############\r\n# DIALOGUE #\r\n############\n\n";
             }
-            contents += "\n\n############\r\n# DIALOGUE #\r\n############\n\n";
 
             //
             // Dialogue
             //
-
             var d = new Dictionary<string, List<string>>();
             foreach (var key in CharacterSetter.DialogueInitialization.Keys)
             {
@@ -188,9 +190,15 @@ namespace GnosiaCustomizer.utils
                     d[key].Add("...");
                 }
             }
-            CharacterSetter.GetCharaFieldAs2dStringArray(absoluteId, "t_personal", out var personalArray);
-
-            // Opening statements t_personal[0][16]
+            if (!CharacterSetter.GetCharaFieldAs2dStringArray(absoluteId, "t_personal", out var personalArray))
+            {
+                // Initialize blank 20x20 list if not found
+                personalArray = new List<List<string>>();
+                for (int i = 0; i < 20; i++)
+                {
+                    personalArray.Add(new List<string>() { "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "...", "..." });
+                }
+            }
             contents += WriteDialogue("opening_statement", "Statement at the start of the round.", personalArray[0][16]);
             contents += WriteDialogue("opening_remarks_condolences", "Mourning the loss of {0} during the night phase.", d["t_okuyami"][0]);
             contents += WriteDialogue("opening_remarks_no_deaths", "Celebrating that no one disappeared last night.", d["t_okuyami_n"][0]);
@@ -350,8 +358,8 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("sk_perfo_seek_help", "Asking {0} to help in the current round of discussion.", d["t_skill_h_help"][0]);
             contents += WriteDialogue("sk_perfo_seek_help_reaction", "Refusing to help {0} after being asked to bail them out.", d["t_skill_h_help"][1]);
             contents += WriteDialogue("sk_intui_dont_be_fooled", "Pointing out to the group that {0} is clearly lying.", d["t_skill_h_careful"][0]);
-            contents += WriteDialogue("sk_stealth_grovel", "Attempting to talk their way out of cold sleep.", d["t_skill_dogeza"][0]);
-            contents += WriteDialogue("sk_stealth_grovel_reaction", "Reacting to {0}'s attempt to beg their way out of cold sleep.", d["t_skill_dogeza"][1]);
+            contents += WriteDialogue("sk_stealth_grovel", "Attempting to talk their way out of cold sleep.", d["t_skill_dogeza"][1]);
+            contents += WriteDialogue("sk_stealth_grovel_reaction", "Reacting to {0}'s attempt to beg their way out of cold sleep.", d["t_skill_dogeza"][0]);
             contents += WriteDialogue("night_friend_and_high_trust", "Nighttime chatter when the player, {0}, is a friend and has high internal trust (F>0.5, T>0.75).", personalArray[0][5]);
             contents += WriteDialogue("night_friend_and_maybe_trusted", "Nighttime chatter when the player, {0}, is a friend, but doesn't have a high internal trust (F>0.5, 0<T<0.75).", personalArray[0][6]);
             contents += WriteDialogue("night_maybe_friend_and_maybe_trusted", "Nighttime chatter when the player, {0}, is not quite a friend and does not have high internal trust (0.15<F<0.5, 0.25<T).", personalArray[0][13]);

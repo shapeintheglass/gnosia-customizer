@@ -92,6 +92,9 @@ namespace GnosiaCustomizer.patches
 
             static void Postfix()
             {
+                // Uncomment to re-generate original config for the player
+                //GenerateOriginalConfig.WriteCharaDataToFile(0);
+
                 foreach (var absoluteId in Consts.CharaFolderIds)
                 {
                     // Uncomment to re-generate the original character config
