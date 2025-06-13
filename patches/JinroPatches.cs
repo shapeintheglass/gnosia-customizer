@@ -10,7 +10,7 @@ namespace GnosiaCustomizer.patches
 {
     public class JinroPatches
     {
-        internal static new ManualLogSource Logger;
+        internal static ManualLogSource Logger;
 
         // Initialized by TextPatches.Initialize()
         public static Dictionary<int, Dictionary<string, bool>> SkillMap = new Dictionary<int, Dictionary<string, bool>>();
