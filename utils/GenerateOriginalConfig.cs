@@ -257,7 +257,7 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("doubt_affirm_negative_trust", "Agree with with {1} that {0} is extremely suspicious (triggers on negative trust, ex. definite enemy).", d["t_suspect_t0"][6]);
             contents += WriteDialogue("doubt_affirm_trust_variant_dislike", "Agreeing with {1} that {0} cannot be trusted. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][0]);
             contents += WriteDialogue("doubt_affirm_trust_variant_too_chatty", "Agreeing with {1} that {0} is talking too much. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][1]);
-            contents += WriteDialogue("doubt_affirm_trust_variant_too_popular", "{Agreeing with {1} that {0} is suspicious despite their popularity. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][2]);
+            contents += WriteDialogue("doubt_affirm_trust_variant_too_popular", "Agreeing with {1} that {0} is suspicious despite their popularity. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][2]);
             contents += WriteDialogue("doubt_affirm_trust_variant_too_quiet", "Agreeing with {1} that {0} is too quiet. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][3]);
             contents += WriteDialogue("doubt_affirm_trust_variant_prob", "Agreeing with {1} that {0} is probably suspicious. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][4]);
             contents += WriteDialogue("doubt_affirm_trust_variant_trusted", "Agreeing with {1} that {0} is suspicious, despite their trust. Variant when this character's persona trust of {0} is high.", d["t_suspect_t1"][5]);
@@ -270,8 +270,8 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("defend_generic", "Defending {0} from {1}'s statement.", d["t_hanron0"][0]);
             contents += WriteDialogue("defend_trusted_target", "Defending {0} from {1}'s statement. Trusts {0} more than {1}.", d["t_hanron0"][1]);
             contents += WriteDialogue("defend_untrusted_target", "Defending {0} from {1}'s statement. Persona trust of {0} is low.", d["t_hanron1"][0]);
-            contents += WriteDialogue("join_defense_trusted_target", "{1} has said that {0} is supicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is above 0.45.", d["t_hanron_t0"][0]);
-            contents += WriteDialogue("join_defense_untrusted_target", "{1} has said that {0} is supicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is below 0.45.", d["t_hanron_t1"][0]);
+            contents += WriteDialogue("join_defense_trusted_target", "{1} has said that {0} is suspicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is above 0.45.", d["t_hanron_t0"][0]);
+            contents += WriteDialogue("join_defense_untrusted_target", "{1} has said that {0} is suspicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is below 0.45.", d["t_hanron_t1"][0]);
             contents += WriteDialogue("say_thanks", "Expressing thanks that they were trusted by {0}.", d["t_trusted0"][0]);
             contents += WriteDialogue("cover_vouch", "Stating their fondness for {0}.", d["t_trust"][0]);
             contents += WriteDialogue("cover_prob", "State that probabilistically, {0} is likely trustworthy.", d["t_trust"][1]);
@@ -283,10 +283,10 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("cover_together_low_trust_variant", "Agreeing with {1} that {0} can be trusted. Variant that triggers when publicly-facing trust to {0} is less than 0.45.", d["t_trust_t1"][0]);
             contents += WriteDialogue("definite_human_with_role", "Declaring that {0} is definitely the real {1} (Engineer/Doctor).", d["t_hosho"][0]);
             contents += WriteDialogue("definite_human", "Declaring that {0} is definitely human.", d["t_hosho"][1]);
-            contents += WriteDialogue("definite_enemy_with_role", "Declaring that {0} is definitely not the real {1} (Engineer Doctor).", d["t_hosho_enemy"][0]);
-            contents += WriteDialogue("definite_enemy", "Declaring that {0} is definitely lying.", d["t_hosho_enemy"][1]);
-            contents += WriteDialogue("definite_enemy_ac", "Declaring that {0} is definitely the AC Follower.", d["t_hosho_enemy"][2]);
-            contents += WriteDialogue("definite_enemy_bug", "Declaring that {0} is definitely the Bug.", d["t_hosho_enemy"][3]);
+            contents += WriteDialogue("definite_enemy_with_role", "Declaring that {0} is definitely not the real {1} (Engineer/Doctor).", d["t_hosho_enemy"][0]);
+            contents += WriteDialogue("definite_enemy", "Declaring that {0} is definitely {1} (Gnosia).", d["t_hosho_enemy"][1]);
+            contents += WriteDialogue("definite_enemy_ac", "Declaring that {0} is definitely the {1} ('AC Follower').", d["t_hosho_enemy"][2]);
+            contents += WriteDialogue("definite_enemy_bug", "Declaring that {0} is definitely the {1} ('Bug').", d["t_hosho_enemy"][3]);
             contents += WriteDialogue("definite_enemy_liar", "Declaring that {0} is definitely a liar.", d["t_hosho_enemy"][4]);
             contents += WriteDialogue("definite_enemy_liar_not_gnosia", "Declaring that {0} is definitely a liar, but also not Gnosia.", d["t_hosho_enemy"][5]);
             contents += WriteDialogue("point_out_mistake", "Pointing out to {0} that they made an error in their Definite call.", d["t_hosho_miss"][0]);
