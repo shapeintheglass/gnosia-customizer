@@ -20,6 +20,12 @@ namespace GnosiaCustomizer.patches
 
         private static ConcurrentDictionary<int, CharacterText> characterTexts = new();
 
+        private static Dictionary<string, string> NameReplacements = [];
+        private static readonly List<string> NamesToReplace = [
+            "Gina", "SQ", "Raqio", "Stella", "Shigemichi", "Chipie", "Remnan",
+            "Comet", "Yuriko", "Jonas", "Setsu", "Otome", "Sha-Ming", "Kukrushka"
+        ];
+
         internal static void Initialize()
         {
             Logger.LogInfo("LoadCustomText called");
@@ -103,9 +109,11 @@ namespace GnosiaCustomizer.patches
                     if (characterTexts.TryGetValue(absoluteId, out var character))
                     {
                         CharacterSetter.SetChara(Logger, absoluteId, character);
+
+                        CharacterSetter.GetCharaFieldValueAsString(absoluteId, "name", out var name);
+                        Logger.LogInfo($"Character ID {absoluteId} name is now: {name}");
+                        NameReplacements[NamesToReplace[absoluteId - 1]] = name;
                     }
-                    CharacterSetter.GetCharaFieldValueAsString(absoluteId, "name", out var name);
-                    Logger.LogInfo($"Character ID {absoluteId} name is now: {name}");
 
                     if (CharacterSetter.GetCharaFieldValueAsStringArray(absoluteId, "t_skill_dogeza", out var strArray))
                     {
@@ -145,6 +153,16 @@ namespace GnosiaCustomizer.patches
                         // 2 - Message name
                         // 3+ - Parameters
                         message = tokens[2];
+                    }
+                }
+                else
+                {
+                    foreach (var name in NameReplacements.Keys)
+                    {
+                        if (message.Contains(name))
+                        {
+                            message = message.Replace(name, NameReplacements[name]);
+                        }
                     }
                 }
                 return true;
