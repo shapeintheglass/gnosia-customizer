@@ -205,10 +205,10 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("opening_remarks_two_deaths", "Reacting to the deaths of {0} ('Name1 and Name2') during the night phase. One of them was the bug, eliminated by the Engineer.", d["t_okuyami_f"][0]);
             contents += WriteDialogue("step_forward", "Requesting that whoever has the role of {0} step forward.", d["t_co_req"][0]);
             contents += WriteDialogue("reveal_role_engineer", "First person to reveal role as {0} ('Engineer'). They can investigate one person every night.", d["t_co"][1]);
-            contents += WriteDialogue("reveal_own_role_engineer", "Counter-claiming {1} for the role of {0} ('Engineer').", d["t_co_taiko"][1]);
+            contents += WriteDialogue("reveal_own_role_engineer", "Counter-claiming {1} (single or multiple names) for the role of {0} ('Engineer').", d["t_co_taiko"][1]);
             contents += WriteDialogue("reveal_role_engineer_with_gnosia_result", "Revealing role as {0} ('Engineer') while also stating {1} is Gnosia.", d["t_co_find"][1]);
             contents += WriteDialogue("reveal_role_doctor", "First to reveal role as {0} ('Doctor'). They can investigate whoever was put into cold sleep the previous night.", d["t_co"][2]);
-            contents += WriteDialogue("reveal_own_role_doctor", "Counter-claiming {1} for the role of {0} ('Doctor').", d["t_co_taiko"][2]);
+            contents += WriteDialogue("reveal_own_role_doctor", "Counter-claiming {1} (single or multiple names) for the role of {0} ('Doctor').", d["t_co_taiko"][2]);
             contents += WriteDialogue("reveal_role_doctor_with_gnosia_result", "Revealing role as {0} ('Doctor') while also stating the person {1} was Gnosia.", d["t_co_find"][2]);
             contents += WriteDialogue("reveal_role_guard_duty", "First to reveal role as {0} ('Guard Duty'). The other person on guard duty will corroborate this.", d["t_co"][4]);
             contents += WriteDialogue("reveal_role_guard_duty_response", "Corroborating {1}'s claim of being {0} ('Guard Duty').", d["t_co_taiko"][4]);

@@ -13,7 +13,6 @@ using coreSystem;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 using resource;
-using systemService.trophy;
 using UnityEngine;
 using UnityEngine.UI;
 using static resource.ResourceManager;
@@ -24,11 +23,15 @@ namespace GnosiaCustomizer
     {
         internal static ManualLogSource Logger;
 
+        // Available sprites for each character, indexed by character folder name
+        private static Dictionary<string, List<int>> AvailableCharacterSprites = [];
         // Individual sprites for each character, indexed by character folder name and head name
-        private static Dictionary<string, Dictionary<string, Lazy<CharaSpriteInfo>>> CharaSprites = [];
+        private static Dictionary<string, Dictionary<int, Lazy<CharaSpriteInfo>>> CharaSprites = [];
 
         // Keeping track of which sprites we have modified
         private static HashSet<uint> ModifiedSpriteIndeces = [];
+        // Currently visible sprite indeces in the CharaScreen
+        private static HashSet<uint> VisibleSprites = [];
         // Replacement textures loaded from file
         private static Dictionary<string, Lazy<ResTextureList>> ReplacementTextures = [];
 
@@ -65,31 +68,26 @@ namespace GnosiaCustomizer
             // Also add textures in the character folders
             foreach (var charaFolder in Consts.CharaFolderNames)
             {
-                var allTexturesFound = true;
-                var toAdd = new List<string>();
                 var charaPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder);
                 if (Directory.Exists(charaPath))
                 {
-                    //Logger.LogInfo($"Looking for custom character sprites in {charaPath}...");
-                    foreach (var headFileName in Consts.HeadFileNamesWithExt)
+                    AvailableCharacterSprites[charaFolder] = [];
+                    // Locate all files in this directory with the format h\d\d.png
+                    var headFiles = Directory.GetFiles(charaPath, "h??.png", SearchOption.TopDirectoryOnly);
+
+                    foreach (var headFilePath in headFiles)
                     {
-                        var headFilePathWithExt = Path.Combine(charaPath, headFileName);
-                        if (File.Exists(headFilePathWithExt))
+                        var headFileNameWithoutExt = Path.GetFileNameWithoutExtension(headFilePath);
+                        // Verify that the second two characters are digits
+                        if (headFileNameWithoutExt.Length == 3 && char.IsDigit(headFileNameWithoutExt[1]) && char.IsDigit(headFileNameWithoutExt[2]))
                         {
-                            toAdd.Add(headFilePathWithExt);
+                            var headIndex = int.Parse(headFileNameWithoutExt.Substring(1, 2));
+                            if (headIndex >= 0 && headIndex < Consts.MaxNumHeads)
+                            {
+                                textureFilePaths.Add(headFilePath);
+                                AvailableCharacterSprites[charaFolder].Add(headIndex);
+                            }
                         }
-                        else
-                        {
-                            allTexturesFound = false;
-                            break;
-                        }
-                    }
-                }
-                if (allTexturesFound)
-                {
-                    foreach (var file in toAdd)
-                    {
-                        textureFilePaths.Add(file);
                     }
                 }
             }
@@ -98,7 +96,8 @@ namespace GnosiaCustomizer
             var filePathToBytesMap = LoadTexturesAsynchronously(textureFilePaths);
             Logger.LogInfo($"Loaded {filePathToBytesMap.Keys.Count} texture files in {sw.ElapsedMilliseconds} ms.");
             sw.Restart();
-            // Unity libraries are not thread-safe and must be executed synchronously
+            // Unity libraries are not thread-safe and must be executed synchronously.
+            // We include lazy loading so that the sprites are only initialized the first time they are used.
             CreateTextureReplacements(filePathToBytesMap);
             Logger.LogInfo($"Created texture replacements in {sw.ElapsedMilliseconds} ms.");
             sw.Restart();
@@ -124,6 +123,7 @@ namespace GnosiaCustomizer
         {
             foreach (var filepath in filePathToBytesMap.Keys)
             {
+                // Utilize lazy loading so that we don't create the textures until they're actually needed.
                 ReplacementTextures[Path.GetFileNameWithoutExtension(filepath)] = new Lazy<ResTextureList>(() =>
                 {
                     var newTexture = new Texture2D(2, 2);
@@ -161,23 +161,24 @@ namespace GnosiaCustomizer
 
                 CharaSprites[charaFolder] = [];
 
-                for (int headIndex = 0; headIndex < Consts.NumHeads; headIndex++)
+                foreach (var headIndex in AvailableCharacterSprites[charaFolder])
                 {
-                    var headFileWithExt = Consts.HeadFileNamesWithExt[headIndex];
-                    var headFilePath = Path.GetFullPath(Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, headFileWithExt));
+                    var headFilePath = Path.GetFullPath(Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, $"h{headIndex:D2}.png"));
+
                     if (!filePathToBytesMap.TryGetValue(headFilePath, out var bytes))
                     {
-                        Logger.LogInfo($"Custom sprite {headFilePath} not found in {charaFolder}.");
+                        Logger.LogInfo($"Unable to load bytes for sprite {headFilePath} in {charaFolder}.");
+                        Logger.LogInfo($"Available keys: {filePathToBytesMap.Keys.Join()}");
                         continue;
                     }
-                    var headFileNameNoExt = Path.GetFileNameWithoutExtension(headFileWithExt);
 
-                    CharaSprites[charaFolder][Consts.HeadNames[headIndex]] = new Lazy<CharaSpriteInfo>(() =>
+                    CharaSprites[charaFolder][headIndex] = new Lazy<CharaSpriteInfo>(() =>
                     {
+
                         var texture = new Texture2D(2, 2);
                         if (!texture.LoadImage(bytes))
                         {
-                            Logger.LogError($"Failed to load texture {headFileNameNoExt} in in folder {charaFolder}");
+                            Logger.LogError($"Unable to create texture {headIndex} from {charaFolder}.");
                             return default;
                         }
                         var textureDimensions = new Vector2(texture.width, texture.height);
@@ -204,10 +205,11 @@ namespace GnosiaCustomizer
             }
         }
 
-        private static Sprite2dEffectArg SetPackedTextureWithCache(
+        private static bool SetPackedTextureWithCache(
             application.Screen __instance,
             ResourceManager resourceManager,
-            uint spriteIndex)
+            uint spriteIndex,
+            out Sprite2dEffectArg sprite)
         {
             // Assert required reflection fields are available
             if (DisplayOffsetField == null
@@ -225,16 +227,25 @@ namespace GnosiaCustomizer
 
             // Determine the character ID from the sprite index
             var absoluteId = spriteIndex / 100;
-            var headId = spriteIndex % 100;
+            var headIndex = (int) spriteIndex % 100;
 
             var packedName = Consts.CharaFolderNames[absoluteId - 1];
-            var headName = Consts.HeadNames[headId];
 
+            Lazy<CharaSpriteInfo> lazySpriteInfo = null;
             if (!CharaSprites.TryGetValue(packedName, out var value)
-                || !value.TryGetValue(headName, out var lazySpriteInfo))
+                || !value.TryGetValue(headIndex, out lazySpriteInfo))
             {
-                Logger.LogWarning($"Custom sprite {packedName} not found in {CharaSprites.Keys.Join()}. Skipping.");
-                return null;
+                // Try to fall back to head index 0
+                if (headIndex != 0 && value.TryGetValue(0, out lazySpriteInfo))
+                {
+                    Logger.LogWarning($"Custom sprite {packedName} with head index {headIndex} not found. Falling back to head index 0.");
+                }
+                else
+                {
+                    Logger.LogWarning($"Custom sprite {packedName} with head index {headIndex} not found in {CharaSprites.Keys.Join()}. Skipping.");
+                    sprite = null;
+                    return false;
+                }
             }
 
             var spriteInfo = lazySpriteInfo.Value;
@@ -246,12 +257,12 @@ namespace GnosiaCustomizer
             var displayHeight = resourceManager.m_displaySize.height;
             var mat = resourceManager.uiCharaDefaultMat;
 
-            GameObject gameObject = new GameObject(headName);
+            GameObject gameObject = new GameObject();
             gameObject.transform.SetParent(parentTrans);
             gameObject.SetActive(false);
 
             // Game object sprite
-            var sprite = gameObject.AddComponent<Sprite2dEffectArg>();
+            sprite = gameObject.AddComponent<Sprite2dEffectArg>();
             sprite.m_type = 0;
             sprite.m_texture = new ResTextureList
             {
@@ -287,7 +298,7 @@ namespace GnosiaCustomizer
 
             sprite.SetSize(0.7f);
             sprite.SetDisplayOffsetY(displayHeight - sprite.GetSizeInDisplay().y * sprite.GetSize() * textureRatio);
-            return sprite;
+            return true;
         }
 
         [HarmonyPatch(typeof(ResourceManager), nameof(ResourceManager.GetTexture))]
@@ -342,12 +353,17 @@ namespace GnosiaCustomizer
                         return true;
                     }
 
-                    // If we haven't swapped out the sprite yet in this screen, update it
                     screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite);
+
+                    // If we haven't swapped out the sprite yet in this screen, try to update it
                     if (!ModifiedSpriteIndeces.Contains(spriteIndex))
                     {
-                        sprite = SetPackedTextureWithCache(screen, __instance.m_rs, spriteIndex);
-                        screen.m_spriteMap[spriteIndex] = sprite;
+                        Logger.LogInfo($"Loading modified sprite index {spriteIndex}");
+                        if (SetPackedTextureWithCache(screen, __instance.m_rs, spriteIndex, out sprite))
+                        {
+                            Logger.LogInfo($"Successfully found custom sprite!");
+                            screen.m_spriteMap[spriteIndex] = sprite;
+                        }
                         ModifiedSpriteIndeces.Add(spriteIndex);
                     }
 
@@ -362,6 +378,7 @@ namespace GnosiaCustomizer
                     var centerY = sprite.GetCenterPosition().y;
                     sprite.SetCenterPosition(new Vector2(centerX, centerY));
                     sprite.SetVisible(true);
+                    VisibleSprites.Add(spriteIndex);
                     return true;
                 }), (ScriptParser.Script._EndFunc)(e => true), false));
                 return false;
@@ -374,27 +391,17 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(ScriptParser __instance, ref int __result, uint depth = 20, int chara = -1)
             {
-                //Logger.LogInfo($"UnvisibleAllChara_Patch.Prefix called (depth: {depth}, chara: {chara})");
-                const uint numHeads = 7U;
                 if (chara <= 0)
                     __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
                     {
-                        for (uint index = 1; index < 15U; ++index)
+                        foreach (var spriteIndex in VisibleSprites)
                         {
-                            var spriteIndex = index * 100U;
                             if (__instance.m_sb[depth].m_spriteMap.ContainsKey(spriteIndex))
                             {
-                                __instance.m_sb[depth].m_spriteMap[index * 100U].UnvisibleWithChild();
-                            }
-                            // Also iterate through every head
-                            for (uint headIndex = 1; headIndex < numHeads; ++headIndex)
-                            {
-                                if (__instance.m_sb[depth].m_spriteMap.ContainsKey(spriteIndex + headIndex))
-                                {
-                                    __instance.m_sb[depth].m_spriteMap[spriteIndex + headIndex].UnvisibleWithChild();
-                                }
+                                __instance.m_sb[depth].m_spriteMap[spriteIndex].UnvisibleWithChild();
                             }
                         }
+                        VisibleSprites.Clear();
                         return true;
                     }), (ScriptParser.Script._EndFunc)(e => true), false));
                 else
@@ -411,11 +418,13 @@ namespace GnosiaCustomizer
                         __instance.m_sb[depth].m_spriteMap[spriteIndex].UnvisibleWithChild();
 
                         // Also iterate through every head
-                        for (uint headIndex = 1; headIndex < numHeads; ++headIndex)
+                        for (uint headIndex = 1; headIndex < Consts.MaxNumHeads; ++headIndex)
                         {
-                            if (__instance.m_sb[depth].m_spriteMap.ContainsKey(spriteIndex + headIndex))
+                            var headSpriteIndex = spriteIndex + headIndex;
+                            if (__instance.m_sb[depth].m_spriteMap.ContainsKey(headSpriteIndex))
                             {
-                                __instance.m_sb[depth].m_spriteMap[spriteIndex + headIndex].UnvisibleWithChild();
+                                __instance.m_sb[depth].m_spriteMap[headSpriteIndex].UnvisibleWithChild();
+                                VisibleSprites.Remove(headSpriteIndex);
                             }
                         }
                         return true;
