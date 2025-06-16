@@ -307,9 +307,9 @@ namespace GnosiaCustomizer
             [HarmonyPrefix]
             public static bool Prefix(string resourceName, ref ResTextureList __result)
             {
+                //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
                 if (ReplacementTextures.TryGetValue(resourceName, out var resTextureList))
                 {
-                    //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
                     __result = resTextureList.Value;
                     return false;
                 }
@@ -361,7 +361,6 @@ namespace GnosiaCustomizer
                         Logger.LogInfo($"Loading modified sprite index {spriteIndex}");
                         if (SetPackedTextureWithCache(screen, __instance.m_rs, spriteIndex, out sprite))
                         {
-                            Logger.LogInfo($"Successfully found custom sprite!");
                             screen.m_spriteMap[spriteIndex] = sprite;
                         }
                         ModifiedSpriteIndeces.Add(spriteIndex);
@@ -464,7 +463,7 @@ namespace GnosiaCustomizer
             }
         }
 
-        [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
+        //[HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
         public static class LoadTexture_Patch
         {
             [HarmonyPrefix]
