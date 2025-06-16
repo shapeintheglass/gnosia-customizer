@@ -14,6 +14,7 @@ using GnosiaCustomizer.utils;
 using HarmonyLib;
 using resource;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using static resource.ResourceManager;
 
@@ -44,6 +45,16 @@ namespace GnosiaCustomizer
         private static readonly FieldInfo TextureOffsetField = Sprite2dEffectArgType.GetField("m_textureOffset", PrivateInstance);
         private static readonly FieldInfo SizeInTextureField = Sprite2dEffectArgType.GetField("m_sizeInTexture", PrivateInstance);
         private static readonly FieldInfo ImageField = Sprite2dEffectArgType.GetField("m_image", PrivateInstance);
+        private static readonly Type ScreenType = typeof(application.Screen);
+        private static readonly FieldInfo ScreenField = ScreenType.GetField("m_resourceManager", PrivateInstance);
+
+        private const string BioImage = "bio.png";
+        private const string IconImage = "icon.png";
+        private const string IconGnosImage = "icon_gnos.png";
+        private const string IconLoseImage = "icon_lose.png";
+        private const string IconWinImage = "icon_win.png";
+        private const string SelectImage = "select.png";
+        private const string TargetImage = "target.png";
 
         public struct CharaSpriteInfo
         {
@@ -89,6 +100,41 @@ namespace GnosiaCustomizer
                             }
                         }
                     }
+                    var bioPath = Path.Combine(charaPath, BioImage);
+                    if (File.Exists(bioPath))
+                    {
+                        textureFilePaths.Add(bioPath);
+                    }
+                    var iconPath = Path.Combine(charaPath, IconImage);
+                    if (File.Exists(iconPath))
+                    {
+                        textureFilePaths.Add(iconPath);
+                    }
+                    var iconGnosPath = Path.Combine(charaPath, IconGnosImage);
+                    if (File.Exists(iconGnosPath))
+                    {
+                        textureFilePaths.Add(iconGnosPath);
+                    }
+                    var iconLosePath = Path.Combine(charaPath, IconLoseImage);
+                    if (File.Exists(iconLosePath))
+                    {
+                        textureFilePaths.Add(iconLosePath);
+                    }
+                    var iconWinPath = Path.Combine(charaPath, IconWinImage);
+                    if (File.Exists(iconWinPath))
+                    {
+                        textureFilePaths.Add(iconWinPath);
+                    }
+                    var selectPath = Path.Combine(charaPath, SelectImage);
+                    if (File.Exists(selectPath))
+                    {
+                        textureFilePaths.Add(selectPath);
+                    }
+                    var targetPath = Path.Combine(charaPath, TargetImage);
+                    if (File.Exists(targetPath))
+                    {
+                        textureFilePaths.Add(targetPath);
+                    }
                 }
             }
 
@@ -123,8 +169,69 @@ namespace GnosiaCustomizer
         {
             foreach (var filepath in filePathToBytesMap.Keys)
             {
+                var textureName = Path.GetFileNameWithoutExtension(filepath);
+
+                // TODO: Refactor into helper fn
+                if (textureName.Equals("bio"))
+                {
+                    // Figure out which character this bio belongs to using its parent directory
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "data_chara_" + absoluteId;
+                    }
+                }
+                else if (textureName.Equals("target"))
+                {
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "target_charaIndex_" + absoluteId;
+                    }
+                }
+                else if (textureName.Equals("select"))
+                {
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "select_charaIndex_" + absoluteId;
+                    }
+                }
+                else if (textureName.Equals("icon"))
+                {
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "icon_" + absoluteId;
+                    }
+                }
+                else if (textureName.Equals("icon_gnos"))
+                {
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "icon_gnos_" + absoluteId;
+                    }
+                }
+                else if (textureName.Equals("icon_lose"))
+                {
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "icon_lose_" + absoluteId;
+                    }
+                }
+                else if (textureName.Equals("icon_win"))
+                {
+                    var parentDirectory = Path.GetDirectoryName(filepath);
+                    if (int.TryParse(parentDirectory.Substring(parentDirectory.Length - 2), out var absoluteId))
+                    {
+                        textureName = "icon_win_" + absoluteId;
+                    }
+                }
+
                 // Utilize lazy loading so that we don't create the textures until they're actually needed.
-                ReplacementTextures[Path.GetFileNameWithoutExtension(filepath)] = new Lazy<ResTextureList>(() =>
+                ReplacementTextures[textureName] = new Lazy<ResTextureList>(() =>
                 {
                     var newTexture = new Texture2D(2, 2);
 
@@ -205,7 +312,7 @@ namespace GnosiaCustomizer
             }
         }
 
-        private static bool SetPackedTextureWithCache(
+        private static bool SetCharaTexture(
             application.Screen __instance,
             ResourceManager resourceManager,
             uint spriteIndex,
@@ -227,7 +334,7 @@ namespace GnosiaCustomizer
 
             // Determine the character ID from the sprite index
             var absoluteId = spriteIndex / 100;
-            var headIndex = (int) spriteIndex % 100;
+            var headIndex = (int)spriteIndex % 100;
 
             var packedName = Consts.CharaFolderNames[absoluteId - 1];
 
@@ -286,7 +393,7 @@ namespace GnosiaCustomizer
             // Game object image
             var image = gameObject.AddComponent<Image>();
             image.material = mat;
-            image.material.SetColor("_Color", colorCoeff);            
+            image.material.SetColor("_Color", colorCoeff);
             image.sprite = spriteInfo.sprite;
             image.rectTransform.sizeDelta = spriteInfo.size;
             image.rectTransform.anchorMax = Consts.ZeroOne;
@@ -309,7 +416,7 @@ namespace GnosiaCustomizer
             {
                 if (ReplacementTextures.TryGetValue(resourceName, out var resTextureList))
                 {
-                    //Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
+                    Logger.LogInfo($"GetTexture_Patch.Prefix called (resourceName: {resourceName})");
                     __result = resTextureList.Value;
                     return false;
                 }
@@ -358,10 +465,8 @@ namespace GnosiaCustomizer
                     // If we haven't swapped out the sprite yet in this screen, try to update it
                     if (!ModifiedSpriteIndeces.Contains(spriteIndex))
                     {
-                        Logger.LogInfo($"Loading modified sprite index {spriteIndex}");
-                        if (SetPackedTextureWithCache(screen, __instance.m_rs, spriteIndex, out sprite))
+                        if (SetCharaTexture(screen, __instance.m_rs, spriteIndex, out sprite))
                         {
-                            Logger.LogInfo($"Successfully found custom sprite!");
                             screen.m_spriteMap[spriteIndex] = sprite;
                         }
                         ModifiedSpriteIndeces.Add(spriteIndex);
@@ -464,12 +569,120 @@ namespace GnosiaCustomizer
             }
         }
 
+        [HarmonyPatch]
+        public static class InterfaceScreen_Initialize_Patch
+        {
+            static MethodBase TargetMethod()
+                => AccessTools.Method(AccessTools.TypeByName("application.InterfaceScreen"), "Initialize");
+
+            [HarmonyPostfix]
+            public static void Postfix(object __instance, ResourceManager resourceManager,
+                ScriptParser scriptParser, bool screenActive = true)
+            {
+                // Renamed `interface` to `interfaceTexture` to avoid using a reserved keyword.
+                var interfaceTexture = Addressables.LoadAsset<Texture2D>("interface");
+                // Save to file
+                var fileName = "interface.png";
+                var texture = interfaceTexture.texture;
+                if (texture != null)
+                {
+                    var filePath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, Consts.TextureAssetsFolder, fileName);
+                    if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    }
+                    File.WriteAllBytes(filePath, texture.EncodeToPNG());
+                    Logger.LogInfo($"Saved interface texture to {filePath}");
+                }
+                else
+                {
+                    Logger.LogError("Failed to save interface texture: texture is null.");
+                }
+            }
+        }
+
+        //// Screen.ChangePackedTexture
+        ////[HarmonyPatch(typeof(application.Screen), nameof(application.Screen.ChangePackedTexture))]
+        //public static class ChangePackedTexture_Patch
+        //{
+        //    [HarmonyPrefix]
+        //    public static bool Prefix(application.Screen __instance, ref int __result, string packedName, string textureName, uint depth)
+        //    {
+        //        Logger.LogInfo($"ChangePackedTexture_Patch.Prefix called (__instance: {__instance?.GetType().Name}, packedName: {packedName}, textureName: {textureName}, depth: {depth})");
+
+        //        var resourceManager = (ResourceManager)ScreenField.GetValue(__instance);
+        //        var uiDefaultMat = resourceManager.uiDefaultMat;
+        //        var type = 0;
+        //        var parentTrans = __instance.transform;
+        //        var _position = new Vector2(704f, 347f);
+
+        //        if (packedName.Equals("interface") && textureName.StartsWith("charaIndex_"))
+        //        {
+        //            if (ReplacementTextures.TryGetValue("target_" + textureName, out var resTextureList))
+        //            {
+        //                Logger.LogInfo($"Found interface texture for target: {textureName}");
+        //                var replacementTexture = resTextureList.Value.texture;
+        //                var gameObject = new GameObject(textureName);
+        //                var sprite = gameObject.AddComponent<Sprite2dEffectArg>();
+        //                gameObject.AddComponent<Image>();
+        //                gameObject.transform.SetParent(parentTrans);
+        //                gameObject.SetActive(false);
+        //                __instance.m_spriteMap[depth] = sprite;
+        //                __instance.m_spriteMap[depth].SetFromLeftUpper(type, _position.x, _position.y, 0, 0, replacementTexture.width, replacementTexture.height, resTextureList.Value, Sprite2dEffectArg.SpriteType.k_SpriteTypePacked, uiDefaultMat);
+        //                __result = 1;
+        //                return false;
+        //            }
+        //            else
+        //            {
+        //                // Reset interface sprite sheet
+        //                __instance.SetPackedTexture(0, __instance.transform, packedName, textureName, depth, 10U, new Vector2?(_position));
+        //                return true;
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //}
+
+        // Screen.SetPackedTexture
+        // result.charaTelling_id_2 = win, charaTelling_id_3 = lose, charaTelling_id_4 = gnos
+        // interface.charaIndex_id = target
+        // data_vote, select_tgt, vote charaIndex_id = select
+        // LoadTexture(data_chara_id) = bio
+
+        [HarmonyPatch(typeof(application.Screen), nameof(application.Screen.SetPackedTexture))]
+        public static class SetPackedTexture_Patch
+        {
+            [HarmonyPrefix]
+            public static bool Prefix (
+                application.Screen __instance,
+                ref int __result,
+                int type,
+                Transform parentTrans,
+                string packedName,
+                string textureName,
+                uint depth,
+                uint order = 100,
+                Vector2? _position = null,
+                Sprite2dEffectArg parent = null,
+                ResTextureList texture = null,
+                bool character = false)
+            {
+                Logger.LogInfo($"SetPackedTexture_Patch called with packedName: {packedName}, textureName: {textureName}, depth: {depth}");
+
+                
+
+                return true;
+            }
+        }
+
         [HarmonyPatch(typeof(ScriptParser), nameof(ScriptParser.LoadTexture))]
         public static class LoadTexture_Patch
         {
             [HarmonyPrefix]
             public static void Prefix(ScriptParser __instance, string resourceName)
             {
+
+
                 Logger.LogInfo($"ScriptParser.LoadTexture called (resourceName: {resourceName})");
             }
         }

@@ -18,7 +18,13 @@ namespace GnosiaCustomizer.patches
         internal static new ManualLogSource Logger;
         private const string ConfigFileName = "config.yaml";
 
-        private static ConcurrentDictionary<int, CharacterText> characterTexts = new();
+        private static ConcurrentDictionary<int, CharacterText> characterTexts = [];
+
+        private static Dictionary<string, string> NameReplacements = [];
+        private static readonly List<string> NamesToReplace = [
+            "Gina", "SQ", "Raqio", "Stella", "Shigemichi", "Chipie", "Remnan",
+            "Comet", "Yuriko", "Jonas", "Setsu", "Otome", "Sha-Ming", "Kukrushka"
+        ];
 
         internal static void Initialize()
         {
@@ -106,6 +112,7 @@ namespace GnosiaCustomizer.patches
                     }
                     CharacterSetter.GetCharaFieldValueAsString(absoluteId, "name", out var name);
                     Logger.LogInfo($"Character ID {absoluteId} name is now: {name}");
+                    NameReplacements[NamesToReplace[absoluteId-1]] = name;
 
                     if (CharacterSetter.GetCharaFieldValueAsStringArray(absoluteId, "t_skill_dogeza", out var strArray))
                     {
@@ -145,6 +152,16 @@ namespace GnosiaCustomizer.patches
                         // 2 - Message name
                         // 3+ - Parameters
                         message = tokens[2];
+                    }
+                }
+                else
+                {
+                    foreach (var name in NameReplacements.Keys)
+                    {
+                        if (message.Contains(name))
+                        {
+                            message = message.Replace(name, NameReplacements[name]);
+                        }
                     }
                 }
                 return true;

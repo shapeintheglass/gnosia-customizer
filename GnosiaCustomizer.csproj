@@ -36,5 +36,11 @@
 	  <Reference Include="UnityEngine.UI">
 		  <HintPath>References\UnityEngine.UI.dll</HintPath>
 	  </Reference>
+	  <Reference Include="UnityEngine.Addressables">
+		  <HintPath>References\Unity.Addressables.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.ResourceManager">
+		  <HintPath>References\Unity.ResourceManager.dll</HintPath>
+	  </Reference>
   </ItemGroup>
 </Project>
