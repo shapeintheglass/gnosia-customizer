@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BepInEx;
 using HarmonyLib;
-using UnityEngine.UIElements.StyleSheets.Syntax;
 
 namespace GnosiaCustomizer.utils
 {
@@ -223,8 +219,8 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("report_engineer_pt1_target_killed", "As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.", d["t_uranai_o"][0]);
             contents += WriteDialogue("report_engineer_pt1", "As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}.", d["t_uranai_s"][0]);
             contents += WriteDialogue("report_engineer_pt1_different_target", " As {0} ('Engineer'), the first sentence of their report that they investigated a different target than what the other Engineer reported.", d["t_uranai_b"][0]);
-            contents += WriteDialogue("report_engineer_pt2_gnosia_result", "As Engineer, the second sentence of their report that {1} was {0} (Gnosia).", d["t_uranai_t"][0]);
-            contents += WriteDialogue("report_engineer_pt2_human_result", "As Engineer, the second sentence of their report that {1} was {0} (Human).", d["t_uranai_f"][0]);
+            contents += WriteDialogue("report_engineer_pt2_gnosia_result", "As Engineer, the second sentence of their report that {1} was {0} ('Gnosia').", d["t_uranai_t"][0]);
+            contents += WriteDialogue("report_engineer_pt2_human_result", "As Engineer, the second sentence of their report that {1} was NOT {0} ('Gnosia').", d["t_uranai_f"][0]);
             contents += WriteDialogue("report_engineer_no_result", "As Engineer, stating that they did not investigate anyone as there were no more valid targets to examine.", d["t_uranai_n"][0]);
             contents += WriteDialogue("report_doctor_pt1", "# As Doctor, the first sentence of their report that they investigated the people who were in cold sleep last night.\r\n# {0} = \"Gnosia\"\r\n# {1} = Cold sleeper name(s)\r\n# {2} = Gnosia name(s)\r\n# {3} = \"was\"/\"were\" for plural handling\r\n# {4} = \"was\"/\"were\" for plural handling\r\n# {5} = \"wasn't\"/\"weren't\" for plural handling", d["t_reibai_s"][0]);
             contents += WriteDialogue("report_doctor_pt2_single_gnosia_result", "As Doctor, the second part of their report stating that they found {1} to be {0} (Gnosia).\r\n# {0} = \"Gnosia\"\r\n# {1} = Cold sleeper name(s)\r\n# {2} = Gnosia name(s)\r\n# {3} = \"was\"/\"were\" for plural handling\r\n# {4} = \"was\"/\"were\" for plural handling\r\n# {5} = \"wasn't\"/\"weren't\" for plural handling", d["t_reibai_t"][0]);
