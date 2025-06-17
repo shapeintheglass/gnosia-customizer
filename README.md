@@ -6,16 +6,17 @@ A mod based on BepinEx/Harmony that lets you put your own characters into Gnosia
 
 This wouldn't be possible without the work and findings of many Gnosia fans throughout the years! In particular I'd like to call out:
 
+ * Petit Depotto for creating Gnosia! The amount of coding behind the character AI is staggering and was what captivated me the most about the game.
  * Everyone in the Gnosia Discord who worked on the [All Skills](https://discordapp.com/channels/791411929494716446/957864790896803840/1078748972652441760) mod! Especially Pressie, who provided a lot of help to me in the modding channel. 🙏
  * /u/Wave-Master's very thorough [reddit comments](https://www.reddit.com/r/Gnosia_/comments/1jwcesm/comment/mmoboii/), which really helped me understand some of the more confusing internal stats.
  * /u/SAllerleirauh's various posts on [game internal stats](https://www.reddit.com/r/Gnosia_/comments/uxrcuv/love_levels_for_characters_from_game_files/) and their [video of Danganronpa sprites in Gnosia](https://www.youtube.com/watch?v=i6Av8n6nKAE), which proved to me that something like this was even possible!
 
 ## 🧪 Prototype features:
 
-The following assets can be modified: 
+As of 6/17/2025, the following customizations are supported:
 
 **Characters**
- * Sprites - Supports up to 99 sprites per character!
+ * Sprites - Up to 99 sprites per character!
  * Name + some bio page info
  * Attributes - Hidden stats that affect the character's decisions
  * Ability points
@@ -40,13 +41,16 @@ The following assets can be modified:
 3. Unzip `gnosia_customizer.zip` into the plugins folder. This should add two dlls into plugins/, as well as a folder called `gnosia_customizer` that will contain all of the custom assets.
 4. Run the game. You can confirm if the customizer is working if Gina's sprites have been replaced with Akane from Zero Escape.
 
+To make changes, simply modify the assets in the plugins/gnosia_customizer folder and restart the game. You may want to make a backup of your save file before making major modifications, in case something goes wrong with loading the new assets.
+
+
 ## 🎨 Customizations
 
 Here's a quick guide on how to use each of the customizations that the tool can offer.
 
 ### Character sprites
 
-There are 14 folders in the `gnosia_customizer` assets folder, each of which correspond to one character. This is the character that each folder corresponds to:
+There are 14 folders in the `gnosia_customizer` assets folder, each of which corresponds to one character. This is the character that each folder corresponds to:
 
 | ID | Name  |
 |----|-------|
@@ -86,7 +90,7 @@ For instance, to overwrite Gina's sprites, you'll want to create 8 images h00.pn
 
 ![Screenshot](readme_spritefiles.png)
 
-Make sure to resize the image to have a height of around 800-900 pixels, or else the character may not appear correctly on the screen!
+Make sure to resize the image to have a height of around 800-900 pixels, or else the character may not appear correctly on the screen! For best results, I'd recommend starting with one of the [original character's sprites](https://gnosia.fandom.com/wiki/Setsu/Gallery) and updating your new sprite to roughly match the same dimensions/position of the head.
 
 ![Screenshot](readme_smallakane.jpg)
 
@@ -98,7 +102,7 @@ If you create additional sprites beyond ID 7, read on to see how to use them in 
 
 ### Character config.yaml
 
-Each character folder also contains a file called `config.yaml`, which contains all other information about them. This is written in [YAML format](https://www.cloudbees.com/blog/yaml-tutorial-everything-you-need-get-started) and contains comments that start with a `#` character. These are ignored by the mod, but can provide context on what each of the fields means. Here is a snippet from an example config file:
+Each character folder also contains a file called `config.yaml`, which contains all other information about them. This is written in [YAML format](https://www.cloudbees.com/blog/yaml-tutorial-everything-you-need-get-started) and contains comments that start with a `#` character. Comments are ignored by the mod, but can provide context on what each of the fields means. Here is a snippet from an example config file:
 
 ```yaml
 # How the game and other people will address this character.
@@ -118,7 +122,7 @@ There are multiple kinds of character stats that influence their AI behavior in 
 
 ##### Defense/"HP"
 
-This value is originall called "HP", but I'm borrowing [/u/Wave-Master's terminology](https://files.catbox.moe/9w2qpy.txt) and renaming this to "Defense" to be more accurate. I'd recommend reading their breakdown on how this stat works, but it roughly represents their resistance to "doubt attacks".
+This value is originally called "HP", but I'm borrowing [/u/Wave-Master's terminology](https://files.catbox.moe/9w2qpy.txt) and renaming this to "Defense" to be more accurate. I'd recommend reading their breakdown on how this stat works, but it roughly represents their resistance to "doubt attacks".
 
 ```
 # Their base 'defense' rating against doubt.
@@ -342,7 +346,7 @@ The `audio` folder is for custom audio in .wav format. If it matches the name of
 |G_se_pusyu.wav|____ was put into cold sleep|
 | G_uta_02_strm.wav | Night phase music |
 
-Ex. To replace the night phase music, save the track as G_uta_02_strm.wav in plugins/sound.
+Ex. To replace the night phase music, save the track as G_uta_02_strm.wav in plugins/audio.
 
 Here's an example of what the audio directory might look like if you replace a lot of tracks:
 
