@@ -33,13 +33,12 @@ The following assets can be modified:
  * Cutscenes outside of a typical Gnosia round (Ex. special story events that happens only once)
  * Journal entries on bio page
 
-## 🐻 Quick start guide using the Danganronpa example
+## 🐻 Quick start guide using the example
 
 1. [Install BepInEx](https://docs.bepinex.dev/articles/user_guide/installation/index.html).
-2. Run Gnosia once to create the plugins folder.
-3. Place `GnosiaCustomizer.dll` into the plugins folder.
-3. Unzip the `example_assets.zip` into the plugins folder. The file structure in `plugins/gnosia_customizer` should look similar to (ignore the p00 folder): ![Screenshot](readme_filestructure.png)
-4. Open the game. If the menu music is changed, this is a sign that the new assets have loaded!
+2. Run Gnosia once to create the plugins folder (It should be in your steam directory, ex. `C:\Program Files (x86)\Steam\steamapps\common\GNOSIA\BepInEx\plugins\`).
+3. Unzip `gnosia_customizer.zip` into the plugins folder. This should add two dlls into plugins/, as well as a folder called `gnosia_customizer` that will contain all of the custom assets.
+4. Run the game. You can confirm if the customizer is working if Gina's sprites have been replaced with Akane from Zero Escape.
 
 ## 🎨 Customizations
 
