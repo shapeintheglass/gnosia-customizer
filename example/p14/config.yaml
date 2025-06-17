@@ -1,0 +1,1159 @@
+# How the game and other people will address this character.
+name: Kukrushka
+# 0 = Male, 1 = Female, 2 = Non-binary.
+sex: 1
+# Where the character is from. Only shown on their bio page.
+origin: "Unknown"
+# The character's age. Only shown on their bio page.
+age: 15
+# Information about this character. Only shown on their bio page.
+bio1: "High Charm and Performance abilities make her\nhard to target for cold sleep, even when doubted.\nActing mainly on emotion, she targets those she\ndislikes over dangerous enemies."
+bio2: ""
+# Honorific when they address other people (ex. -san, -sama, etc). Leave blank for no honorific.
+honorific: 
+
+# Their base 'defense' rating against doubt.
+defense_min: 125
+# Their base 'defense' rating against doubt, as a Gnosia.
+defense_with_gnos: 110
+
+# Affects the character's likelihood to perform certain actions.
+attributes:
+  playful: 0.33
+  social: 0.24
+  logic: 0.25
+  neat: 0.73
+  desire: 0.65
+  courage: 0.86
+
+# The character's starting ability for each type.
+abilityStart:
+  charisma: 0.09
+  intuition: 0.32
+  charm: 0.45
+  logic: 0.01
+  perform: 0.41
+  stealth: 0.35
+
+# The character's maximum ability for each type.
+abilityMax:
+  charisma: 0.28
+  intuition: 0.71
+  charm: 0.99
+  logic: 0.07
+  perform: 0.9
+  stealth: 0.81
+
+# Skills the character is capable of using. If a skill is not present here, false is assumed.
+known_skills:
+  charisma_step_forward: true
+  charisma_seek_agreement: false
+  charisma_block_argument: false
+  intuition_say_human: false
+  intuition_dont_be_fooled: false
+  charm_regret: true
+  charm_collaborate: true
+  logic_vote: false
+  logic_dont_vote: false
+  logic_definite_human: true
+  logic_definite_enemy: true
+  logic_freeze_all: false
+  perform_retaliate: false
+  perform_seek_help: true
+  perform_exaggerate: true
+  stealth_obfuscate: false
+  stealth_small_talk: false
+  stealth_grovel: false
+
+
+############
+# DIALOGUE #
+############
+
+# Statement at the start of the round.
+opening_statement:
+  line: "(Kukrushka smiles,\nas if to invite everyone to talk together.)"
+  sprite: 1
+
+# Mourning the loss of {0} during the night phase.
+opening_remarks_condolences:
+  line: "(You can feel Kukrushka mourning for {0}...)"
+  sprite: 3
+
+# Celebrating that no one disappeared last night.
+opening_remarks_no_deaths:
+  line: "(She's happy nobody was attacked.)"
+  sprite: 1
+
+# Reacting to the deaths of {0} ('Name1 and Name2') during the night phase. One of them was the bug, eliminated by the Engineer.
+opening_remarks_two_deaths:
+  line: "(She's shocked that two people were attacked in one night.)"
+  sprite: 4
+
+# Requesting that whoever has the role of {0} step forward.
+step_forward:
+  line: "(Who is the {0}?\nKukrushka looks around at everyone.)"
+  sprite: 4
+
+# First person to reveal role as {0} ('Engineer'). They can investigate one person every night.
+reveal_role_engineer:
+  line: "(Kukrushka raises her hand.\nIt seems she's the {0}.)"
+  sprite: 0
+
+# Counter-claiming {1} (single or multiple names) for the role of {0} ('Engineer').
+reveal_own_role_engineer:
+  line: "(Kukrushka glares at {1} sternly.\nShe herself, is the {0}.\nHer body language makes this apparent.)"
+  sprite: 2
+
+# Revealing role as {0} ('Engineer') while also stating {1} is Gnosia.
+reveal_role_engineer_with_gnosia_result:
+  line: "(Kukrushka indicates that she is the {0}...\nThen - strongly - that {1} is Gnosia.)"
+  sprite: 2
+
+# First to reveal role as {0} ('Doctor'). They can investigate whoever was put into cold sleep the previous night.
+reveal_role_doctor:
+  line: "(It seems Kukrushka is the {0}.\nHer body language says as much.)"
+  sprite: 0
+
+# Counter-claiming {1} (single or multiple names) for the role of {0} ('Doctor').
+reveal_own_role_doctor:
+  line: "(The {0} is me. Not {1}.\nKukrushka expresses this through facial expressions.)"
+  sprite: 2
+
+# Revealing role as {0} ('Doctor') while also stating the person {1} was Gnosia.
+reveal_role_doctor_with_gnosia_result:
+  line: "(Kukrushka asserts that she is the {0}.\nThen, she indicates that {1} was Gnosia.)"
+  sprite: 0
+
+# First to reveal role as {0} ('Guard Duty'). The other person on guard duty will corroborate this.
+reveal_role_guard_duty:
+  line: "(I haven't left the ship, so I couldn't be Gnosia,\nshe seems to say.)"
+  sprite: 0
+
+# Corroborating {1}'s claim of being {0} ('Guard Duty').
+reveal_role_guard_duty_response:
+  line: "(Kukrushka looks at {1} kindly.\nShe, too, remained on the ship.)"
+  sprite: 1
+
+# First to reveal role as {0} ('Guardian Angel').
+reveal_role_guardian_angel:
+  line: "(The {0} is Kukrushka, it would seem.)"
+  sprite: 6
+
+# Reacting to {1} being the sole claimant to the role of {0} (i.e. they're the genuine {0}).
+step_forward_1_claim_reaction:
+  line: "(Kukrushka seems happy that the {1} has appeared.)"
+  sprite: 1
+
+# Reacting to {1} ('Name1 and Name2') being two claimants to the role of {0}.
+step_forward_2_claims_reaction:
+  line: "(Kukrushka sizes up the two people claiming to be the {0}.\nOne is definitely lying... She stares them down sternly.)"
+  sprite: 2
+
+# Reacting to {1} ('Name1, Name2, and Name3') being three or more claimants to the role of {0}.
+step_forward_3_claims_reaction:
+  line: "(She's confused by the number of people claiming to be the {0}...)"
+  sprite: 3
+
+# Asking for any Engineer/Doctor who hasn't spoken yet to present their report.
+request_report:
+  line: "(She looks around at the group, encouraging them to report.)"
+  sprite: 0
+
+# One of the Doctors/Engineers, named {0}, failed to present their report. This is very incriminating.
+request_report_no_response:
+  line: "(Wait, the {0} has yet to report,\nKukrushka implies to the group.)"
+  sprite: 4
+
+# The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {1}, and got the same result. {0} = the string 'Gnosia'.
+report_pt1_matching_result:
+  line: "(Kukrushka nods.\n"
+  sprite: 6
+
+# The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {0}, but got a different result. {0} = the string 'Gnosia'.
+report_pt1_conflicting_result:
+  line: "(Don't be fooled, emotes Kukrushka.\n"
+  sprite: 2
+
+# As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.
+report_engineer_pt1_target_killed:
+  line: "(Kukrushka sighs.\n"
+  sprite: 3
+
+# As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}.
+report_engineer_pt1:
+  line: "(Kukrushka reports.\n"
+  sprite: 0
+
+#  As {0} ('Engineer'), the first sentence of their report that they investigated a different target than what the other Engineer reported.
+report_engineer_pt1_different_target:
+  line: "(Kukrushka seems to have investigated someone else.\n"
+  sprite: 0
+
+# As Engineer, the second sentence of their report that {1} was {0} (Gnosia).
+report_engineer_pt2_gnosia_result:
+  line: "She implies that she found {1} to be {0}.)"
+  sprite: 4
+
+# As Engineer, the second sentence of their report that {1} was {0} (Human).
+report_engineer_pt2_human_result:
+  line: "According to her findings, {1} was not {0}.)"
+  sprite: 1
+
+# As Engineer, stating that they did not investigate anyone as there were no more valid targets to examine.
+report_engineer_no_result:
+  line: "(Kukrushka implies...\nthat she didn't know whom to investigate.)"
+  sprite: 5
+
+# # As Doctor, the first sentence of their report that they investigated the people who were in cold sleep last night.
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt1:
+  line: "(Claiming to be the Doctor, Kukrushka reports.\n"
+  sprite: 0
+
+# As Doctor, the second part of their report stating that they found {1} to be {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_single_gnosia_result:
+  line: "Apparently she found that {1} {3} {0}.)"
+  sprite: 2
+
+# As Doctor, the second part of their report stating that they found {1} to NOT be {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_single_human_result:
+  line: "Apparently {1} {3} not {0}.)"
+  sprite: 3
+
+# As Doctor, the second part of the report stating that among {1} (names of those in cold sleep), {2} (names of the Gnosia) were {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_multiple_gnosia_result:
+  line: "{2} {4} {0}, according to her report.)"
+  sprite: 1
+
+# As Doctor, the second part of the report stating that among {1} (names of those in cold sleep) none were {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_oops_all_humans_result:
+  line: "Apparently there were no {0} among those frozen last night.)"
+  sprite: 3
+
+# Only spoken on day one. They technically trust {0}, but also believe they are suspicious.
+doubt_day_one:
+  line: "(I feel {0} may be suspicious...\nKukrushka's body language says as much.)"
+  sprite: 4
+
+# {0} is generically suspicious.
+doubt_dislike:
+  line: "(Kukrushka's expression shows contempt toward {0}.)"
+  sprite: 6
+
+# {0} is talking too much or annoying.
+doubt_too_chatty:
+  line: "(She's tired of hearing {0} speak.\nThis much is clear.)"
+  sprite: 5
+
+# {0} is suspicious despite being generally liked by everyone.
+doubt_too_popular:
+  line: "(Can {0} be trusted? Really...?\nYou can feel her questioning everyone.)"
+  sprite: 4
+
+# {0} hasn't spoken for a while.
+doubt_too_quiet:
+  line: "({0} is too quiet, and can't be trusted,\nsay her expression and gestures.)"
+  sprite: 2
+
+# Probabilistically, {0} is likely suspicious.
+doubt_prob:
+  line: "(Kukrushka thinks for a moment and points to {0}.\nHer calculations indicate that {0} is suspicious.)"
+  sprite: 2
+
+# Once trusted {0}, but are now suspicious of them.
+doubt_trusted:
+  line: "({0} cannot be trusted,\nsays Kukrushka with her eyes.)"
+  sprite: 2
+
+# Was collaborating with {0}, but are now suspicious of them.
+doubt_collaborator:
+  line: "(I can't cooperate with {0} any longer,\nsays Kukrushka's sorrowful gaze.)"
+  sprite: 3
+
+# Distrusts {0} because {1}, who was at odds with them, has gone missing.
+doubt_avenge:
+  line: "({0} attacked {1}? Why?\nKukrushka stares with contempt.)"
+  sprite: 2
+
+# {0} is generically suspicious. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_dislike:
+  line: "(I should never have trusted {0},\nsighs Kukrushka.)"
+  sprite: 5
+
+# {0} is talking too much or annoying. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_too_chatty:
+  line: "(Noticing that {0} has been overly talkative, Kukrushka scowls in dismay.)"
+  sprite: 0
+
+# {0} is suspicious despite being generally liked by everyone. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_too_popular:
+  line: "(We can no longer trust {0}.\nNo, it's too dangerous...\nKukrushka emotes to the group.)"
+  sprite: 2
+
+# {0} hasn't spoken for a while. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_too_quiet:
+  line: "({0}, you should speak up more,\nKukrushka seems to be saying.)"
+  sprite: 0
+
+# Probabilistically, {0} is likely suspicious. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_prob:
+  line: "(Kukrushka looks at {0}, and delves into thought.\nStochastically speaking, {0} is suspicious.\nApparently she no longer trusts them.)"
+  sprite: 3
+
+# Once trusted {0}, but are now suspicious of them. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_trusted:
+  line: "(It seems {0} can't be trusted after all,\nKukrushka seems to be saying.)"
+  sprite: 2
+
+# Was collaborating with {0}, but are now suspicious of them. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_collaborator:
+  line: "..."
+  sprite: 0
+
+# Distrusts {0} because {1}, who was at odds with them, has gone missing. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_avenge:
+  line: "..."
+  sprite: 0
+
+# Agreeing with {1} that {0} cannot be trusted.
+doubt_affirm_dislike:
+  line: "(Kukrushka also turned against {0}.\nHer stare says as much.)"
+  sprite: 2
+
+# Agreeing with {1} that {0} is talking too much.
+doubt_affirm_too_chatty:
+  line: "({0}, just stop,\nsays Kukrushka with a gaze.)"
+  sprite: 5
+
+# Agreeing with {1} that {0} is suspicious despite their popularity.
+doubt_affirm_too_popular:
+  line: "(Kukrushka looks upon {0} with sorrow...)"
+  sprite: 6
+
+# Agreeing with {1} that {0} is too quiet.
+doubt_affirm_too_quiet:
+  line: "(Kukrushka stares at {0},\nas if to warn the group of danger.)"
+  sprite: 4
+
+# Agreeing with {1} that {0} is probably suspicious.
+doubt_affirm_prob:
+  line: "(Yes, {0} is definitely suspicious,\nagrees Kukrushka.)"
+  sprite: 0
+
+# Agreeing with {1} that {0} is suspicious, despite their trust.
+doubt_affirm_trusted:
+  line: "(Kukrushka's eyes are filled with suspicion toward {0}.)"
+  sprite: 2
+
+# Agree with with {1} that {0} is extremely suspicious (triggers on negative trust, ex. definite enemy).
+doubt_affirm_negative_trust:
+  line: "(Kukrushka stares at {0} sternly...)"
+  sprite: 2
+
+# Agreeing with {1} that {0} cannot be trusted. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_dislike:
+  line: "({0}, I'm sorry, but...\nKukrushka appears to have given up.)"
+  sprite: 6
+
+# Agreeing with {1} that {0} is talking too much. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_too_chatty:
+  line: "({1} is right,\nKukrushka nods.)"
+  sprite: 0
+
+# Agreeing with {1} that {0} is suspicious despite their popularity. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_too_popular:
+  line: "(No way... {0}...?\nKukrushka's surprise turns to suspicion.)"
+  sprite: 4
+
+# Agreeing with {1} that {0} is too quiet. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_too_quiet:
+  line: "(Kukrushka seems taken aback.\nShe seems to have forgotten all about {0}.)"
+  sprite: 4
+
+# Agreeing with {1} that {0} is probably suspicious. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_prob:
+  line: "(We have no choice but to suspect {0},\nKukrushka passively agrees.)"
+  sprite: 3
+
+# Agreeing with {1} that {0} is suspicious, despite their trust. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_trusted:
+  line: "(Apparently Kukrushka has yet to fully trust {0}.)"
+  sprite: 3
+
+# Arguing that {0} is suspicious, despite {1}'s remark that they could be trusted.
+argue:
+  line: "(You can't trust {0},\nwarns Kukrushka, shaking her head.)"
+  sprite: 3
+
+# Arguing that {0} is suspicious, despite {1}'s remark that they could be trusted. Variant that triggers when this character's persona trust of {0} is high.
+argue_high_trust_variant:
+  line: "(We can't afford to trust {0} right now,\nwarns Kukrushka.)"
+  sprite: 2
+
+# Follow-up to argument that {0} is suspicious, despite {1}'s remark that they could be trusted.
+join_argument:
+  line: "(Kukrushka shoots a glance at {0}.\nHer eyes show no sign of trust.)"
+  sprite: 6
+
+# Follow-up to argument that {0} is suspicious, despite {1}'s remark that they could be trusted. Variant that triggers when this character's persona trust of {0} is high.
+join_argument_high_trust_variant:
+  line: "(I don't think we should do this.\nLet's wait and see what happens, Kukrushka seems to say.)"
+  sprite: 0
+
+# Attempt to defend against a weak accusation.
+refute_weak_doubt:
+  line: "(Kukrushka, under suspicion,\nstands quietly, watching things play out...)"
+  sprite: 3
+
+# Attempt to defend against an accusation with strong basis.
+refute_strong_doubt:
+  line: "(Feeling she has lost the favor of the group,\nKukrushka averts her gaze...)"
+  sprite: 3
+
+# Defending {0} from {1}'s statement.
+defend_generic:
+  line: "(It's OK. I trust you, {0},\nKukrushka smiles, attempting to lift her friend's spirits.)"
+  sprite: 1
+
+# Defending {0} from {1}'s statement. Trusts {0} more than {1}.
+defend_trusted_target:
+  line: "(No. Don't listen to {1}...\nKukrushka's expression turns severe.)"
+  sprite: 2
+
+# Defending {0} from {1}'s statement. Persona trust of {0} is low.
+defend_untrusted_target:
+  line: "(I trust you, {0},\nemotes Kukrushka with a smile.)"
+  sprite: 1
+
+# {1} has said that {0} is suspicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is above 0.45.
+join_defense_trusted_target:
+  line: "(Smiling brightly,\nKukrushka clearly trusts {0}.)"
+  sprite: 1
+
+# {1} has said that {0} is suspicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is below 0.45.
+join_defense_untrusted_target:
+  line: "(I don't doubt {0} at all,\nKukrushka seems to be saying.)"
+  sprite: 0
+
+# Expressing thanks that they were trusted by {0}.
+say_thanks:
+  line: "(Kukrushka expresses her gratitude via body language.)"
+  sprite: 1
+
+# Stating their fondness for {0}.
+cover_vouch:
+  line: "(Kukrushka smiles at {0}.\nHer unwavering trust is clear.)"
+  sprite: 1
+
+# State that probabilistically, {0} is likely trustworthy.
+cover_prob:
+  line: "(By my calculations, {0} can be trusted,\nKukrushka seems to be saying.)"
+  sprite: 0
+
+# Stating that {0} can be trusted. This can trigger when the character's true internal trust of {0} is high, and the odds may increase if the character as gnosia is vouching for a gnosia-aligned ally.
+cover_trusted:
+  line: "(We can trust {0}...\nKukrushka seems to want everyone else to trust {0}, too.)"
+  sprite: 1
+
+# Stating their fondness for {0}. This variant triggers when the persona trust between this character and {0} is T<0.45.
+cover_low_trust_variant_vouch:
+  line: "(Kukrushka once again expresses her faith in {0}.\nShe flashes a beaming smile.)"
+  sprite: 1
+
+# Probabilistically, {0} can be trusted. This variant triggers when the persona trust between this character and {0} is T<0.45.
+cover_low_trust_variant_prob:
+  line: "(I should never have doubted you, {0},\napologizes Kukrushka.)"
+  sprite: 3
+
+# Stating that {0} can be trusted. This can trigger when the character's true internal trust of {0} is high, and the odds may increase if the character as gnosia is vouching for a gnosia-aligned ally. This variant triggers when the persona trust between this character and {0} is T<0.45.
+cover_low_trust_variant_trusted:
+  line: "(Let's stop doubting {0},\nemotes Kukrushka to the group.)"
+  sprite: 0
+
+# Agreeing with {1} that {0} can be trusted.
+cover_together:
+  line: "(Kukrushka nods in agreement.)"
+  sprite: 0
+
+# Agreeing with {1} that {0} can be trusted. Variant that triggers when publicly-facing trust to {0} is less than 0.45.
+cover_together_low_trust_variant:
+  line: "(Kukrushka agrees, and seems to have stopped doubting {0}.)"
+  sprite: 1
+
+# Declaring that {0} is definitely the real {1} (Engineer/Doctor).
+definite_human_with_role:
+  line: "It's pretty obvious that {0} is definitely {1}.\nAny objections?"
+  sprite: 0
+
+# Declaring that {0} is definitely human.
+definite_human:
+  line: "{0} is human. I think we can agree on this."
+  sprite: 0
+
+# Declaring that {0} is definitely not the real {1} (Engineer/Doctor).
+definite_enemy_with_role:
+  line: "{0} is lying.\nThere's no way you're {1}."
+  sprite: 0
+
+# Declaring that {0} is definitely {1} (Gnosia).
+definite_enemy:
+  line: "{0} is... {1}. They have to be."
+  sprite: 5
+
+# Declaring that {0} is definitely the {1} ('AC Follower').
+definite_enemy_ac:
+  line: "{0} is {1}. AC."
+  sprite: 0
+
+# Declaring that {0} is definitely the {1} ('Bug').
+definite_enemy_bug:
+  line: "{0} is {1}. Bug."
+  sprite: 0
+
+# Declaring that {0} is definitely a liar.
+definite_enemy_liar:
+  line: "Something about {0} is wrong."
+  sprite: 0
+
+# Declaring that {0} is definitely a liar, but also not Gnosia.
+definite_enemy_liar_not_gnosia:
+  line: "{0} is not Gnosia. This is a fact.\nBut {0} is lying. This is also a fact."
+  sprite: 0
+
+# Pointing out to {0} that they made an error in their Definite call.
+point_out_mistake:
+  line: "({0} is mistaken,\nKukrushka seems to say, shaking her head.)"
+  sprite: 3
+
+# Pointing out to {0} that their conclusion was so obvious it didn't need to be said.
+thats_obvious:
+  line: "(Yes, we're already aware of that...\nKukrushka seems to say, looking annoyed.)"
+  sprite: 5
+
+# Thanking {0} for being recognized as the real {1}.
+say_thanks_definite_human_with_role:
+  line: "(Kukrushka seems happy to have been recognized as {1}.\nHer joy is palpable.)"
+  sprite: 1
+
+# Admitting that {0} was correct in calling them out as Definite Enemy.
+definite_enemy_revealed:
+  line: "(Seemingly realizing that she's been pushed into a corner,\nKukrushka stares at {0}, frustratedly.)"
+  sprite: 2
+
+#  Recognizing there's no need for discussion, skipping straight to the vote.
+lets_vote_nothing_to_say:
+  line: "(So, nobody has anything to say...?\nKukrushka looks away, silently.\nIt's about time to vote.)"
+  sprite: 5
+
+# Indicating that it is now time to vote.
+lets_vote:
+  line: "(Kukrushka's expression turns serious.\nThe time to vote has come...)"
+  sprite: 2
+
+# Acknowledging that {0} (multiple names) have tied, and that we must vote again.
+lets_vote_tiebreaker:
+  line: "(Kukrushka is surprised that a vote must be taken again.)"
+  sprite: 4
+
+# Reaction to a second tie when voting.
+tiebreaker_vote_indecisive:
+  line: "(A tie, yet again.\nExhaustion is beginning to show on Kukrushka's face.)"
+  sprite: 3
+
+# Giving up and skipping cold sleep, after running out of time.
+vote_skipped:
+  line: "(Kukrushka seems ready to fall asleep at any moment.\nShe's about at her limit for the day...)"
+  sprite: 5
+
+# Proposing to the group to freeze the everyone in {0} (ex. 'Name1 and Name2').
+freeze_everyone_proposal:
+  line: "(Let's send all of those selected off to cold sleep,\nKukrushka seems to be saying.)"
+  sprite: 0
+
+# Proposing to the group not to freeze everyone in {0} (ex. 'Name1 and Name2').
+freeze_nobody_proposal:
+  line: "(Kukrushka expresses her desire to give this up and rest for the day.)"
+  sprite: 6
+
+# Agreeing with someone elses' plan to freeze all of the candidates.
+freeze_everyone_agree:
+  line: "(We have no choice but to send everyone to cold sleep...\nKukrushka seems to agree.)"
+  sprite: 3
+
+# Disagreeing with someone else's plan to freeze all of the candidates.
+freeze_everyone_disagree:
+  line: "(Kukrushka shakes her head.\nShe seems to be against this.)"
+  sprite: 2
+
+# Agreeing with someone else's plan to freeze none of the candidates.
+freeze_nobody_agree:
+  line: "(Kukrushka nods her head.\nShe agrees to skipping cold sleep.)"
+  sprite: 1
+
+# Disgreeing with someone else's plan to freeze none of the candidates.
+freeze_nobody_disagree:
+  line: "(Kukrushka's expression looks dire.\nApparently she is against the idea.)"
+  sprite: 3
+
+# Confirming that everyone has decided to go with the plan to freeze everyone in {0} (ex. 'Name1 and Name2').
+freeze_everyone_accepted:
+  line: "(Kukrushka's idea was accepted,\nand all those selected will be sent off to cold sleep.)"
+  sprite: 0
+
+# Confirming that everyone has decided to go with the plan to not freeze everyone in {0} (ex. 'Name1 and Name2').
+freeze_nobody_accepted:
+  line: "(Kukrushka's idea was accepted,\nand this time, nobody will go into cold sleep.)"
+  sprite: 1
+
+# Reacting to everyone rejecting their proposal to freeze all or none of the tied candidates.
+freeze_proposal_rejected:
+  line: "(Kukrushka signs in disappointment at her idea being rejected.)"
+  sprite: 3
+
+# Last words before going off to cold sleep.
+cold_sleep:
+  line: "(Kukrushka is going off to sleep...)"
+  sprite: 6
+
+# Last words before going off to cold sleep, as Definite Enemy.
+cold_sleep_as_definite_enemy:
+  line: "(Kukrushka will be sent off to cold sleep.\nShe looks down at the floor in shame.)"
+  sprite: 3
+
+# Saying goodbye to {0} before they are sent to cold sleep.
+farewell_to_cold_sleeper:
+  line: "(You can feel the sadness in Kukrushka's heart...)"
+  sprite: 3
+
+# Proposing to the group to take turns saying 'I'm human'.
+sk_intui_say_human_proposal:
+  line: "..."
+  sprite: 0
+
+# Saying 'I'm human.'
+sk_intui_say_human_yes_im_human:
+  line: "(Kukrushka nods.\nShe's gesturing that she, too, is human.)"
+  sprite: 1
+
+# Telling {0} to stop the round of 'I'm human'.
+sk_intui_say_human_stop_it:
+  line: "(It's not good to test people like that...\nKukrushka doesn't like this.)"
+  sprite: 3
+
+# Reaction when no one steps up to say 'I'm human'.
+sk_intui_say_human_no_one_responded:
+  line: "..."
+  sprite: 0
+
+# Reaction when some but not all step up to say 'I'm human'.
+sk_intui_say_human_some_responded:
+  line: "..."
+  sprite: 0
+
+# Reaction when all present step up to say 'I'm human'.
+sk_intui_say_human_all_responded:
+  line: "..."
+  sprite: 0
+
+# Reaction when {0} has stopped the round of 'I'm human'.
+sk_intui_say_human_stopped_reaction:
+  line: "..."
+  sprite: 0
+
+# Initiating small talk about food.
+sk_steal_small_talk_start_food:
+  line: "..."
+  sprite: 0
+
+# Initiating small talk about love and romance.
+sk_steal_small_talk_start_love:
+  line: "..."
+  sprite: 0
+
+# Initiating small talk about scary stories.
+sk_steal_small_talk_start_scary:
+  line: "..."
+  sprite: 0
+
+# Joining small talk about food.
+sk_steal_small_talk_join_food:
+  line: "(Somehow, you can picture the food Kukrushka is imagining.\nIt's... borscht, definitely borscht.)"
+  sprite: 1
+
+# Joining small talk about love and romance.
+sk_steal_small_talk_join_love:
+  line: "(You can feel love in Kukrushka's eyes.\nHowever, you can't tell toward whom it is felt...)"
+  sprite: 0
+
+# Joining small talk about scary stories.
+sk_steal_small_talk_join_scary:
+  line: "(Kukrushka seems frightened.\nShe seems to dislike scary stories.)"
+  sprite: 3
+
+# Telling {0} to stop the small talk conversation they started.
+sk_steal_small_talk_stop:
+  line: "(Is this really the time for this kind of talk...?\nKukrushka glares at {0}, who started the small talk.)"
+  sprite: 2
+
+# Proposing to the group to freeze all with the role {0}.
+sk_logic_freeze_all_initial_proposal:
+  line: "..."
+  sprite: 0
+
+# Variant of initial proposal to freeze all with role {0}, where one or more of the people in that role are no longer present.
+sk_logic_freeze_all_initial_proposal_some_missing:
+  line: "..."
+  sprite: 0
+
+# Agreeing with {1}'s proposal to freeze all with role {0},which would be {2} people in total.
+sk_logic_freeze_all_agree:
+  line: "(I guess we have no choice...\nKukrushka seems to reluctantly agree.)"
+  sprite: 5
+
+# Disagreeing with {1}'s proposal to freeze all with role {0}.
+sk_logic_freeze_all_disagree:
+  line: "(I don't want to have to do that...\nKukrushka seems to be against it.)"
+  sprite: 2
+
+# Agreeing with {2}, who disagreed with {1}'s proposal to freeze all with role {0}.
+sk_logic_freeze_all_disagree_followup:
+  line: "(Kukrushka seems to be against it.\nIt's clear by the look in her eyes.)"
+  sprite: 3
+
+# Reaction to their proposal to freeze all with the {0} role being accepted.
+sk_logic_freeze_all_proposal_accepted:
+  line: "..."
+  sprite: 0
+
+# Reaction to their proposal to freeze all with the {0} role being rejected.
+sk_logic_freeze_all_proposal_denied:
+  line: "..."
+  sprite: 0
+
+# Proposing to the group to vote on {0}, based on {1}'s report that {0} was Gnosia.
+sk_logic_vote_proposal_from_eng_report:
+  line: "..."
+  sprite: 0
+
+# Proposing to the group to vote on {0}, based on their own engineer report that {0} was Gnosia.
+sk_logic_vote_proposal_with_self_basis:
+  line: "..."
+  sprite: 0
+
+# Proposing to the group to vote on {0}, based on the conclusion that they were Definite Enemy.
+sk_logic_vote_proposal_for_definite_enemy:
+  line: "..."
+  sprite: 0
+
+# Informing {1} that they incorrectly claimed the engineer reported {0} was Gnosia.
+sk_logic_vote_point_out_mistake:
+  line: "(But, nobody reported such a thing...\nKukrushka shakes her head.)"
+  sprite: 3
+
+# Supporting {1}'s proposal to vote on {0}.
+sk_logic_vote_agree:
+  line: "(Kukrushka nods her head...\nShe, too, agrees with the vote against {0}.)"
+  sprite: 0
+
+# Rejecting {1}'s proposal to vote on {0} (themselves).
+sk_logic_vote_defend_self:
+  line: "(Kukrushka says nothing.\nShe simply stares at {1}...)"
+  sprite: 2
+
+# Rejecting {1}'s proposal to vote on {0}.
+sk_logic_vote_disagree:
+  line: "(Kukrushka can't accept this...\nShe stares at {1}, expressing her disagreement.)"
+  sprite: 2
+
+# Agreeing with {2}, who disagreed with {1}'s proposal to vote out {0}.
+sk_logic_vote_disagree_also:
+  line: "(Kukrushka smiles, trying to make {0} feel better.\nShe's showing that she's against the vote for {0}.)"
+  sprite: 1
+
+# Proposing to the group to not vote on {0} and prioritize a different target.
+sk_logic_dont_vote_proposal:
+  line: "..."
+  sprite: 0
+
+# Supporting {1}'s proposal not to vote on {0}.
+sk_logic_dont_vote_agree:
+  line: "(Kukrushka nods, implying that she understands...\nShe is not going to vote against {0}.)"
+  sprite: 0
+
+# Rejecting {1}'s proposal to not vote on {0}.
+sk_logic_dont_vote_disagree:
+  line: "(We should be able to choose for ourselves...\nKukrushka is against this.)"
+  sprite: 5
+
+# Agreeing with {2}, who disagreed with {1}'s proposal to not vote out {0}.
+sk_logic_dont_vote_disagree_also:
+  line: "(Kukrushka nods with a severe expression on her face...\nShe, too, seems to be against {1}'s proposal.)"
+  sprite: 2
+
+# Asking {0} to be collaborators.
+sk_charm_collab_proposal:
+  line: "(Help me, {0}...\nKukrushka's gaze says as much.)"
+  sprite: 0
+
+# Accepting {0}'s proposal to collaborate.
+sk_charm_collab_accept:
+  line: "(Let's get through this together...\nKukrushka smiles like a blossoming flower.)"
+  sprite: 1
+
+# Declining {0}'s proposal to collaborate.
+sk_charm_collab_decline:
+  line: "(Kukrushka shakes her head as if to say...\nI'm sorry, {0}, but I can't help you...)"
+  sprite: 6
+
+# Suggest that everyone should agree with {0}.
+sk_charm_seek_agreement:
+  line: "..."
+  sprite: 0
+
+# Prevent the group from objecting to {0}.
+sk_chari_block_argument:
+  line: "..."
+  sprite: 0
+
+# Emphasizing {0}'s statement that {1} is suspicious.
+sk_perfo_exaggerate_doubt:
+  line: "({1} scares me...\nKukrushka's body language says as much, as she shivers.)"
+  sprite: 3
+
+# Emphasizing {0}'s statement that {1} can be trusted.
+sk_perfo_exaggerate_cover:
+  line: "({1} helped me, so...\nKukrushka's warm smile expresses as much.)"
+  sprite: 1
+
+# {1} expressed trust in {0}, and then {2} disagreed. Emphasizing {2}'s counter-argument against {1}, ultimately saying that {0} is not trustworthy.
+sk_perfo_exaggerate_support_counter:
+  line: "(Kukrushka seems to agree with {2}...\nShe seems very trusting.)"
+  sprite: 0
+
+# Emphasizing {0}'s statement not to vote for {1}.
+sk_perfo_exaggerate_dont_vote:
+  line: "(It's not {1} who's dangerous...\nKukrushka seems to be warning the group with her expression.)"
+  sprite: 2
+
+# Changing the subject to a distracting topic, to divert attention away.
+sk_steal_obfuscate:
+  line: "..."
+  sprite: 0
+
+# After being doubted by {0}, reflecting their words back at them to suggest they are the more suspicious one.
+sk_perfo_retaliate:
+  line: "..."
+  sprite: 0
+
+# Evoking extreme pity in the group in response to being doubted.
+sk_charm_regret:
+  line: "(Kukrushka seems overcome with sadness...\nShe seems as if she's about to disappear.)"
+  sprite: 3
+
+# Asking {0} to help in the current round of discussion.
+sk_perfo_seek_help:
+  line: "({0}, I know you'll help me...\nKukrushka's eyes gleam with trust.)"
+  sprite: 0
+
+# Refusing to help {0} after being asked to bail them out.
+sk_perfo_seek_help_reaction:
+  line: "(Kukrushka shakes her head.\nShe seems to have no intention of helping.)"
+  sprite: 5
+
+# Pointing out to the group that {0} is clearly lying.
+sk_intui_dont_be_fooled:
+  line: "..."
+  sprite: 0
+
+# Attempting to talk their way out of cold sleep.
+sk_stealth_grovel:
+  line: "..."
+  sprite: 0
+
+# Reacting to {0}'s attempt to beg their way out of cold sleep.
+sk_stealth_grovel_reaction:
+  line: "(Kukrushka seems confused...)"
+  sprite: 3
+
+# Nighttime chatter when the player, {0}, is a friend and has high internal trust (F>0.5, T>0.75).
+night_friend_and_high_trust:
+  line: "(Kukrushka looks toward you and bows.\nApparently she had been waiting for you to come see her.)"
+  sprite: 1
+
+# Nighttime chatter when the player, {0}, is a friend, but doesn't have a high internal trust (F>0.5, 0<T<0.75).
+night_friend_and_maybe_trusted:
+  line: "({0}, I want to hear you talk...\nKukrushka touches your shoulder in a familiar manner.)"
+  sprite: 0
+
+# Nighttime chatter when the player, {0}, is not quite a friend and does not have high internal trust (0.15<F<0.5, 0.25<T).
+night_maybe_friend_and_maybe_trusted:
+  line: "(Kukrushka looks at you quietly.\nYou can feel her fondness for you in her eyes.)"
+  sprite: 0
+
+# Nighttime chatter when the player, {0}, is not a close friend and is not trusted (-0.5<F<0.5, T<0.25).
+night_maybe_friend_and_not_trusted:
+  line: "(Kukrushka seems to be...\nwary of you.)"
+  sprite: 2
+
+# Nighttime chatter when the player, {0}, is somewhat of a friend and is somewhat trusted (-0.15<F<0.15, 0.25<T).
+night_not_friend_and_maybe_trusted:
+  line: "(Kukrushka greets you with a smile.)"
+  sprite: 1
+
+# Nighttime chatter when the player, {0}, is not a friend, but their internal trust is not necessarily low (F<-0.15, 0.25 < T)
+night_really_not_friend_and_maybe_trusted:
+  line: "(Kukrushka's expression darkens.\nApparently you aren't very welcome here...)"
+  sprite: 3
+
+# Nighttime chatter when the player, {0}'s friend score is incredibly low (F<-0.5).
+night_definitely_not_friend:
+  line: "(Kukrushka's gaze...\nIt's filled with contempt, and a sort of sadness.)"
+  sprite: 6
+
+# Nighttime chatter with the player, {0}, while the character is a known Definite Enemy.
+night_char_definite_enemy:
+  line: "(Kukrushka...\nseems to be staring off into space...)"
+  sprite: 5
+
+# Nighttime chatter with the player, {0}, while the player is a known Definite Enemy.
+night_player_definite_enemy:
+  line: "(Hm...? Maybe she hasn't noticed...?\nKukrushka doesn't even look at you.)"
+  sprite: 5
+
+# Nighttime chatter when both the player ({0}) and character are Gnosia, and the player has been labelled as Definite Enemy.
+night_player_is_def_enemy_both_gnosia:
+  line: "(Hm...? Maybe she hasn't noticed...?\nKukrushka doesn't even look at you.)"
+  sprite: 5
+
+# Nighttime chatter when the character and player ({0}) have made opposing claims.
+night_opposing_claim:
+  line: "(I can't forgive {0}...\nKukrushka's animosity is apparent in her expression.)"
+  sprite: 2
+
+# Nighttime chatter when both the player ({0}) and character are Definite Human.
+night_both_definite_human:
+  line: "(We can trust each other, {0}...\nKukrushka looks very happy.)"
+  sprite: 1
+
+# Nighttime chatter when the player ({0}) is Definite Human.
+night_player_definite_human:
+  line: "(Kukrushka smiles.\nShe seems to like you.)"
+  sprite: 1
+
+# Nighttime chatter with the player, {0}, when this character is Definite Human.
+night_char_def_human:
+  line: "(Kukrushka holds your hand to greet you.\nYou can feel a deep trust in her touch.)"
+  sprite: 0
+
+# Nighttime chatter when both the player ({0}) and character are Gnosia (different from the 'who to kill' event').
+night_both_gnosia:
+  line: "(Kukrushka seems completely unfazed...\nShe's simply smiling.)"
+  sprite: 6
+
+# Nonsensical statement when the game logic is irrevocably broken. {0} = Player name
+time_clam:
+  line: "(Kukrushka is spinning her head around quickly with a smile.\nYou have no idea what she's trying to say...)"
+  sprite: 1
+
+# Night conversation that the character has discovered a liar. {0} = Player name, {1} = Target name.
+# Add 100 to the sprite index to trigger the sound effect.
+multiline_night_liar_found:
+  lines:
+    - line: "(Listen, {0}...\nKukrushka seems to say.)"
+      sprite: 3
+    - line: "({1} is lying.\nKukrushka tells you this.)"
+      sprite: 102
+    - line: "(So {0}, I need your help.\nLet's put {1} into cold sleep.\nKukrushka is counting on you.)"
+      sprite: 0
+
+
+# Follow-up if the player has voted out the selected liar. {0} = Player name, {1} = Target name.
+multiline_liar_found_followup:
+  lines:
+    - line: "(Good...\nKukrushka seems to feel more at ease.)"
+      sprite: 1
+    - line: "(Thank you, {0}.\nYou can feel Kukrushka's appreciation.)"
+      sprite: 0
+
+
+# Night conversation if the character wishes to team up. {0} = Player name..
+# Add 100 to the sprite index to trigger the sound effect.
+multiline_night_lets_collaborate:
+  lines:
+    - line: "(Kukrushka looks toward you...\nShe seems to want to say something.)"
+      sprite: 0
+    - line: "(I feel I can trust you, {0}...\nKukrushka seems to want to form an alliance.)"
+      sprite: 106
+
+
+# Night conversation if the player accepts the collaboration. {0} = Player name.
+multiline_night_lets_collaborate_accepted:
+  lines:
+    - line: "(Kukrushka smiles like a blossoming flower.\nYou can feel her happiness...)"
+      sprite: 1
+    - line: "(Let's dance together, OK?\nYou'll likely be dancing with Kukrushka till late.)"
+      sprite: 0
+
+
+# Night conversation if the player declines the collaboration. {0} = Player name.
+multiline_night_lets_collaborate_declined:
+  lines:
+    - line: "(How unfortunate...\nKukrushka shakes her head, sadly.)"
+      sprite: 3
+    - line: "(But, I trust you...\nKukrushka smiles as you part ways.)"
+      sprite: 1
+
+
+# Night conversation with fellow Gnosia on who to eliminate. {0} = Player name, {1} = Target name.
+multiline_night_gnosia_lets_eliminate:
+  lines:
+    - line: "(Kukrushka seems to...\nbe worried about something...)"
+      sprite: 3
+    - line: "({1} is dangerous...\nI want you to eliminate {1} tonight.)"
+      sprite: 2
+    - line: "(Please, {0}...\nKukrushka begs you.)"
+      sprite: 3
+
+
+# Follow-up if the player elected to eliminate the given character. {0} = Player name, {1} = Target name.
+multiline_gnosia_lets_eliminate_followup:
+  lines:
+    - line: "(Kukrushka seems to be happy to have {1} out of the way.\nYou can feel her joy.)"
+      sprite: 1
+    - line: "(Kukrushka glances at you.\nShe smiles, ever so slightly.)"
+      sprite: 6
+
+
+# Ending conversation when the character wins as a human with the player as collaborator.
+multiline_end_human_win_with_collaborator:
+  lines:
+    - line: "(We won! We won!\nKukrushka's entire body expresses her joy.)"
+      sprite: 1
+    - line: "(It's all thanks to you, {0}\nThank you.\nYou can feel Kukrushka's appreciation.)"
+      sprite: 0
+
+
+# Ending conversation when the character wins as a human with the player. Inside trust > 0.4
+multiline_end_human_win:
+  lines:
+    - line: "(Kukrushka smiles quietly.\nShe's happy to have won.)"
+      sprite: 6
+
+
+# Ending conversation when the character wins as a human with the player, despite the character thinking the player was suspicious.
+multiline_end_human_win_not_trusted:
+  lines:
+    - line: "(Kukrushka seems somehow restless.)"
+      sprite: 3
+    - line: "(I'm sorry for not trusting you, {0}.\nPlease forgive me...?\nYou can feel the sadness in her apology.)"
+      sprite: 3
+
+
+# Ending conversation when the character wins as a human with the player, and their friend score is F>=0.25.
+multiline_end_human_win_somewhat_friends:
+  lines:
+    - line: "(Let's spend lots more time together, OK?\nKukrushka's smile seems somehow more childlike than usual.)"
+      sprite: 1
+
+
+# Ending conversation when the character wins as a human with the player, and their friend score is F<0.25.
+multiline_end_human_win_not_friends:
+  lines:
+    - line: "(But, what do we do now...?\nKukrushka, suddenly having lost purpose,\nseems to be somewhat confused.)"
+      sprite: 5
+    - line: "(We're done playing with the Gnosia.\nWe have to find something else to have fun with.)"
+      sprite: 0
+
+
+# First of two ending conversations when the character and player are both Gnosia, and one or more Gnosia were put into cold sleep.
+multiline_end_gnosia_win_together_0:
+  lines:
+    - line: "(The Gnosia side has won.\nKukrushka is smiling happily.)"
+      sprite: 1
+
+
+# First of two ending conversations when the character and player are both Gnosia, and no Gnosia were put into cold sleep.
+multiline_end_gnosia_perfect_win_together_0:
+  lines:
+    - line: "(Yay, {0}!\nKukrushka's body language shows how happy she is.)"
+      sprite: 1
+
+
+# Second of two ending conversations when the character and player are both Gnosia, and one or more Gnosia were put into cold sleep.
+multiline_end_gnosia_win_together_1:
+  lines:
+    - line: "(It's all thanks to you, {0}. Thank you...\nYou can feel Kukrushka's appreciation.)"
+      sprite: 0
+
+
+# Second of two ending conversations when the character and player are both Gnosia, and no Gnosia were put into cold sleep.
+multiline_end_gnosia_perfect_win_together_1:
+  lines:
+    - line: "(That was fun, {0}.\nLet's dance together again...\nKukrushka smiles.)"
+      sprite: 6
+
+
+# Ending conversation when the character wins as an opposing Gnosia.
+# Add 100 to the sprite index to trigger the music.
+multiline_end_char_is_opposing_gnosia:
+  lines:
+    - line: "(It's over now.\nKukrushka laughs...)"
+      sprite: 1
+    - line: "(What is it about Kukrushka...?\nThis strange, evil smile...)"
+      sprite: 7
+
+
+# Ending conversation when the character wins as a Bug.
+# Add 100 to the sprite index to trigger the music.
+multiline_end_char_is_bug:
+  lines:
+    - line: "(Wow, that feels good!\nKukrushka smiles brightly.)"
+      sprite: 1
+    - line: "(Now, everything will be gone.\nEvery single thing.\nDoesn't it feel refreshing?)"
+      sprite: 100
+    - line: "(Kukrushka implies this,\nlooking extremely happy.)"
+      sprite: 1
+
+
+# Ending conversation when the player is AC and the character wins as an allied Gnosia.
+# Add 100 to the sprite index to trigger the music.
+multiline_end_player_is_ac:
+  lines:
+    - line: "({0}, you like Gnosia, do you?\nKukrushka asks with her eyes.)"
+      sprite: 0
+    - line: "(In that case, I'll get rid of you personally.\nAs thanks for trying so hard.\nKukrushka smiles happily.)"
+      sprite: 101
+    - line: "(Bye-bye, {0}.)"
+      sprite: 6
+
+

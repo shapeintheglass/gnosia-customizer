@@ -10,6 +10,7 @@ using baseEffect.graphics;
 using BepInEx;
 using BepInEx.Logging;
 using coreSystem;
+using gnosia;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 using resource;
@@ -29,6 +30,7 @@ namespace GnosiaCustomizer
         private static Dictionary<string, Dictionary<int, Lazy<CharaSpriteInfo>>> CharaSprites = [];
 
         // Keeping track of which sprites we have modified
+        private static HashSet<uint> LoadedSpriteIndeces = [];
         private static HashSet<uint> ModifiedSpriteIndeces = [];
         // Currently visible sprite indeces in the CharaScreen
         private static HashSet<uint> VisibleSprites = [];
@@ -56,16 +58,19 @@ namespace GnosiaCustomizer
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             var texturesPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, Consts.TextureAssetsFolder);
-            if (!Directory.Exists(texturesPath))
+
+            var textureFilePaths = new HashSet<string>();
+            if (Directory.Exists(texturesPath))
             {
-                Logger.LogError($"Unable to locate custom textures folder {texturesPath}.");
-                return;
+                var files = Directory.GetFiles(texturesPath, "*.png", SearchOption.TopDirectoryOnly);
+                foreach (var file in files)
+                {
+                    textureFilePaths.Add(file);
+                }
             }
 
-            // Locate all custom textures
-            var textureFilePaths = new HashSet<string>(Directory.GetFiles(texturesPath, "*.png", SearchOption.TopDirectoryOnly));
-
             // Also add textures in the character folders
+            var absoluteId = 1;
             foreach (var charaFolder in Consts.CharaFolderNames)
             {
                 var charaPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder);
@@ -86,10 +91,21 @@ namespace GnosiaCustomizer
                             {
                                 textureFilePaths.Add(headFilePath);
                                 AvailableCharacterSprites[charaFolder].Add(headIndex);
+
+                                // Calculate the corresponding sprite index
+                                var spriteIndex = (absoluteId * 100) + headIndex;
+                                ModifiedSpriteIndeces.Add((uint)spriteIndex);
                             }
                         }
                     }
                 }
+                absoluteId++;
+            }
+
+            if (textureFilePaths.Count == 0)
+            {
+                Logger.LogInfo("No texture files found in the assets folder or character folders.");
+                return;
             }
 
             // We can asynchronously load the bytes from file
@@ -201,7 +217,7 @@ namespace GnosiaCustomizer
             public static void Postfix()
             {
                 // Reset modified sprite indeces
-                ModifiedSpriteIndeces = [];
+                LoadedSpriteIndeces = [];
             }
         }
 
@@ -342,6 +358,13 @@ namespace GnosiaCustomizer
                 {
                     spriteIndex += (uint)thyojo;
                 }
+                // Skip if this is not a customized sprite
+                if (!ModifiedSpriteIndeces.Contains(spriteIndex))
+                {
+                    Logger.LogInfo($"Sprite index {spriteIndex} is not modified, skipping.");
+                    VisibleSprites.Add(spriteIndex);
+                    return true;
+                }
 
                 // For custom sprites, do not draw the default sprite underneath
                 __instance.scriptQueue.Enqueue(new ScriptParser.Script((ScriptParser.Script._MainFunc)(e =>
@@ -356,14 +379,14 @@ namespace GnosiaCustomizer
                     screen.m_spriteMap.TryGetValue(spriteIndex, out var sprite);
 
                     // If we haven't swapped out the sprite yet in this screen, try to update it
-                    if (!ModifiedSpriteIndeces.Contains(spriteIndex))
+                    if (!LoadedSpriteIndeces.Contains(spriteIndex))
                     {
                         Logger.LogInfo($"Loading modified sprite index {spriteIndex}");
                         if (SetPackedTextureWithCache(screen, __instance.m_rs, spriteIndex, out sprite))
                         {
                             screen.m_spriteMap[spriteIndex] = sprite;
                         }
-                        ModifiedSpriteIndeces.Add(spriteIndex);
+                        LoadedSpriteIndeces.Add(spriteIndex);
                     }
 
                     if (sprite == null)
@@ -400,6 +423,20 @@ namespace GnosiaCustomizer
                                 __instance.m_sb[depth].m_spriteMap[spriteIndex].UnvisibleWithChild();
                             }
                         }
+
+                        // Also iterate through all base sprites
+                        for (var absoluteId = 1; absoluteId < Consts.NumCharacters + 1; absoluteId++)
+                        {
+                            var spriteIndex = (uint) absoluteId * 100U;
+                            for (uint headIndex = 0; headIndex < 8U; ++headIndex)
+                            {
+                                var headSpriteIndex = spriteIndex + headIndex;
+                                if (__instance.m_sb[depth].m_spriteMap.ContainsKey(headSpriteIndex))
+                                {
+                                    __instance.m_sb[depth].m_spriteMap[headSpriteIndex].UnvisibleWithChild();
+                                }
+                            }
+                        }
                         VisibleSprites.Clear();
                         return true;
                     }), (ScriptParser.Script._EndFunc)(e => true), false));
@@ -414,10 +451,8 @@ namespace GnosiaCustomizer
                         }
 
                         var spriteIndex = gameData.chara[chara].id * 100U;
-                        __instance.m_sb[depth].m_spriteMap[spriteIndex].UnvisibleWithChild();
-
                         // Also iterate through every head
-                        for (uint headIndex = 1; headIndex < Consts.MaxNumHeads; ++headIndex)
+                        for (uint headIndex = 0; headIndex < Consts.MaxNumHeads; ++headIndex)
                         {
                             var headSpriteIndex = spriteIndex + headIndex;
                             if (__instance.m_sb[depth].m_spriteMap.ContainsKey(headSpriteIndex))
