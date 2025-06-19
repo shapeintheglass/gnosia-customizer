@@ -25,6 +25,7 @@ namespace GnosiaCustomizer.patches
             "Gina", "SQ", "Raqio", "Stella", "Shigemichi", "Chipie", "Remnan",
             "Comet", "Yuriko", "Jonas", "Setsu", "Otome", "Sha-Ming", "Kukrushka"
         ];
+        private const string SqueakPrefix = "SQU";
 
         internal static void Initialize()
         {
@@ -123,10 +124,11 @@ namespace GnosiaCustomizer.patches
                     {
                         Logger.LogInfo($"Dogeza test: No lines found for character {absoluteId}.");
                     }
-                    if (character.SingleLines.TryGetValue("night_friend_and_high_trust", out var personalLine))
+                    if (CharacterSetter.GetCharaFieldAs2dStringArray(absoluteId, "t_personal", out var personalArray))
                     {
-                        Logger.LogInfo($"Personal lines test: {personalLine.Line}");
-                    } else
+                        Logger.LogInfo($"Personal lines test: {personalArray[0][5]}");
+                    }
+                    else
                     {
                         Logger.LogInfo($"Personal lines test: No personal line found for character {absoluteId}.");
                     }
@@ -161,6 +163,11 @@ namespace GnosiaCustomizer.patches
                     {
                         if (message.Contains(name))
                         {
+                            // Don't replace Otome's SQUEAAAAAAKs with SQ's new name
+                            if (name.Equals("SQ") && message.Contains(SqueakPrefix))
+                            {
+                                continue;
+                            }
                             message = message.Replace(name, NameReplacements[name]);
                         }
                     }

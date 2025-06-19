@@ -176,8 +176,13 @@ namespace GnosiaCustomizer
                 var charaFolder = Consts.CharaFolderNames[charaIndex];
 
                 CharaSprites[charaFolder] = [];
+                if (!AvailableCharacterSprites.TryGetValue(charaFolder, out var headIndeces))
+                {
+                    Logger.LogWarning($"No available sprites found for character {charaFolder}.");
+                    continue;
+                }
 
-                foreach (var headIndex in AvailableCharacterSprites[charaFolder])
+                foreach (var headIndex in headIndeces)
                 {
                     var headFilePath = Path.GetFullPath(Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder, $"h{headIndex:D2}.png"));
 
