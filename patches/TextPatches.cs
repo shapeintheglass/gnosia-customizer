@@ -2,25 +2,23 @@
 using System.IO;
 using BepInEx;
 using BepInEx.Logging;
-using System.Linq;
 using System;
 using HarmonyLib;
 using System.Reflection;
 using GnosiaCustomizer.utils;
 using coreSystem;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
 
 namespace GnosiaCustomizer.patches
 {
     internal class TextPatches
     {
-        internal static new ManualLogSource Logger;
+        internal static ManualLogSource Logger;
         private const string ConfigFileName = "config.yaml";
 
-        private static ConcurrentDictionary<int, CharacterText> characterTexts = new();
+        private static readonly ConcurrentDictionary<int, CharacterText> CharacterTexts = new();
 
-        private static Dictionary<string, string> NameReplacements = [];
+        private static readonly Dictionary<string, string> NameReplacements = [];
         private static readonly List<string> NamesToReplace = [
             "Gina", "SQ", "Raqio", "Stella", "Shigemichi", "Chipie", "Remnan",
             "Comet", "Yuriko", "Jonas", "Setsu", "Otome", "Sha-Ming", "Kukrushka"
@@ -32,9 +30,8 @@ namespace GnosiaCustomizer.patches
             Logger.LogInfo("LoadCustomText called");
             var sw = System.Diagnostics.Stopwatch.StartNew();
             // Read from each character folder asynchronously
-            var tasks = new List<Task>();
             int characterId = 1;
-            var skillMap = new ConcurrentDictionary<int, Dictionary<string, bool>>();
+            var skillMap = new ConcurrentDictionary<int, HashSet<string>>();
             foreach (var charaFolder in Consts.CharaFolderNames)
             {
                 var charaPath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, charaFolder);
@@ -55,7 +52,7 @@ namespace GnosiaCustomizer.patches
                         character.LoadFromFile(yamlPath);
                         if (localCharacterId != 0)
                         {
-                            characterTexts[localCharacterId] = character;
+                            CharacterTexts[localCharacterId] = character;
                             skillMap[localCharacterId] = character.KnownSkills;
                         }
                     }
@@ -69,11 +66,11 @@ namespace GnosiaCustomizer.patches
 
             try
             {
-                Logger.LogInfo($"Loaded {characterTexts.Count}/{Consts.CharaFolderNames.Length} character configs");
+                Logger.LogInfo($"Loaded {CharacterTexts.Count}/{Consts.CharaFolderNames.Length} character configs");
                 Logger.LogInfo($"Loaded {skillMap.Count}/{Consts.CharaFolderNames.Length} character skills");
                 Logger.LogInfo($"LoadCustomText completed in {sw.ElapsedMilliseconds} ms");
 
-                JinroPatches.SkillMap = skillMap.ToDictionary(kv => kv.Key, kv => kv.Value);
+                JinroPatches.Initialize(skillMap);
             }
             catch (AggregateException ex)
             {
@@ -107,7 +104,7 @@ namespace GnosiaCustomizer.patches
                     // Uncomment to re-generate the original character config
                     //GenerateOriginalConfig.WriteCharaDataToFile(absoluteId);
 
-                    if (characterTexts.TryGetValue(absoluteId, out var character))
+                    if (CharacterTexts.TryGetValue(absoluteId, out var character))
                     {
                         CharacterSetter.SetChara(Logger, absoluteId, character);
 
@@ -139,7 +136,7 @@ namespace GnosiaCustomizer.patches
         [HarmonyPatch(typeof(ScriptParser), "SetText")]
         public class ScriptParserSetTextPatch
         {
-            static bool Prefix(ScriptParser __instance, ref string message)
+            static bool Prefix(ref string message)
             {
                 if (string.IsNullOrWhiteSpace(message))
                 {

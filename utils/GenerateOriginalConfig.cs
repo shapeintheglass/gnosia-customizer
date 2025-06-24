@@ -20,36 +20,39 @@ namespace GnosiaCustomizer.utils
             "charm_collaborate",
             "logic_vote",
             "logic_dont_vote",
-            "logic_definite_human",
-            "logic_definite_enemy",
+            "logic_definite_human_or_enemy",
+            "logic_definite_ac",
+            "logic_definite_bug",
             "logic_freeze_all",
             "perform_retaliate",
             "perform_seek_help",
             "perform_exaggerate",
             "stealth_obfuscate",
             "stealth_small_talk",
-            "stealth_grovel"
+            "stealth_grovel",
+            "night_liar_callout",
+            "night_collaborate",
+            "night_victim_request",
         ];
 
         // Keeping track of which skills are originally held by each character
         internal static Dictionary<uint, HashSet<string>> OriginalSkills = new()
         {
-            {1 /* Gina       */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "intuition_say_human", "intuition_dont_be_fooled", "logic_dont_vote" } },
-            {2 /* SQ         */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "stealth_small_talk", "charm_collaborate", "perform_exaggerate", "stealth_obfuscate", "charm_regret", "perform_seek_help" } },
-            {3 /* Raqio      */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "logic_vote", "logic_dont_vote", "logic_freeze_all", "perform_exaggerate", "perform_retaliate" } },
-            {4 /* Stella     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "logic_vote", "logic_dont_vote", "logic_freeze_all", "perform_seek_help" } },
-            {5 /* Shigemichi */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "stealth_small_talk", "charisma_seek_agreement", "charisma_block_argument", "stealth_obfuscate" } },
-            {6 /* Chipie     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "stealth_small_talk", "charm_collaborate", "intuition_dont_be_fooled" } },
-            {7 /* Remnan     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "charm_collaborate", "perform_retaliate", "charm_regret", "perform_seek_help", "intuition_dont_be_fooled" } },
-            {8 /* Comet      */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "intuition_say_human", "intuition_dont_be_fooled" } },
-            {9 /* Yuriko     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "intuition_say_human", "logic_vote", "logic_dont_vote", "logic_freeze_all", "charm_collaborate", "charisma_seek_agreement", "charisma_block_argument", "perform_retaliate", "perform_seek_help" } },
-            {10 /* Jonas     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "intuition_say_human", "logic_vote", "stealth_small_talk", "charisma_seek_agreement", "perform_exaggerate", "stealth_obfuscate" } },
-            {11 /* Setsu     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "intuition_say_human", "logic_vote", "logic_dont_vote", "logic_freeze_all", "charisma_seek_agreement", "perform_retaliate" } },
-            {12 /* Otome     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "logic_dont_vote", "logic_freeze_all", "charm_regret" } },
-            {13 /* Sha-ming  */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "stealth_small_talk", "charm_collaborate", "charisma_seek_agreement", "perform_exaggerate", "stealth_obfuscate", "perform_retaliate", "perform_seek_help", "stealth_grovel" } },
-            {14 /* Kukrushka */, new HashSet<string> { "charisma_step_forward", "logic_definite_human", "logic_definite_enemy", "charm_collaborate", "perform_exaggerate", "charm_regret", "perform_seek_help" } }
+            {1 /* Gina       */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "intuition_say_human", "intuition_dont_be_fooled", "logic_dont_vote", "night_liar_callout", "night_victim_request" } },
+            {2 /* SQ         */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "stealth_small_talk", "charm_collaborate", "perform_exaggerate", "stealth_obfuscate", "charm_regret", "perform_seek_help", "night_liar_callout", "night_victim_request" } },
+            {3 /* Raqio      */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "logic_vote", "logic_dont_vote", "logic_freeze_all", "perform_exaggerate", "perform_retaliate", "night_collaborate", "night_victim_request" } },
+            {4 /* Stella     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "logic_vote", "logic_dont_vote", "logic_freeze_all", "perform_seek_help", "night_collaborate", "night_victim_request" } },
+            {5 /* Shigemichi */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "stealth_small_talk", "charisma_seek_agreement", "charisma_block_argument", "stealth_obfuscate", "night_collaborate", "night_victim_request" } },
+            {6 /* Chipie     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "stealth_small_talk", "charm_collaborate", "intuition_dont_be_fooled", "night_liar_callout", "night_victim_request" } },
+            {7 /* Remnan     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "charm_collaborate", "perform_retaliate", "charm_regret", "perform_seek_help", "intuition_dont_be_fooled", "night_liar_callout", "night_collaborate", "night_victim_request" } },
+            {8 /* Comet      */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "intuition_say_human", "intuition_dont_be_fooled", "night_liar_callout", "night_collaborate", "night_victim_request" } },
+            {9 /* Yuriko     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "intuition_say_human", "logic_vote", "logic_dont_vote", "logic_freeze_all", "charm_collaborate", "charisma_seek_agreement", "charisma_block_argument", "perform_retaliate", "perform_seek_help" } },
+            {10 /* Jonas     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "intuition_say_human", "logic_vote", "stealth_small_talk", "charisma_seek_agreement", "perform_exaggerate", "stealth_obfuscate", "night_liar_callout", "night_collaborate", "night_victim_request" } },
+            {11 /* Setsu     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "intuition_say_human", "logic_vote", "logic_dont_vote", "logic_freeze_all", "charisma_seek_agreement", "perform_retaliate", "night_victim_request" } },
+            {12 /* Otome     */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "logic_dont_vote", "logic_freeze_all", "charm_regret", "night_liar_callout", "night_collaborate", "night_victim_request" } },
+            {13 /* Sha-ming  */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "stealth_small_talk", "charm_collaborate", "charisma_seek_agreement", "perform_exaggerate", "stealth_obfuscate", "perform_retaliate", "perform_seek_help", "stealth_grovel", "night_liar_callout", "night_victim_request" } },
+            {14 /* Kukrushka */, new HashSet<string> { "charisma_step_forward", "logic_definite_human_or_enemy", "logic_definite_ac", "logic_definite_bug", "charm_collaborate", "perform_exaggerate", "charm_regret", "perform_seek_help", "night_liar_callout", "night_collaborate", "night_victim_request" } }
         };
-
 
         internal static void WriteCharaDataToFile(int absoluteId)
         {
@@ -178,7 +181,7 @@ namespace GnosiaCustomizer.utils
                 }
                 else
                 {
-                    d[key] = new List<string> { "..." };
+                    d[key] = ["..."];
                 }
                 // Just in case, pad additional blanks at the end
                 while (d[key].Count < 8)
@@ -392,6 +395,9 @@ namespace GnosiaCustomizer.utils
             contents += WriteMultilineDialogue("multiline_end_char_is_opposing_gnosia", "Ending conversation when the character wins as an opposing Gnosia.\r\n# Add 100 to the sprite index to trigger the music.", personalArray[17]);
             contents += WriteMultilineDialogue("multiline_end_char_is_bug", "Ending conversation when the character wins as a Bug.\r\n# Add 100 to the sprite index to trigger the music.", personalArray[18]);
             contents += WriteMultilineDialogue("multiline_end_player_is_ac", "Ending conversation when the player is AC and the character wins as an allied Gnosia.\r\n# Add 100 to the sprite index to trigger the music.", personalArray[19]);
+
+            // Replace any ideographic spaces in the contents with a regular space
+            contents = contents.Replace("\u3000", " ");
 
             // Write contents of fileContext to file at filePath
             var filePath = Path.Combine(Paths.PluginPath, Consts.AssetsFolder, $"{absoluteId:D2}_{name}.yaml");
