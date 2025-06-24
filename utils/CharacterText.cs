@@ -103,6 +103,12 @@ namespace GnosiaCustomizer.utils
                                 if (mapNode.Children.TryGetValue("sprite", out var spriteNode) && int.TryParse(spriteNode.ToString(), out var sprite))
                                     singleText.Sprite = sprite;
 
+                                // Hack: Add a space after "_pt1_" for better concatenation
+                                if (key.Contains("_pt1_") && !singleText.Line.EndsWith(" ") && !singleText.Line.EndsWith("\n"))
+                                {
+                                    singleText.Line = singleText.Line + " ";
+                                }
+
                                 SingleLines[key] = singleText;
                             }
                             else if (mapNode.Children.ContainsKey("lines"))

@@ -1050,7 +1050,7 @@ multiline_night_gnosia_lets_eliminate:
 # Follow-up if the player elected to eliminate the given character. {0} = Player name, {1} = Target name.
 multiline_gnosia_lets_eliminate_followup:
   lines:
-    - line: "(*Squeak!* We did it, {0}!\n　Now we can rest a bit easier.)"
+    - line: "(*Squeak!* We did it, {0}!\n Now we can rest a bit easier.)"
       sprite: 0
 
 
