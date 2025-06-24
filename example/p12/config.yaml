@@ -55,8 +55,9 @@ known_skills:
   charm_collaborate: false
   logic_vote: false
   logic_dont_vote: true
-  logic_definite_human: true
-  logic_definite_enemy: true
+  logic_definite_human_or_enemy: true
+  logic_definite_ac: true
+  logic_definite_bug: true
   logic_freeze_all: true
   perform_retaliate: false
   perform_seek_help: false
@@ -64,6 +65,9 @@ known_skills:
   stealth_obfuscate: false
   stealth_small_talk: false
   stealth_grovel: false
+  night_liar_callout: true
+  night_victim_request: true
+  night_collaborate: true
 
 
 ############

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using YamlDotNet.RepresentationModel;
 using YamlDotNet.Serialization;
@@ -18,9 +17,9 @@ namespace GnosiaCustomizer.utils
         public Dictionary<string, float> Attributes { get; set; } = default;
         public Dictionary<string, float> AbilityStart { get; set; } = default;
         public Dictionary<string, float> AbilityMax { get; set; } = default;
-        public Dictionary<string, bool> KnownSkills { get; set; } = default;
-        public Dictionary<string, bool> PreferredPlaces { get; set; } = default;
-        public Dictionary<string, bool> DislikedPlaces { get; set; } = default;
+        public HashSet<string> KnownSkills { get; set; } = default;
+        public HashSet<string> PreferredPlaces { get; set; } = default;
+        public HashSet<string> DislikedPlaces { get; set; } = default;
         public int? DefenseMin { get; set; } = 100;
         public int? DefenseWithGnos { get; set; } = 150;
         public Dictionary<string, LocalizedText> SingleLines { get; private set; } = [];
@@ -54,40 +53,53 @@ namespace GnosiaCustomizer.utils
                         Origin = value.ToString(); 
                         break;
                     case "bio1": 
-                        Bio1 = value.ToString(); break;
+                        Bio1 = value.ToString();
+                        break;
                     case "bio2": 
                         Bio2 = value.ToString(); 
                         break;
-                    case "honorific": Honorific = value.ToString(); break;
+                    case "honorific": Honorific = value.ToString();
+                        break;
                     case "sex":
-                        if (byte.TryParse(value.ToString(), out var sex)) Sex = sex;
+                        if (byte.TryParse(value.ToString(), out var sex)) 
+                        { 
+                            Sex = sex;
+                        }
                         break;
                     case "age":
-                        if (uint.TryParse(value.ToString(), out var age)) Age = age;
+                        if (uint.TryParse(value.ToString(), out var age))
+                        {
+                            Age = age;
+                        }
                         break;
                     case "attributes":
-                        Attributes = ParseFloatMap(value.ToString());
+                        Attributes = ParseFloatMap(value);
                         break;
                     case "ability_start":
-                        AbilityStart = ParseFloatMap(value.ToString());
+                        AbilityStart = ParseFloatMap(value);
                         break;
                     case "ability_max":
-                        AbilityMax = ParseFloatMap(value.ToString());
+                        AbilityMax = ParseFloatMap(value);
                         break;
                     case "known_skills":
-                        KnownSkills = ParseBoolMap(value.ToString());
+                        KnownSkills = ParseBoolMap(value);
                         break;
                     case "preferred_places":
-                        PreferredPlaces = ParseBoolMap(value.ToString());
+                        PreferredPlaces = ParseBoolMap(value);
                         break;
                     case "disliked_places":
-                        DislikedPlaces = ParseBoolMap(value.ToString());
+                        DislikedPlaces = ParseBoolMap(value);
                         break;
                     case "defense_min":
-                        if (int.TryParse(value.ToString(), out var defMin)) DefenseMin = defMin;
+                        if (int.TryParse(value.ToString(), out var defMin))
+                        {
+                            DefenseMin = defMin;
+                        }
                         break;
                     case "defense_with_gnos":
-                        if (int.TryParse(value.ToString(), out var defWith)) DefenseWithGnos = defWith;
+                        if (int.TryParse(value.ToString(), out var defWith)) {
+                            DefenseWithGnos = defWith;
+                        }
                         break;
 
                     default:
@@ -162,16 +174,16 @@ namespace GnosiaCustomizer.utils
             return result;
         }
 
-        private static Dictionary<string, bool> ParseBoolMap(YamlNode node)
+        private static HashSet<string> ParseBoolMap(YamlNode node)
         {
-            var result = new Dictionary<string, bool>();
+            var result = new HashSet<string>();
             if (node is YamlMappingNode map)
             {
                 foreach (var kv in map.Children)
                 {
-                    if (bool.TryParse(kv.Value.ToString(), out var val))
+                    if (bool.TryParse(kv.Value.ToString(), out var val) && val)
                     {
-                        result[kv.Key.ToString()] = val;
+                        result.Add(kv.Key.ToString());
                     }
                 }
             }
