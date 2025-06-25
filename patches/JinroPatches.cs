@@ -77,7 +77,7 @@ namespace GnosiaCustomizer.patches
         {
             internal static bool Prefix(ref bool __result, int cid, Setting.SkillList skill)
             {
-                if (!SkillMap.ContainsKey(cid) || SkillMap[cid] == null)
+                if (!SkillMap.ContainsKey(cid) || SkillMap[cid] == null || cid <= 0 || cid > Consts.NumCharacters)
                 {
                     return true;
                 }
@@ -88,17 +88,7 @@ namespace GnosiaCustomizer.patches
                     return true;
                 }
 
-                __result = false;
-                if (cid < 0 || cid >= (int)gameData.baseData.totalNum) {
-                    __result = false;
-                    return false;
-                }
-                if (cid == 0)
-                {
-                    __result = (gameData.chara[cid].allFlg & (ulong)(1L << (int)(skill & (Setting.SkillList)63))) > 0UL;
-                    return false;
-                }
-                var skillKey = "N/A";
+                var skillKey = "";
                 switch (skill)
                 {
                     case Setting.SkillList.sk_Sence_SayNingen:
@@ -167,7 +157,6 @@ namespace GnosiaCustomizer.patches
                 }
                 var absoluteId = gameData.chara[cid].id;
                 __result = SkillMap[absoluteId].Contains(skillKey);
-                //Logger.LogInfo($"HaveSkill called for cid: {cid}, skill: {skillKey}, result: {__result}");
                 return false;
             }
 
