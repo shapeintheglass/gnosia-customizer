@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using BepInEx.Logging;
 using gnosia;
 using GnosiaCustomizer.utils;
@@ -184,58 +183,6 @@ namespace GnosiaCustomizer.patches
                 internal static void Postfix(RSKyoryokuScenario __instance)
                 {
                     __instance.selMainFlg = NightCollaborateMask;
-                }
-            }
-
-            // ResourceManager.GetScenarioBaseText
-            //[HarmonyPatch(typeof(ResourceManager), "GetScenarioBaseText")]
-            internal static class ResourceManagerGetScenarioBaseTextPatch
-            {
-                internal static void Postfix(ref string __result, int fileId, int listId, int faceId = -1)
-                {
-                    Logger.LogInfo($"GetScenarioBaseText called with fileId: {fileId}, listId: {listId}, faceId: {faceId}");
-                }
-            }
-
-            private static string previousActionName = "";
-
-            //ScenarioEngineObj.MyUpdate
-            //[HarmonyPatch(typeof(ScenarioEngineObj), "MyUpdate")]
-            internal static class ScenarioEngineObjMyUpdatePatch
-            {
-                internal static void Postfix(ScenarioEngineObj __instance)
-                {
-
-                    var gd = Utils.GetGameDataViaReflection();
-                    if (gd == null)
-                    {
-                        return;
-                    }
-                    var scenarioContents = Utils.GetScenarioContentsViaReflection();
-                    if (scenarioContents == null)
-                    {
-                        return;
-                    }
-                    var actionData = gd.actionDoIt;
-                    if (actionData.scenarioNum < 0 || actionData.id < 0)
-                    {
-                        return;
-                    }
-                    if (actionData.scenarioNum >= gd.sceOn.Count || gd.sceOn[actionData.scenarioNum].id >= scenarioContents.Length
-                        || actionData.id >= scenarioContents[gd.sceOn[actionData.scenarioNum].id].actions.Count)
-                    {
-                        return;
-                    }
-                    var action = scenarioContents[gd.sceOn[actionData.scenarioNum].id].actions[actionData.id];
-                    if (action.name == previousActionName)
-                    {
-                        return;
-                    }
-                    var journalEntries = action.nissi.Join(delimiter: "\n");
-                    Logger.LogInfo($"Executing command {action.name}. Priority: {action.priority}.");
-                    Logger.LogInfo($"Journal entries: {journalEntries}");
-                    Logger.LogInfo($"Action data: id: {actionData.id}, type: {actionData.type}, scenarioNum: {actionData.scenarioNum}, canPlayUser: {actionData.canPlayUser}, targetP: {actionData.canPlayUser}, mainP: {actionData.mainP}, counterP: {actionData.counterP}, tuizuiP: {actionData.tuizuiP}, ctuizuiP: {actionData.ctuizuiP}, power: {actionData.power}, power2: {actionData.power2}, power3: {actionData.power3}, cpower: {actionData.cpower}, cpower2: {actionData.cpower2}, cpower3: {actionData.cpower3}");
-                    previousActionName = action.name;
                 }
             }
         }

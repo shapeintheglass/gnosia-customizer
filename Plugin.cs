@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using BepInEx;
 using GnosiaCustomizer.patches;
+using GnosiaCustomizer.stats;
 using GnosiaCustomizer.utils;
 using HarmonyLib;
 
@@ -29,6 +30,7 @@ public class Plugin : BaseUnityPlugin
         TextPatches.Logger = Logger;
         SoundPatches.Logger = Logger;
         JinroPatches.Logger = Logger;
+        StatReader.Logger = Logger;
 
         Logger.LogInfo($"Plugin gnosia customizer is starting!");
 

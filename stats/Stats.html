@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gnosia Stats (Local Live)</title>
+
+    <!-- DataTables CSS + jQuery + DataTables JS -->
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 32px;
+            background: #f4f7fa;
+            color: #222;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #2a3a4a;
+        }
+
+        #lastRefresh {
+            font-weight: 500;
+            color: #4a7cff;
+        }
+
+        .refresh-btn {
+            background: #4a7cff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-left: 18px;
+            transition: background 0.2s;
+        }
+
+            .refresh-btn:hover {
+                background: #345bb3;
+            }
+
+        table.dataTable {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+            table.dataTable tbody tr:nth-child(even) {
+                background: #f6f8fc;
+            }
+
+            table.dataTable thead {
+                background: #eaf0fa;
+            }
+
+            table.dataTable th, table.dataTable td {
+                padding: 10px 8px;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="header-card">
+        <h1>Gnosia Game Stats</h1>
+        <p>
+            Last refresh: <span id="lastRefresh">—</span>
+        </p>
+    </div>
+
+    <script id="dataScript" src="data.js"></script>
+
+    <table id="charaStats" class="display"></table>
+
+    <h2>Internal Trust Matrix</h2>
+    <div style="overflow-x:auto;">
+        <table id="internalTrustMatrix" class="display"></table>
+    </div>
+
+    <h2>Persona Trust Matrix</h2>
+    <div style="overflow-x:auto;">
+        <table id="personaTrustMatrix" class="display"></table>
+    </div>
+
+    <h2>Friendship Matrix</h2>
+    <div style="overflow-x:auto;">
+        <table id="friendshipMatrix" class="display"></table>
+    </div>
+
+    <h2>Role Knowledge Matrix</h2>
+    <div style="overflow-x:auto;">
+        <table id="roleKnowledgeMatrix" class="display"></table>
+    </div>
+
+    <h2>Love Matrix</h2>
+    <div style="overflow-x:auto;">
+        <table id="loveMatrix" class="display"></table>
+    </div>
+
+    <script>
+        function renderAvg(arr) {
+            if (!Array.isArray(arr) || arr.length === 0) return '';
+            const sum = arr.reduce((acc, v) => acc + v, 0);
+            return (sum / arr.length).toFixed(2);
+        }
+
+        function renderFirst(arr) {
+            return (Array.isArray(arr) && arr.length > 0)
+                ? arr[0].toFixed(2)
+                : '';
+        }
+
+        function renderAvgValOfCha(meta, property) {
+            const idList = Object.keys(window.rawData);
+            const idToIndex = Object.fromEntries(idList.map((id, i) => [id, i]));
+            const currentId = idList[meta.row];
+            const currentIndex = idToIndex[currentId];
+            const allEntries = window.rawData;
+
+            let sum = 0;
+            let count = 0;
+
+            for (const [otherId, otherChar] of Object.entries(allEntries)) {
+                if (otherId === currentId) continue; // skip self
+                sum += otherChar[property]?.[currentIndex];
+                count++;
+            }
+
+            if (count === 0) return '';
+            const avg = sum / count;
+            return avg.toFixed(2);
+        }
+
+        $(function () {
+            // 1) initialize DataTable using the in-memory window.rawData
+            const table = $('#charaStats').DataTable({
+                data: Object.values(window.rawData),
+                columns: [
+                    {
+                        title: 'Name',
+                        data: 'Name'
+                    },
+                    {
+                        title: 'Game ID',
+                        data: 'GameId'
+                    },
+                    {
+                        title: 'Abs ID',
+                        data: 'AbsoluteId',
+                    },
+                    {
+                        title: 'Status',
+                        data: 'Status'
+                    },
+                    {
+                        title: 'Persona Role',
+                        data: 'PersonaRole'
+                    },
+                    {
+                        title: 'Role',
+                        data: 'Role'
+                    },
+                    {
+                        title: 'Hate',
+                        data: 'Hate',
+                        render: $.fn.dataTable.render.number('', '.', 2)
+                    },
+                    {
+                        title: 'HP',
+                        data: 'HP',
+                        render: $.fn.dataTable.render.number('', '.', 2)
+                    },
+                    {
+                        title: 'Avg Trust (of Character)',
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            return renderAvgValOfCha(meta, "InternalTrust");
+                        }
+                    },
+                    {
+                        title: 'Avg Friend (of Character)',
+                        data: 'Friendship',
+                        render: function (arr, type, row) {
+                            return renderAvg(arr);
+                        }
+                    },
+                    {
+                        title: 'Persona Trust (of Player)',
+                        data: 'PersonaTrust',
+                        render: function (arr, type, row) {
+                            return renderFirst(arr);
+                        }
+                    },
+                    {
+                        title: 'Internal Trust (of Player)',
+                        data: 'InternalTrust',
+                        render: function (arr, type, row) {
+                            return renderFirst(arr);
+                        }
+                    },
+                    {
+                        title: 'Friendship (of Player)',
+                        data: 'Friendship',
+                        render: function (arr, type, row) {
+                            return renderFirst(arr);
+                        }
+                    },
+                    {
+                        title: 'Love (to Player)',
+                        data: 'Love',
+                        render: function (arr, type, row) {
+                            return renderFirst(arr);
+                        }
+                    },
+                ],
+                pageLength: -1,
+                lengthChange: false,
+                order: [] // disable initial sorting
+            });
+
+            function renderMatrixTable(property, tableId, label) {
+                const charList = Object.values(window.rawData);
+                const charNames = charList.map(c => c.Name);
+                const cids = charList.map(c => c.GameId);
+
+                const matrixData = charList.map((c, outerAbsId) => {
+                    
+                    const row = [charNames[outerAbsId]];
+                    const arr = c[property];
+
+                    for (let j = 0; j < arr.length; j++) {
+                        let newIndex = cids[j];
+                        let val = arr[newIndex] !== undefined ? arr[newIndex] : '';
+                        if (typeof val === 'number' && !isNaN(val)) {
+                            val = val.toFixed(2);
+                        }
+                        row.push(val);
+                    }
+                    return row;
+                });
+
+                const columns = [
+                    { title: '' },
+                    ...charNames.map(name => ({ title: 'To ' + name }))
+                ];
+
+                if ($.fn.dataTable.isDataTable('#' + tableId)) {
+                    $('#' + tableId).DataTable().clear().rows.add(matrixData).draw(false);
+                } else {
+                    $('#' + tableId).DataTable({
+                        data: matrixData,
+                        columns: columns,
+                        searching: false,
+                        paging: false,
+                        info: false,
+                        ordering: true,
+                        scrollX: true,
+                        order: [] // disable initial sorting
+                    });
+                }
+            }
+
+            // --- Render all matrices in one place ---
+            function renderAllMatrices() {
+                renderMatrixTable('InternalTrust', 'internalTrustMatrix', 'Internal Trust');
+                renderMatrixTable('PersonaTrust', 'personaTrustMatrix', 'Persona Trust');
+                renderMatrixTable('Friendship', 'friendshipMatrix', 'Friendship');
+                renderMatrixTable('RoleKnowledge', 'roleKnowledgeMatrix', 'Role Knowledge');
+                renderMatrixTable('Love', 'loveMatrix', 'Love');
+            }
+
+            // 2) function to reload data.js and re-populate the table
+            function reloadData() {
+                const oldScript = document.getElementById('dataScript');
+                const newScript = document.createElement('script');
+                newScript.id = 'dataScript';
+                // cache-buster to force re-read from disk
+                newScript.src = 'data.js?cb=' + Date.now();
+                newScript.onload = () => {
+                    // once data.js has re-executed, window.rawData is updated
+                    table
+                        .clear()
+                        .rows.add(Object.values(window.rawData))
+                        .draw(false);
+                    renderAllMatrices();
+                    // update timestamp
+                    $('#lastRefresh').text(new Date().toLocaleTimeString());
+                };
+                oldScript.replaceWith(newScript);
+            }
+
+            // 3) schedule it at regular intervals
+            setInterval(reloadData, 1000);
+
+            // initial timestamp
+            $('#lastRefresh').text(new Date().toLocaleTimeString());
+            renderAllMatrices();
+        });
+    </script>
+</body>
+</html>
