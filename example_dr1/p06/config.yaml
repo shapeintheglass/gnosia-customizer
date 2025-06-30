@@ -1,0 +1,1163 @@
+# How the game and other people will address this character.
+name: Mondo
+# 0 = Male, 1 = Female, 2 = Non-binary.
+sex: 0
+# Where the character is from. Only shown on their bio page.
+origin: "Dangan\nronpa"
+# The character's age. Only shown on their bio page.
+age: 17
+# Information about this character. Only shown on their bio page.
+bio1: "Highly able, with impressive intuition, charm,\nand stealth levels. His well-balanced\npersonality makes him a formidable opponent."
+bio2: ""
+# Honorific when they address other people (ex. -san, -sama, etc). Leave blank for no honorific.
+honorific: 
+
+# Their base 'defense' rating against doubt.
+defense_min: 140
+# Their base 'defense' rating against doubt, as a Gnosia.
+defense_with_gnos: 130
+
+# Affects the character's likelihood to perform certain actions.
+attributes:
+  playful: 0.8
+  social: 0.45
+  logic: 0.11
+  neat: 0.81
+  desire: 0.82
+  courage: 0.5
+
+# The character's starting ability for each type.
+abilityStart:
+  charisma: 0.2
+  intuition: 0.99
+  charm: 0.27
+  logic: 0.15
+  perform: 0.01
+  stealth: 0.3
+
+# The character's maximum ability for each type.
+abilityMax:
+  charisma: 0.5
+  intuition: 0.99
+  charm: 0.62
+  logic: 0.37
+  perform: 0.01
+  stealth: 0.67
+
+# Skills the character is capable of using. If a skill is not present here, false is assumed.
+known_skills:
+  charisma_step_forward: true
+  charisma_seek_agreement: false
+  charisma_block_argument: false
+  intuition_say_human: false
+  intuition_dont_be_fooled: true
+  charm_regret: false
+  charm_collaborate: true
+  logic_vote: false
+  logic_dont_vote: false
+  logic_definite_human_or_enemy: true
+  logic_definite_ac: true
+  logic_definite_bug: true
+  logic_freeze_all: false
+  perform_retaliate: false
+  perform_seek_help: false
+  perform_exaggerate: false
+  stealth_obfuscate: false
+  stealth_small_talk: true
+  stealth_grovel: false
+  night_liar_callout: true
+  night_victim_request: true
+  night_collaborate: true
+
+
+############
+# DIALOGUE #
+############
+
+# Statement at the start of the round.
+opening_statement:
+  line: "Hey, sorry I'm late.\nLet's take it easy, OK you guys?"
+  sprite: 1
+
+# Mourning the loss of {0} during the night phase.
+opening_remarks_condolences:
+  line: "This feels weird, with {0}...\nSomeone who was right here yesterday, gone just like that..."
+  sprite: 3
+
+# Celebrating that no one disappeared last night.
+opening_remarks_no_deaths:
+  line: "*Yaaawn*... Morning!\nThings were quiet last night. I kinda slept in."
+  sprite: 6
+
+# Reacting to the deaths of {0} ('Name1 and Name2') during the night phase. One of them was the bug, eliminated by the Engineer.
+opening_remarks_two_deaths:
+  line: "Just like that, overnight... {0}...\nGo ahead and take your time..."
+  sprite: 3
+
+# Requesting that whoever has the role of {0} step forward.
+step_forward:
+  line: "Hey, so about the {0} here.\nWanna go ahead and come forward?"
+  sprite: 0
+
+# First person to reveal role as {0} ('Engineer'). They can investigate one person every night.
+reveal_role_engineer:
+  line: "Gnosia, huh...\nI can use my {0} permissions to do a scan and smoke them out."
+  sprite: 5
+
+# Counter-claiming {1} for the role of {0} ('Engineer').
+reveal_own_role_engineer:
+  line: "Oh, uh... Sorry, but...\nI, too - or rather, I AM the {0}."
+  sprite: 3
+
+# Revealing role as {0} ('Engineer') while also stating {1} is Gnosia.
+reveal_role_engineer_with_gnosia_result:
+  line: "Sorry, {1}...\nI used my {0} permissions to perform a scan.\nYeah, {1} is Gnosia."
+  sprite: 3
+
+# First to reveal role as {0} ('Doctor'). They can investigate whoever was put into cold sleep the previous night.
+reveal_role_doctor:
+  line: "Forgot to mention it, but I'm the {0}.\nIf whoever goes into cold sleep is Gnosia, I'll know."
+  sprite: 0
+
+# Counter-claiming {1} for the role of {0} ('Doctor').
+reveal_own_role_doctor:
+  line: "I hate to say it, but {1} is lying...\nGuess I gotta come forward - I'm the {0}."
+  sprite: 3
+
+# Revealing role as {0} ('Doctor') while also stating the person {1} was Gnosia.
+reveal_role_doctor_with_gnosia_result:
+  line: "I'm the {0}. I've checked everyone in cold sleep.\nTurns out {1} is Gnosia."
+  sprite: 0
+
+# First to reveal role as {0} ('Guard Duty'). The other person on guard duty will corroborate this.
+reveal_role_guard_duty:
+  line: "Last time we docked, someone who left the ship became Gnosia, right?\nWell, I was asleep in my room the whole time."
+  sprite: 5
+
+# Corroborating {1}'s claim of being {0} ('Guard Duty').
+reveal_role_guard_duty_response:
+  line: "Yeah, {1} was here on the ship. I stayed back, too."
+  sprite: 1
+
+# First to reveal role as {0} ('Guardian Angel').
+reveal_role_guardian_angel:
+  line: "Lemme introduce myself once again.\nMy name is Chipie. I'm a {0}."
+  sprite: 1
+
+# Reacting to {1} being the sole claimant to the role of {0} (i.e. they're the genuine {0}).
+step_forward_1_claim_reaction:
+  line: "So is {1} the real {0}?\nWell, \"Nice to meet you,\" I guess, haha."
+  sprite: 1
+
+# Reacting to {1} ('Name1 and Name2') being two claimants to the role of {0}.
+step_forward_2_claims_reaction:
+  line: "So either {1} is the real {0} then, right?\nWell, I guess it's better than knowing nothing at all."
+  sprite: 0
+
+# Reacting to {1} ('Name1, Name2, and Name3') being three or more claimants to the role of {0}.
+step_forward_3_claims_reaction:
+  line: "{1}, huh...\nI don't know who to believe here..."
+  sprite: 2
+
+# Asking for any Engineer/Doctor who hasn't spoken yet to present their report.
+request_report:
+  line: "Hey now, let's hear the next report!"
+  sprite: 0
+
+# One of the Doctors/Engineers, named {0}, failed to present their report. This is very incriminating.
+request_report_no_response:
+  line: "Hey now, someone forgettin' their report?\nC'mon, let's hear it."
+  sprite: 5
+
+# The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {1}, and got the same result. {0} = the string 'Gnosia'.
+report_pt1_matching_result:
+  line: "My report's the same.\n"
+  sprite: 0
+
+# The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {0}, but got a different result. {0} = the string 'Gnosia'.
+report_pt1_conflicting_result:
+  line: "Huh...? That's just plain wrong.\n"
+  sprite: 5
+
+# As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.
+report_engineer_pt1_target_killed:
+  line: "Well, they got taken out, but... I scanned\n"
+  sprite: 3
+
+# As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}.
+report_engineer_pt1:
+  line: "Time to report. I scanned\n"
+  sprite: 0
+
+#  As {0} ('Engineer'), the first sentence of their report that they investigated a different target than what the other Engineer reported.
+report_engineer_pt1_different_target:
+  line: "So you scanned someone else, eh? Well, I scanned...\n"
+  sprite: 0
+
+# As Engineer, the second sentence of their report that {1} was {0} (Gnosia).
+report_engineer_pt2_gnosia_result:
+  line: "{1}. And, well... Bingo. They were {0}."
+  sprite: 3
+
+# As Engineer, the second sentence of their report that {1} was {0} (Human).
+report_engineer_pt2_human_result:
+  line: "{1}. They weren't {0}."
+  sprite: 0
+
+# As Engineer, stating that they did not investigate anyone as there were no more valid targets to examine.
+report_engineer_no_result:
+  line: "Who should I scan?\nI got no idea."
+  sprite: 2
+
+# # As Doctor, the first sentence of their report that they investigated the people who were in cold sleep last night.
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt1:
+  line: "I scanned everyone in cold sleep.\n"
+  sprite: 0
+
+# As Doctor, the second part of their report stating that they found {1} to be {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_single_gnosia_result:
+  line: "Yup, bingo. {1} {3} {0}."
+  sprite: 3
+
+# As Doctor, the second part of their report stating that they found {1} to NOT be {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_single_human_result:
+  line: "{1} isn't {0}. We did {1} wrong."
+  sprite: 2
+
+# As Doctor, the second part of the report stating that among {1} (names of those in cold sleep), {2} (names of the Gnosia) were {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_multiple_gnosia_result:
+  line: "Between {1}, {2} {4} the one.\n{0}."
+  sprite: 0
+
+# As Doctor, the second part of the report stating that among {1} (names of those in cold sleep) none were {0} (Gnosia).
+# {0} = "Gnosia"
+# {1} = Cold sleeper name(s)
+# {2} = Gnosia name(s)
+# {3} = "was"/"were" for plural handling
+# {4} = "was"/"were" for plural handling
+# {5} = "wasn't"/"weren't" for plural handling
+report_doctor_pt2_oops_all_humans_result:
+  line: "{1}. None of them were it.\nNot a single {0} among 'em."
+  sprite: 3
+
+# Only spoken on day one. They technically trust {0}, but also believe they are suspicious.
+doubt_day_one:
+  line: "You don't look so hot, {0}.\nSomething botherin' ya?"
+  sprite: 0
+
+# {0} is generically suspicious.
+doubt_dislike:
+  line: "It's just a hunch, but...\n{0} is pretty suspicious..."
+  sprite: 3
+
+# {0} is talking too much or annoying.
+doubt_too_chatty:
+  line: "You're talking too much, {0}.\nNot really the best time to stand out, eh?"
+  sprite: 5
+
+# {0} is suspicious despite being generally liked by everyone.
+doubt_too_popular:
+  line: "Hey, things're leaning a bit far toward {0}, eh?\nPersonally, {0} kinda rubs me the wrong way."
+  sprite: 5
+
+# {0} hasn't spoken for a while.
+doubt_too_quiet:
+  line: "{0}? You're pretty quiet, you feelin' OK?"
+  sprite: 0
+
+# Probabilistically, {0} is likely suspicious.
+doubt_prob:
+  line: "I feel like it wouldn't hurt to keep an eye on {0} for now."
+  sprite: 5
+
+# Once trusted {0}, but are now suspicious of them.
+doubt_trusted:
+  line: "{0}. If something's botherin' ya, speak up."
+  sprite: 0
+
+# Was collaborating with {0}, but are now suspicious of them.
+doubt_collaborator:
+  line: "Hey {0}.\nI wanted to trust you.\nBut... Sorry. I just can't."
+  sprite: 3
+
+# Distrusts {0} because {1}, who was at odds with them, has gone missing.
+doubt_avenge:
+  line: "Honestly, {0} looks real sketchy.\nYa know, since {1} got done..."
+  sprite: 2
+
+# {0} is generically suspicious. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_dislike:
+  line: "Look, I really wanna trust {0}.\nBut... Something's just off."
+  sprite: 2
+
+# {0} is talking too much or annoying. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_too_chatty:
+  line: "Take it easy, {0}.\nDon't start goin' all crazy now."
+  sprite: 3
+
+# {0} is suspicious despite being generally liked by everyone. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_too_popular:
+  line: "If we all trust {0}, we could get tripped up.\nI'm gonna go ahead and doubt {0}."
+  sprite: 0
+
+# {0} hasn't spoken for a while. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_too_quiet:
+  line: "{0}. You got some kinda agenda?\nNothin' good'll come from stayin' quiet."
+  sprite: 0
+
+# Probabilistically, {0} is likely suspicious. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_prob:
+  line: "Careful there, {0}.\nYou're startin' to look kinda sketchy."
+  sprite: 5
+
+# Once trusted {0}, but are now suspicious of them. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_trusted:
+  line: "Tryin' a bit hard there, eh, {0}?\nHaha, let's all keep calm."
+  sprite: 1
+
+# Was collaborating with {0}, but are now suspicious of them. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_collaborator:
+  line: "..."
+  sprite: 0
+
+# Distrusts {0} because {1}, who was at odds with them, has gone missing. Variant when this character's persona trust towards {0} is high.
+doubt_trust_variant_avenge:
+  line: "..."
+  sprite: 0
+
+# Agreeing with {1} that {0} cannot be trusted.
+doubt_affirm_dislike:
+  line: "Yeah, somethin' about {0} bothers me, too."
+  sprite: 5
+
+# Agreeing with {1} that {0} is talking too much.
+doubt_affirm_too_chatty:
+  line: "Yup. Somethin' about {0} is definitely fishy."
+  sprite: 6
+
+# Agreeing with {1} that {0} is suspicious despite their popularity.
+doubt_affirm_too_popular:
+  line: "{0}, eh...? Somethin' seems off."
+  sprite: 2
+
+# Agreeing with {1} that {0} is too quiet.
+doubt_affirm_too_quiet:
+  line: "C'mon {0}, say what you wanna say.\nOr, maybe it ain't that simple, huh? Haha."
+  sprite: 1
+
+# Agreeing with {1} that {0} is probably suspicious.
+doubt_affirm_prob:
+  line: "Yeah, we should keep an eye on {0}."
+  sprite: 0
+
+# Agreeing with {1} that {0} is suspicious, despite their trust.
+doubt_affirm_trusted:
+  line: "{0} is actin' weird, and it's buggin' me."
+  sprite: 3
+
+# Agree with with {1} that {0} is extremely suspicious (triggers on negative trust, ex. definite enemy).
+doubt_affirm_negative_trust:
+  line: "{0}, huh... Yeah...\nDefinitely lyin'."
+  sprite: 3
+
+# Agreeing with {1} that {0} cannot be trusted. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_dislike:
+  line: "I just don't really get {0}..."
+  sprite: 5
+
+# Agreeing with {1} that {0} is talking too much. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_too_chatty:
+  line: "Haha, there it is, {0}.\nI mean, {1} is probably right, eh?"
+  sprite: 1
+
+# {Agreeing with {1} that {0} is suspicious despite their popularity. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_too_popular:
+  line: "Uh-oh... Yeah, nope.\nI just can't trust {0}."
+  sprite: 2
+
+# Agreeing with {1} that {0} is too quiet. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_too_quiet:
+  line: "Careful there, {0}.\nGet in the way, and they'll toss ya right out, eh?"
+  sprite: 0
+
+# Agreeing with {1} that {0} is probably suspicious. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_prob:
+  line: "That's some sharp calculatin', {1}.\nI could learn a lot from ya."
+  sprite: 0
+
+# Agreeing with {1} that {0} is suspicious, despite their trust. Variant when this character's persona trust of {0} is high.
+doubt_affirm_trust_variant_trusted:
+  line: "I wanna rebuke, but...\nNope, I got nothin'."
+  sprite: 2
+
+# Arguing that {0} is suspicious, despite {1}'s remark that they could be trusted.
+argue:
+  line: "Sorry, but I just kinda can't trust {0} like that."
+  sprite: 2
+
+# Arguing that {0} is suspicious, despite {1}'s remark that they could be trusted. Variant that triggers when this character's persona trust of {0} is high.
+argue_high_trust_variant:
+  line: "Asking us to trust {0} is kinda, well...\nC'mon, {1}, that's a bit of a stretch right now."
+  sprite: 5
+
+# Follow-up to argument that {0} is suspicious, despite {1}'s remark that they could be trusted.
+join_argument:
+  line: "{0}, huh? {0}...\nSomethin' just rubs me the wrong way..."
+  sprite: 5
+
+# Follow-up to argument that {0} is suspicious, despite {1}'s remark that they could be trusted. Variant that triggers when this character's persona trust of {0} is high.
+join_argument_high_trust_variant:
+  line: "Sorry, {0}. I'm just not feelin' it right now."
+  sprite: 0
+
+# Attempt to defend against a weak accusation.
+refute_weak_doubt:
+  line: "Yeah... I can see how I'd look suspicious."
+  sprite: 3
+
+# Attempt to defend against an accusation with strong basis.
+refute_strong_doubt:
+  line: "Haha, c'mon now, chill out!"
+  sprite: 1
+
+# Defending {0} from {1}'s statement.
+defend_generic:
+  line: "{1}, why all the doubt for {0}?\nHaha, I just don't see it, myself."
+  sprite: 1
+
+# Defending {0} from {1}'s statement. Trusts {0} more than {1}.
+defend_trusted_target:
+  line: "So {1} is doubting {0}, right?\nPersonally, I'm on {0}'s side, myself."
+  sprite: 0
+
+# Defending {0} from {1}'s statement. Persona trust of {0} is low.
+defend_untrusted_target:
+  line: "I get wanting to doubt {0}.\nBut I don't think it's worth it."
+  sprite: 5
+
+# {1} has said that {0} is supicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is above 0.45.
+join_defense_trusted_target:
+  line: "OK, let's lay off it a bit, eh?\nI got {0}'s back."
+  sprite: 0
+
+# {1} has said that {0} is supicious. {2} defended {0}, and the character is agreeing. Persona trust of {0} is below 0.45.
+join_defense_untrusted_target:
+  line: "Jeez... That's enough.\nLay off {0} a little, OK?"
+  sprite: 6
+
+# Expressing thanks that they were trusted by {0}.
+say_thanks:
+  line: "Haha, thanks for that.\nI appreciate it..."
+  sprite: 1
+
+# Stating their fondness for {0}.
+cover_vouch:
+  line: "Even if it turns out {0} wasn't human...\nI still woulda trusted 'em."
+  sprite: 3
+
+# State that probabilistically, {0} is likely trustworthy.
+cover_prob:
+  line: "I don't see any reason to doubt {0} right now.\nI think we can trust {0}."
+  sprite: 0
+
+# Stating that {0} can be trusted. This can trigger when the character's true internal trust of {0} is high, and the odds may increase if the character as gnosia is vouching for a gnosia-aligned ally.
+cover_trusted:
+  line: "{0}... I can trust you, right?\nHaha, if it's too much of a burden, lemme know."
+  sprite: 1
+
+# Stating their fondness for {0}. This variant triggers when the persona trust between this character and {0} is T<0.45.
+cover_low_trust_variant_vouch:
+  line: "If I had to choose someone...\nWell, I'd trust {0}."
+  sprite: 3
+
+# Probabilistically, {0} can be trusted. This variant triggers when the persona trust between this character and {0} is T<0.45.
+cover_low_trust_variant_prob:
+  line: "Why not try trusting {0}?\nIt's a bet I'd take."
+  sprite: 0
+
+# Stating that {0} can be trusted. This can trigger when the character's true internal trust of {0} is high, and the odds may increase if the character as gnosia is vouching for a gnosia-aligned ally. This variant triggers when the persona trust between this character and {0} is T<0.45.
+cover_low_trust_variant_trusted:
+  line: "Ya know, I'm gonna trust {0}.\nHaha, I'm actually a pretty good gambler, ya know?"
+  sprite: 1
+
+# Agreeing with {1} that {0} can be trusted.
+cover_together:
+  line: "Yeah, I don't think we need to worry about {0}."
+  sprite: 0
+
+# Agreeing with {1} that {0} can be trusted. Variant that triggers when publicly-facing trust to {0} is less than 0.45.
+cover_together_low_trust_variant:
+  line: "Trust {0}, eh? Haha, sounds good to me."
+  sprite: 1
+
+# Declaring that {0} is definitely the real {1} (Engineer/Doctor).
+definite_human_with_role:
+  line: "It's pretty obvious that {0} is definitely {1}.\nAny objections?"
+  sprite: 0
+
+# Declaring that {0} is definitely human.
+definite_human:
+  line: "{0} is human. I think we can agree on this."
+  sprite: 0
+
+# Declaring that {0} is definitely not the real {1} (Engineer Doctor).
+definite_enemy_with_role:
+  line: "{0} is lying.\nThere's no way you're {1}."
+  sprite: 0
+
+# Declaring that {0} is definitely lying.
+definite_enemy:
+  line: "{0} is... {1}. They have to be."
+  sprite: 5
+
+# Declaring that {0} is definitely the AC Follower.
+definite_enemy_ac:
+  line: "{0} is {1}. AC."
+  sprite: 0
+
+# Declaring that {0} is definitely the Bug.
+definite_enemy_bug:
+  line: "{0} is {1}. Bug."
+  sprite: 0
+
+# Declaring that {0} is definitely a liar.
+definite_enemy_liar:
+  line: "Something about {0} is wrong."
+  sprite: 0
+
+# Declaring that {0} is definitely a liar, but also not Gnosia.
+definite_enemy_liar_not_gnosia:
+  line: "{0} is not Gnosia. This is a fact.\nBut {0} is lying. This is also a fact."
+  sprite: 0
+
+# Pointing out to {0} that they made an error in their Definite call.
+point_out_mistake:
+  line: "Hey, c'mon now, {0}.\nCalm down, take it easy, eh?"
+  sprite: 0
+
+# Pointing out to {0} that their conclusion was so obvious it didn't need to be said.
+thats_obvious:
+  line: "Haha, {0}. We already know that."
+  sprite: 1
+
+# Thanking {0} for being recognized as the real {1}.
+say_thanks_definite_human_with_role:
+  line: "Yeah, I'm the {1}. Thanks, {0}."
+  sprite: 1
+
+# Admitting that {0} was correct in calling them out as Definite Enemy.
+definite_enemy_revealed:
+  line: "I... can't deny that."
+  sprite: 3
+
+#  Recognizing there's no need for discussion, skipping straight to the vote.
+lets_vote_nothing_to_say:
+  line: "Well, it looks like everyone's minds are made up...\nI guess there's no more need for talk."
+  sprite: 0
+
+# Indicating that it is now time to vote.
+lets_vote:
+  line: "So now we're gonna decide who to put in cold sleep, huh?\nI really don't like this majority vote stuff."
+  sprite: 3
+
+# Acknowledging that {0} (multiple names) have tied, and that we must vote again.
+lets_vote_tiebreaker:
+  line: "So we gotta decide between {0}, right?\nYeah, I hate this kinda stuff."
+  sprite: 2
+
+# Reaction to a second tie when voting.
+tiebreaker_vote_indecisive:
+  line: "This is never gonna end... What do we do now, huh?"
+  sprite: 5
+
+# Giving up and skipping cold sleep, after running out of time.
+vote_skipped:
+  line: "OK, let's wrap this up, eh?\nI guess we're gonna have to agree to do nothing."
+  sprite: 0
+
+# Proposing to the group to freeze the everyone in {0} (ex. 'Name1 and Name2').
+freeze_everyone_proposal:
+  line: "{0}.\nHow 'bout we put 'em all into cold sleep?\nIt's really not so bad."
+  sprite: 1
+
+# Proposing to the group not to freeze everyone in {0} (ex. 'Name1 and Name2').
+freeze_nobody_proposal:
+  line: "Look.\nHow 'bout we just don't force anyone into cold sleep?"
+  sprite: 0
+
+# Agreeing with someone elses' plan to freeze all of the candidates.
+freeze_everyone_agree:
+  line: "I mean, I think it's fine. Sleep is comfy, eh?"
+  sprite: 1
+
+# Disagreeing with someone else's plan to freeze all of the candidates.
+freeze_everyone_disagree:
+  line: "I can't get behind this. I'm against it."
+  sprite: 5
+
+# Agreeing with someone else's plan to freeze none of the candidates.
+freeze_nobody_agree:
+  line: "Yeah, I vote against cold sleep."
+  sprite: 0
+
+# Disgreeing with someone else's plan to freeze none of the candidates.
+freeze_nobody_disagree:
+  line: "I get it, but...\nNope, I'm against it."
+  sprite: 2
+
+# Confirming that everyone has decided to go with the plan to freeze everyone in {0} (ex. 'Name1 and Name2').
+freeze_everyone_accepted:
+  line: "Well, I guess it's decided. {0}, you ready?\nTake a nap, and it'll all be over when you wake up."
+  sprite: 1
+
+# Confirming that everyone has decided to go with the plan to not freeze everyone in {0} (ex. 'Name1 and Name2').
+freeze_nobody_accepted:
+  line: "So, no cold sleep for anyone then, eh?\nWell, there's always tomorrow, I guess."
+  sprite: 0
+
+# Reacting to everyone rejecting their proposal to freeze all or none of the tied candidates.
+freeze_proposal_rejected:
+  line: "Welp, looks like my idea's a no-go.\nOh well, it's cool. No big deal."
+  sprite: 0
+
+# Last words before going off to cold sleep.
+cold_sleep:
+  line: "Damn... Well, see ya.\nI hate how you get super cold when cold sleep starts."
+  sprite: 6
+
+# Last words before going off to cold sleep, as Definite Enemy.
+cold_sleep_as_definite_enemy:
+  line: "Cold sleep, right? Yeah yeah, I got it.\nHaha, take care, you guys."
+  sprite: 1
+
+# Saying goodbye to {0} before they are sent to cold sleep.
+farewell_to_cold_sleeper:
+  line: "You go on and rest, {0}.\nWhen you wake up, this'll all be sorted."
+  sprite: 0
+
+# Proposing to the group to take turns saying 'I'm human'.
+sk_intui_say_human_proposal:
+  line: "..."
+  sprite: 0
+
+# Saying 'I'm human.'
+sk_intui_say_human_yes_im_human:
+  line: "Yeah, I'm, uh...\nWell, I'm not Gnosia, anyway."
+  sprite: 3
+
+# Telling {0} to stop the round of 'I'm human'.
+sk_intui_say_human_stop_it:
+  line: "C'mon now...\nThat's not somethin' you force people to say."
+  sprite: 2
+
+# Reaction when no one steps up to say 'I'm human'.
+sk_intui_say_human_no_one_responded:
+  line: "..."
+  sprite: 0
+
+# Reaction when some but not all step up to say 'I'm human'.
+sk_intui_say_human_some_responded:
+  line: "..."
+  sprite: 0
+
+# Reaction when all present step up to say 'I'm human'.
+sk_intui_say_human_all_responded:
+  line: "..."
+  sprite: 0
+
+# Reaction when {0} has stopped the round of 'I'm human'.
+sk_intui_say_human_stopped_reaction:
+  line: "..."
+  sprite: 0
+
+# Initiating small talk about food.
+sk_steal_small_talk_start_food:
+  line: "*Yaaawn*... Oh, sorry.\nI'm gettin' too hungry to stay awake."
+  sprite: 6
+
+# Initiating small talk about love and romance.
+sk_steal_small_talk_start_love:
+  line: "Oh yeah, I wanted to ask.\nYou guys got anyone who's really important to you?\nLike, someone you really wanna make happy, ya know?"
+  sprite: 0
+
+# Initiating small talk about scary stories.
+sk_steal_small_talk_start_scary:
+  line: "I don't think too hard about this stuff.\nThere's all kinds of things scarier than Gnosia, right?"
+  sprite: 0
+
+# Joining small talk about food.
+sk_steal_small_talk_join_food:
+  line: "Food, eh? Want me to whip somethin' up?\nI'm actually a pretty good cook."
+  sprite: 0
+
+# Joining small talk about love and romance.
+sk_steal_small_talk_join_love:
+  line: "For me, well, she's got this beautiful black hair...\nHaha, I guess I'll never see her again, but still..."
+  sprite: 3
+
+# Joining small talk about scary stories.
+sk_steal_small_talk_join_scary:
+  line: "Nothin' is scarier than a big mob of humans, ya know?"
+  sprite: 3
+
+# Telling {0} to stop the small talk conversation they started.
+sk_steal_small_talk_stop:
+  line: "{0}, let's talk about that later.\nThis ain't the time, eh?"
+  sprite: 5
+
+# Proposing to the group to freeze all with the role {0}.
+sk_logic_freeze_all_initial_proposal:
+  line: "..."
+  sprite: 0
+
+# Variant of initial proposal to freeze all with role {0}, where one or more of the people in that role are no longer present.
+sk_logic_freeze_all_initial_proposal_some_missing:
+  line: "..."
+  sprite: 0
+
+# Agreeing with {1}'s proposal to freeze all with role {0},which would be {2} people in total.
+sk_logic_freeze_all_agree:
+  line: "I really don't wanna have to sacrifice anyone, ya know?\nBut at this point... Yeah, I'm in."
+  sprite: 3
+
+# Disagreeing with {1}'s proposal to freeze all with role {0}.
+sk_logic_freeze_all_disagree:
+  line: "Hey, hold up.\nDoin' away with the real and the fakes all at once, that's just lazy."
+  sprite: 5
+
+# Agreeing with {2}, who disagreed with {1}'s proposal to freeze all with role {0}.
+sk_logic_freeze_all_disagree_followup:
+  line: "I feel bad for {1}.\nBut yeah, I don't think we should do it."
+  sprite: 2
+
+# Reaction to their proposal to freeze all with the {0} role being accepted.
+sk_logic_freeze_all_proposal_accepted:
+  line: "..."
+  sprite: 0
+
+# Reaction to their proposal to freeze all with the {0} role being rejected.
+sk_logic_freeze_all_proposal_denied:
+  line: "..."
+  sprite: 0
+
+# Proposing to the group to vote on {0}, based on {1}'s report that {0} was Gnosia.
+sk_logic_vote_proposal_from_eng_report:
+  line: "..."
+  sprite: 0
+
+# Proposing to the group to vote on {0}, based on their own engineer report that {0} was Gnosia.
+sk_logic_vote_proposal_with_self_basis:
+  line: "..."
+  sprite: 0
+
+# Proposing to the group to vote on {0}, based on the conclusion that they were Definite Enemy.
+sk_logic_vote_proposal_for_definite_enemy:
+  line: "..."
+  sprite: 0
+
+# Informing {1} that they incorrectly claimed the engineer reported {0} was Gnosia.
+sk_logic_vote_point_out_mistake:
+  line: "Hey, nobody mentioned this, eh?\nHaha, looks like {1} is confused."
+  sprite: 1
+
+# Supporting {1}'s proposal to vote on {0}.
+sk_logic_vote_agree:
+  line: "Hey, {0}.\nSleepin' is better than gettin' eyeballed, ya know?"
+  sprite: 0
+
+# Rejecting {1}'s proposal to vote on {0} (themselves).
+sk_logic_vote_defend_self:
+  line: "I got no problem goin' to sleep.\nBut, ya know... Is this really the way to go?"
+  sprite: 5
+
+# Rejecting {1}'s proposal to vote on {0}.
+sk_logic_vote_disagree:
+  line: "I get that {0} might be Gnosia.\nBut still... I can't abide."
+  sprite: 5
+
+# Agreeing with {2}, who disagreed with {1}'s proposal to vote out {0}.
+sk_logic_vote_disagree_also:
+  line: "Let's take it easy.\nLet's choose what we wanna do, not \"should\" do."
+  sprite: 0
+
+# Proposing to the group to not vote on {0} and prioritize a different target.
+sk_logic_dont_vote_proposal:
+  line: "..."
+  sprite: 0
+
+# Supporting {1}'s proposal not to vote on {0}.
+sk_logic_dont_vote_agree:
+  line: "Don't vote against {0}?\nYeah, that's fine by me."
+  sprite: 0
+
+# Rejecting {1}'s proposal to not vote on {0}.
+sk_logic_dont_vote_disagree:
+  line: "Sorry, {1}.\nI'll decide my vote on my own."
+  sprite: 3
+
+# Agreeing with {2}, who disagreed with {1}'s proposal to not vote out {0}.
+sk_logic_dont_vote_disagree_also:
+  line: "Haha, c'mon, let's stop this.\nTellin' people to vote, not to vote, whatever."
+  sprite: 1
+
+# Asking {0} to be collaborators.
+sk_charm_collab_proposal:
+  line: "Hey, {0}. I trust ya.\nSo how 'bout you trust me, too?\nHaha, every little bit helps, eh?"
+  sprite: 0
+
+# Accepting {0}'s proposal to collaborate.
+sk_charm_collab_accept:
+  line: "Haha, thanks, {0}.\nOK then, I'm gonna trust you, too."
+  sprite: 1
+
+# Declining {0}'s proposal to collaborate.
+sk_charm_collab_decline:
+  line: "Hey now, {0}. You're givin' me too much credit.\nI mean, I don't even trust myself that much, ya know?"
+  sprite: 5
+
+# Suggest that everyone should agree with {0}.
+sk_charm_seek_agreement:
+  line: "..."
+  sprite: 0
+
+# Prevent the group from objecting to {0}.
+sk_chari_block_argument:
+  line: "..."
+  sprite: 0
+
+# Emphasizing {0}'s statement that {1} is suspicious.
+sk_perfo_exaggerate_doubt:
+  line: "..."
+  sprite: 0
+
+# Emphasizing {0}'s statement that {1} can be trusted.
+sk_perfo_exaggerate_cover:
+  line: "..."
+  sprite: 0
+
+# {1} expressed trust in {0}, and then {2} disagreed. Emphasizing {2}'s counter-argument against {1}, ultimately saying that {0} is not trustworthy.
+sk_perfo_exaggerate_support_counter:
+  line: "..."
+  sprite: 0
+
+# Emphasizing {0}'s statement not to vote for {1}.
+sk_perfo_exaggerate_dont_vote:
+  line: "..."
+  sprite: 0
+
+# Changing the subject to a distracting topic, to divert attention away.
+sk_steal_obfuscate:
+  line: "..."
+  sprite: 0
+
+# After being doubted by {0}, reflecting their words back at them to suggest they are the more suspicious one.
+sk_perfo_retaliate:
+  line: "..."
+  sprite: 0
+
+# Evoking extreme pity in the group in response to being doubted.
+sk_charm_regret:
+  line: "..."
+  sprite: 0
+
+# Asking {0} to help in the current round of discussion.
+sk_perfo_seek_help:
+  line: "..."
+  sprite: 0
+
+# Refusing to help {0} after being asked to bail them out.
+sk_perfo_seek_help_reaction:
+  line: "Sorry, {0}...\nI can't help ya."
+  sprite: 3
+
+# Pointing out to the group that {0} is clearly lying.
+sk_intui_dont_be_fooled:
+  line: "Yeah, of course you'd say that...\n{0}... You can't fool us that easily, we ain't blind."
+  sprite: 5
+
+# Attempting to talk their way out of cold sleep.
+sk_stealth_grovel:
+  line: "..."
+  sprite: 0
+
+# Reacting to {0}'s attempt to beg their way out of cold sleep.
+sk_stealth_grovel_reaction:
+  line: "Look... I don't care either way.\nSo what're we gonna do?"
+  sprite: 3
+
+# Nighttime chatter when the player, {0}, is a friend and has high internal trust (F>0.5, T>0.75).
+night_friend_and_high_trust:
+  line: "Look, to be honest...\nI'm thankful to have ya on this ship."
+  sprite: 3
+
+# Nighttime chatter when the player, {0}, is a friend, but doesn't have a high internal trust (F>0.5, 0<T<0.75).
+night_friend_and_maybe_trusted:
+  line: "I got no idea how things'll turn out, but...\nYou, uh... Haha, nope.\nNo need to get all dark now."
+  sprite: 3
+
+# Nighttime chatter when the player, {0}, is not quite a friend and does not have high internal trust (0.15<F<0.5, 0.25<T).
+night_maybe_friend_and_maybe_trusted:
+  line: "I got no idea whether you're human or not.\nBut either way, I kinda like ya."
+  sprite: 0
+
+# Nighttime chatter when the player, {0}, is not a close friend and is not trusted (-0.5<F<0.5, T<0.25).
+night_maybe_friend_and_not_trusted:
+  line: "This'll sound harsh, but...\nYou're lookin' pretty sketchy, eh?\nYou better be careful, now."
+  sprite: 5
+
+# Nighttime chatter when the player, {0}, is somewhat of a friend and is somewhat trusted (-0.15<F<0.15, 0.25<T).
+night_not_friend_and_maybe_trusted:
+  line: "{0}, huh? You human or what?\nI, uh... Well, let's just see."
+  sprite: 3
+
+# Nighttime chatter when the player, {0}, is not a friend, but their internal trust is not necessarily low (F<-0.15, 0.25 < T)
+night_really_not_friend_and_maybe_trusted:
+  line: "I'm no good with this kinda thing.\nI don't wanna doubt you, but, ya know..."
+  sprite: 3
+
+# Nighttime chatter when the player, {0}'s friend score is incredibly low (F<-0.5).
+night_definitely_not_friend:
+  line: "Ah... Sorry.\nI kinda got somethin' I gotta take care of."
+  sprite: 2
+
+# Nighttime chatter with the player, {0}, while the character is a known Definite Enemy.
+night_char_definite_enemy:
+  line: "Haha, well, you keep on survivin', eh?"
+  sprite: 1
+
+# Nighttime chatter with the player, {0}, while the player is a known Definite Enemy.
+night_player_definite_enemy:
+  line: "C'mon, don't make that face..."
+  sprite: 3
+
+# Nighttime chatter when both the player ({0}) and character are Gnosia, and the player has been labelled as Definite Enemy.
+night_player_is_def_enemy_both_gnosia:
+  line: "What's wrong? Got somethin' you wanna say?\nDunno if it'll change anything though, haha."
+  sprite: 1
+
+# Nighttime chatter when the character and player ({0}) have made opposing claims.
+night_opposing_claim:
+  line: "I guess only one of us'll survive, you or me...\nWell then, go easy on me, eh?"
+  sprite: 0
+
+# Nighttime chatter when both the player ({0}) and character are Definite Human.
+night_both_definite_human:
+  line: "Hey, you and me are both human.\nHaha, good thing we don't have to fight it out, eh?"
+  sprite: 1
+
+# Nighttime chatter when the player ({0}) is Definite Human.
+night_player_definite_human:
+  line: "Honestly, I'm glad you're human.\nFeels weird to say it, but... Keep havin' my back, eh?"
+  sprite: 0
+
+# Nighttime chatter with the player, {0}, when this character is Definite Human.
+night_char_def_human:
+  line: "Hey, {0}. What're we gonna do?\nWell, whatever happens, I won't blame ya."
+  sprite: 0
+
+# Nighttime chatter when both the player ({0}) and character are Gnosia (different from the 'who to kill' event').
+night_both_gnosia:
+  line: "So it's about time, eh?\nFine by me. That's just how we live."
+  sprite: 3
+
+# Nonsensical statement when the game logic is irrevocably broken. {0} = Player name
+time_clam:
+  line: "Don't get all weird, now.\nHaha, gotta keep workin'!"
+  sprite: 1
+
+# Night conversation that the character has discovered a liar. {0} = Player name, {1} = Target name.
+# Add 100 to the sprite index to trigger the sound effect.
+multiline_night_liar_found:
+  lines:
+    - line: "Things're tough for Gnosia, too.\nGotta keep lyin' in front of everyone and whatnot."
+      sprite: 5
+    - line: "C'mon, even I noticed.\n{1}... was lying through their teeth."
+      sprite: 103
+    - line: "Ah jeez, haha.\nWe gotta hurry up and end this."
+      sprite: 1
+
+
+# Follow-up if the player has voted out the selected liar. {0} = Player name, {1} = Target name.
+multiline_liar_found_followup:
+  lines:
+    - line: "We gotta do what we gotta do, be it {1}, or whoever..."
+      sprite: 2
+    - line: "Nobody cons people cuz they wanna, ya know?\nAt least, I wanna think so..."
+      sprite: 3
+
+
+# Night conversation if the character wishes to team up. {0} = Player name..
+# Add 100 to the sprite index to trigger the sound effect.
+multiline_night_lets_collaborate:
+  lines:
+    - line: "..."
+      sprite: 0
+
+
+# Night conversation if the player accepts the collaboration. {0} = Player name.
+multiline_night_lets_collaborate_accepted:
+  lines:
+    - line: "..."
+      sprite: 0
+
+
+# Night conversation if the player declines the collaboration. {0} = Player name.
+multiline_night_lets_collaborate_declined:
+  lines:
+    - line: "..."
+      sprite: 0
+
+
+# Night conversation with fellow Gnosia on who to eliminate. {0} = Player name, {1} = Target name.
+multiline_night_gnosia_lets_eliminate:
+  lines:
+    - line: "Havin' no choice but to eliminate humans, or whatever.\nIt's all just excuses."
+      sprite: 2
+    - line: "Haha, sorry...\nNow, who to take out tonight...?"
+      sprite: 1
+    - line: "Yeah... I'm thinkin' {1}, eh?\nJust a feelin' I got."
+      sprite: 0
+
+
+# Follow-up if the player elected to eliminate the given character. {0} = Player name, {1} = Target name.
+multiline_gnosia_lets_eliminate_followup:
+  lines:
+    - line: "({1}... \n I just hope ya make it here...)"
+      sprite: 3
+
+
+# Ending conversation when the character wins as a human with the player as collaborator.
+multiline_end_human_win_with_collaborator:
+  lines:
+    - line: "Hey.\nLooks like we made it somehow, eh?"
+      sprite: 0
+    - line: "To think what'd've have happened if {0} hadn't helped out...\nHaha, it's kinda scary, ya know?"
+      sprite: 1
+    - line: "Thanks, {0}.\nNow I really owe you one."
+      sprite: 0
+
+
+# Ending conversation when the character wins as a human with the player. Inside trust > 0.4
+multiline_end_human_win:
+  lines:
+    - line: "Alright, it's finally over.\n{0}, that was pretty rough, eh? Nice work."
+      sprite: 0
+
+
+# Ending conversation when the character wins as a human with the player, despite the character thinking the player was suspicious.
+multiline_end_human_win_not_trusted:
+  lines:
+    - line: "Well then.\nWhaddya know about that, eh?"
+      sprite: 5
+    - line: "Haha, sorry.\nTo be honest, I was kinda doubtin' ya there."
+      sprite: 1
+    - line: "Well, it's all over now.\nAll that back there... Water under the bridge, eh?"
+      sprite: 0
+
+
+# Ending conversation when the character wins as a human with the player, and their friend score is F>=0.25.
+multiline_end_human_win_somewhat_friends:
+  lines:
+    - line: "Alright, we managed to survive somehow.\nSo we got that goin' for us.\nNot all of us though, unfortunately."
+      sprite: 0
+
+
+# Ending conversation when the character wins as a human with the player, and their friend score is F<0.25.
+multiline_end_human_win_not_friends:
+  lines:
+    - line: "Yaaawn... Now I can finally sleep peacefully.\nOK, I'm off. See ya tomorrow, eh?"
+      sprite: 6
+
+
+# First of two ending conversations when the character and player are both Gnosia, and one or more Gnosia were put into cold sleep.
+multiline_end_gnosia_win_together_0:
+  lines:
+    - line: "Hey, nice work.\nLooks like a win, eh?"
+      sprite: 0
+
+
+# First of two ending conversations when the character and player are both Gnosia, and no Gnosia were put into cold sleep.
+multiline_end_gnosia_perfect_win_together_0:
+  lines:
+    - line: "Hey, that was kind of an easy win, eh?\nI thought it'd be a bit harder than that."
+      sprite: 1
+
+
+# Second of two ending conversations when the character and player are both Gnosia, and one or more Gnosia were put into cold sleep.
+multiline_end_gnosia_win_together_1:
+  lines:
+    - line: "Yaaawn... I got all comfy and let my guard down.\nTime to get me some sleep."
+      sprite: 6
+    - line: "Thanks, {0}..."
+      sprite: 3
+
+
+# Second of two ending conversations when the character and player are both Gnosia, and no Gnosia were put into cold sleep.
+multiline_end_gnosia_perfect_win_together_1:
+  lines:
+    - line: "Yeah, I know.\nIt's thanks to you I'm able to relax like this.\nThanks a lot, {0}."
+      sprite: 0
+    - line: "Haha, {0}.\nSure am glad you're on my side."
+      sprite: 1
+
+
+# Ending conversation when the character wins as an opposing Gnosia.
+# Add 100 to the sprite index to trigger the music.
+multiline_end_char_is_opposing_gnosia:
+  lines:
+    - line: "Hey, looks like it's over.\nI guess that's a win for the Gnosia, eh?"
+      sprite: 5
+    - line: "Well, I'm Gnosia, too.\nWhat, you hadn't figured that out...?"
+      sprite: 103
+    - line: "Looks like somebody got lucky.\nOh well. You did pretty good too, eh?"
+      sprite: 1
+
+
+# Ending conversation when the character wins as a Bug.
+# Add 100 to the sprite index to trigger the music.
+multiline_end_char_is_bug:
+  lines:
+    - line: "Sorry, {0}.\nIt's all over for this here universe."
+      sprite: 2
+    - line: "Welp, I'm actually a Bug.\nIt's not like I'm destroyin' the universe cuz I want to, ya know?"
+      sprite: 105
+    - line: "But hey, I realized awhile back.\nIt's about time, eh?"
+      sprite: 2
+    - line: "Yeah, it's a bit too late now.\nSo, ya know... Sorry."
+      sprite: 3
+
+
+# Ending conversation when the player is AC and the character wins as an allied Gnosia.
+# Add 100 to the sprite index to trigger the music.
+multiline_end_player_is_ac:
+  lines:
+    - line: "Hey, {0}. So it was you, eh?\nYup, I'm Gnosia, ya know?"
+      sprite: 100
+    - line: "Thanks...\nYou really put yourself out there for me."
+      sprite: 3
+
+
