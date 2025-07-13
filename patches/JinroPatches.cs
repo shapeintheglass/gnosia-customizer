@@ -77,15 +77,16 @@ namespace GnosiaCustomizer.patches
         {
             internal static bool Prefix(ref bool __result, int cid, Setting.SkillList skill)
             {
-                if (!SkillMap.ContainsKey(cid) || SkillMap[cid] == null || cid <= 0 || cid > Consts.NumCharacters)
-                {
-                    return true;
-                }
-
                 var gameData = Utils.GetGameDataViaReflection();
                 if (gameData == null)
                 {
                     return true;
+                }
+                var absoluteId = gameData.chara[cid].id;
+                if (!SkillMap.ContainsKey(absoluteId) || SkillMap[absoluteId] == null || absoluteId <= 0 || absoluteId > Consts.NumCharacters)
+                {
+                    Logger.LogError("GameData is null, cannot check skills.");
+                    return false;
                 }
 
                 var skillKey = "";
@@ -155,7 +156,7 @@ namespace GnosiaCustomizer.patches
                         __result = true;
                         return false;
                 }
-                var absoluteId = gameData.chara[cid].id;
+                
                 __result = SkillMap[absoluteId].Contains(skillKey);
                 return false;
             }
