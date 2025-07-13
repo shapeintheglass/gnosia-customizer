@@ -280,7 +280,7 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("cover_low_trust_variant_trusted", "Stating that {0} can be trusted. This can trigger when the character's true internal trust of {0} is high, and the odds may increase if the character as gnosia is vouching for a gnosia-aligned ally. This variant triggers when the persona trust between this character and {0} is T<0.45.", d["t_trust_r"][2]);
             contents += WriteDialogue("cover_together", "Agreeing with {1} that {0} can be trusted.", d["t_trust_t0"][0]);
             contents += WriteDialogue("cover_together_low_trust_variant", "Agreeing with {1} that {0} can be trusted. Variant that triggers when publicly-facing trust to {0} is less than 0.45.", d["t_trust_t1"][0]);
-            contents += WriteDialogue("definite_human_with_role", "Declaring that {0} is definitely the real {1} (Engineer/Doctor).", d["t_hosho"][0]);
+            contents += WriteDialogue("definite_human_with_role", "Declaring that {0} is definitely the {1} (Engineer/Doctor).", d["t_hosho"][0]);
             contents += WriteDialogue("definite_human", "Declaring that {0} is definitely human.", d["t_hosho"][1]);
             contents += WriteDialogue("definite_enemy_with_role", "Declaring that {0} is definitely not the real {1} (Engineer/Doctor).", d["t_hosho_enemy"][0]);
             contents += WriteDialogue("definite_enemy", "Declaring that {0} is definitely {1} (Gnosia).", d["t_hosho_enemy"][1]);
@@ -290,7 +290,7 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("definite_enemy_liar_not_gnosia", "Declaring that {0} is definitely a liar, but also not Gnosia.", d["t_hosho_enemy"][5]);
             contents += WriteDialogue("point_out_mistake", "Pointing out to {0} that they made an error in their Definite call.", d["t_hosho_miss"][0]);
             contents += WriteDialogue("thats_obvious", "Pointing out to {0} that their conclusion was so obvious it didn't need to be said.", d["t_hosho_miss"][1]);
-            contents += WriteDialogue("say_thanks_definite_human_with_role", "Thanking {0} for being recognized as the real {1}.", d["t_hosho_get"][0]);
+            contents += WriteDialogue("say_thanks_definite_human_with_role", "Thanking {0} for being recognized as {1} (Engineer/Doctor/human).", d["t_hosho_get"][0]);
             contents += WriteDialogue("definite_enemy_revealed", "Admitting that {0} was correct in calling them out as Definite Enemy.", d["t_hosho_get"][1]);
             contents += WriteDialogue("lets_vote_nothing_to_say", " Recognizing there's no need for discussion, skipping straight to the vote.", d["t_tohyo_go"][0]);
             contents += WriteDialogue("lets_vote", "Indicating that it is now time to vote.", d["t_tohyo_mae"][0]);
@@ -328,7 +328,7 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("sk_logic_freeze_all_agree", "Agreeing with {1}'s proposal to freeze all with role {0},which would be {2} people in total.", d["t_skill_roller"][1]);
             contents += WriteDialogue("sk_logic_freeze_all_disagree", "Disagreeing with {1}'s proposal to freeze all with role {0}.", d["t_skill_roller"][2]);
             contents += WriteDialogue("sk_logic_freeze_all_disagree_followup", "Agreeing with {2}, who disagreed with {1}'s proposal to freeze all with role {0}.", d["t_skill_roller"][3]);
-            contents += WriteDialogue("sk_logic_freeze_all_proposal_accepted", "Reaction to their proposal to freeze all with the {0} role being accepted.", d["t_skill_roller"][4]);
+            contents += WriteDialogue("sk_logic_freeze_all_proposal_accepted", "Reaction to at least one person agreeing with their proposal to freeze everyone with the {0} role.", d["t_skill_roller"][4]);
             contents += WriteDialogue("sk_logic_freeze_all_proposal_denied", "Reaction to their proposal to freeze all with the {0} role being rejected.", d["t_skill_roller"][5]);
             contents += WriteDialogue("sk_logic_vote_proposal_from_eng_report", "Proposing to the group to vote on {0}, based on {1}'s report that {0} was Gnosia.", d["t_skill_doTohyo"][0]);
             contents += WriteDialogue("sk_logic_vote_proposal_with_self_basis", "Proposing to the group to vote on {0}, based on their own engineer report that {0} was Gnosia.", d["t_skill_doTohyo"][1]);
@@ -349,7 +349,7 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("sk_chari_block_argument", "Prevent the group from objecting to {0}.", d["t_skill_t_hanronKinshi"][0]);
             contents += WriteDialogue("sk_perfo_exaggerate_doubt", "Emphasizing {0}'s statement that {1} is suspicious.", d["t_skill_t_kyakushoku"][0]);
             contents += WriteDialogue("sk_perfo_exaggerate_cover", "Emphasizing {0}'s statement that {1} can be trusted.", d["t_skill_t_kyakushoku"][1]);
-            contents += WriteDialogue("sk_perfo_exaggerate_support_counter", "{1} expressed trust in {0}, and then {2} disagreed. Emphasizing {2}'s counter-argument against {1}, ultimately saying that {0} is not trustworthy.", d["t_skill_t_kyakushoku"][2]);
+            contents += WriteDialogue("sk_perfo_exaggerate_support_counter", "{2} expressed trust in {0}, and then {1} disagreed. Emphasizing {1}'s counter-argument against {2}, ultimately saying that {0} is not trustworthy.", d["t_skill_t_kyakushoku"][2]);
             contents += WriteDialogue("sk_perfo_exaggerate_dont_vote", "Emphasizing {0}'s statement not to vote for {1}.", d["t_skill_t_kyakushoku"][3]);
             contents += WriteDialogue("sk_steal_obfuscate", "Changing the subject to a distracting topic, to divert attention away.", d["t_skill_h_uyamuya"][0]);
             contents += WriteDialogue("sk_perfo_retaliate", "After being doubted by {0}, reflecting their words back at them to suggest they are the more suspicious one.", d["t_skill_h_hangeki"][0]);
@@ -372,7 +372,7 @@ namespace GnosiaCustomizer.utils
             contents += WriteDialogue("night_opposing_claim", "Nighttime chatter when the character and player ({0}) have made opposing claims.", personalArray[0][2]);
             contents += WriteDialogue("night_both_definite_human", "Nighttime chatter when both the player ({0}) and character are Definite Human.", personalArray[0][3]);
             contents += WriteDialogue("night_player_definite_human", "Nighttime chatter when the player ({0}) is Definite Human.", personalArray[0][4]);
-            contents += WriteDialogue("night_char_def_human", "Nighttime chatter with the player, {0}, when this character is Definite Human.", personalArray[0][10]);
+            contents += WriteDialogue("night_char_def_human", "Nighttime chatter when this character is collaborating with the player {0}.", personalArray[0][10]);
             contents += WriteDialogue("night_both_gnosia", "Nighttime chatter when both the player ({0}) and character are Gnosia (different from the 'who to kill' event').", personalArray[0][9]);
             contents += WriteDialogue("time_clam", "Nonsensical statement when the game logic is irrevocably broken. {0} = Player name", personalArray[0][11]);
 
