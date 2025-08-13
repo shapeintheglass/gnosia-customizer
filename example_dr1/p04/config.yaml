@@ -50,7 +50,7 @@ known_skills:
   charisma_seek_agreement: false
   charisma_block_argument: false
   intuition_say_human: false
-  intuition_dont_be_fooled: false
+  intuition_dont_be_fooled: true
   charm_regret: false
   charm_collaborate: false
   logic_vote: true
@@ -58,7 +58,7 @@ known_skills:
   logic_definite_human_or_enemy: true
   logic_definite_ac: true
   logic_definite_bug: true
-  logic_freeze_all: true
+  logic_freeze_all: false
   perform_retaliate: false
   perform_seek_help: true
   perform_exaggerate: false
@@ -76,58 +76,58 @@ known_skills:
 
 # Statement at the start of the round.
 opening_statement:
-  line: "We must identify the Gnosia in our group, no matter what.\nBe careful, everyone."
+  line: "Then we must identify the Gnosia in our group, no matter what. Be careful."
   sprite: 1
 
 # Mourning the loss of {0} during the night phase.
 opening_remarks_condolences:
-  line: "{0}...! Who could have done this...?"
+  line: "{0}! Who could have done this...?"
   sprite: 3
 
 # Celebrating that no one disappeared last night.
 opening_remarks_no_deaths:
-  line: "Good morning.\nI'm happy to see that you're all unharmed."
+  line: "Good morning. It seems we are all unharmed."
   sprite: 6
 
 # Reacting to the deaths of {0} ('Name1 and Name2') during the night phase. One of them was the bug, eliminated by the Engineer.
 opening_remarks_two_deaths:
-  line: "To lose {0} like this...!\nBut we cannot forget, this means that one of them was the Bug."
+  line: "We must continue on, for {0}..."
   sprite: 3
 
 # Requesting that whoever has the role of {0} step forward.
 step_forward:
-  line: "First, we need to gather information.\nCould the {0} please step forward?"
-  sprite: 0
+  line: "Step forward, {0}. It would be best to reveal yourself now."
+  sprite: 9
 
 # First person to reveal role as {0} ('Engineer'). They can investigate one person every night.
 reveal_role_engineer:
-  line: "Yes, I am the {0}.\nI can determine if an individual is Gnosia, although only once per night."
-  sprite: 6
+  line: "It seems I am the {0}, which means I will be the one to identify the Gnosia."
+  sprite: 5
 
 # Counter-claiming {1} for the role of {0} ('Engineer').
 reveal_own_role_engineer:
-  line: "What...? But I am the only {0}!\nWhy would you lie like this...?"
-  sprite: 4
+  line: "This isn't good. {1} must be lying because I am the real {0}."
+  sprite: 2
 
 # Revealing role as {0} ('Engineer') while also stating {1} is Gnosia.
 reveal_role_engineer_with_gnosia_result:
-  line: "I'm sad to say it, but...\nAs {0}, I must tell you that {1} is Gnosia."
+  line: "It saddens me to say it, but it is my duty as {0}.\n{1} is no longer one of us. They are... Gnosia."
   sprite: 3
 
 # First to reveal role as {0} ('Doctor'). They can investigate whoever was put into cold sleep the previous night.
 reveal_role_doctor:
-  line: "As {0}, I can determine if someone is Gnosia.\nHowever, this is only possible for those in cold sleep."
+  line: "As {0}, I will know if the ones we put into cold sleep are Gnosia or Human."
   sprite: 0
 
 # Counter-claiming {1} for the role of {0} ('Doctor').
 reveal_own_role_doctor:
-  line: "No, I am the {0}!\nThere must be something wrong with {1}..."
-  sprite: 3
+  line: "How odd... I am the {0}, so why would {1} lie like this?"
+  sprite: 1
 
 # Revealing role as {0} ('Doctor') while also stating the person {1} was Gnosia.
 reveal_role_doctor_with_gnosia_result:
-  line: "I am the {0}.\nWhen I examined those in cold sleep, I found that {1} was Gnosia."
-  sprite: 1
+  line: "We are moving closer to our goal.\nAs {0}, I can inform you that {1} was Gnosia."
+  sprite: 0
 
 # First to reveal role as {0} ('Guard Duty'). The other person on guard duty will corroborate this.
 reveal_role_guard_duty:
@@ -146,28 +146,28 @@ reveal_role_guardian_angel:
 
 # Reacting to {1} being the sole claimant to the role of {0} (i.e. they're the genuine {0}).
 step_forward_1_claim_reaction:
-  line: "I look forward to your results, {0} {1}."
+  line: "I look forward to your results, {1}."
   sprite: 6
 
 # Reacting to {1} ('Name1 and Name2') being two claimants to the role of {0}.
 step_forward_2_claims_reaction:
-  line: "Then we look forward to your results, {0}s {1}.\nThe truth will be revealed in time."
-  sprite: 9
+  line: "Then we look forward to your results.\nThe truth will be revealed in time."
+  sprite: 5
 
 # Reacting to {1} ('Name1, Name2, and Name3') being three or more claimants to the role of {0}.
 step_forward_3_claims_reaction:
-  line: "Then we look forward to your results, {0}s {1}.\nThe truth will be revealed in time."
-  sprite: 8
+  line: "It seems this will be difficult..."
+  sprite: 9
 
 # Asking for any Engineer/Doctor who hasn't spoken yet to present their report.
 request_report:
-  line: "Please give us your reports.\nYour information will be a vital weapon against the Gnosia."
+  line: "We must hear all the reports before we continue."
   sprite: 0
 
 # One of the Doctors/Engineers, named {0}, failed to present their report. This is very incriminating.
 request_report_no_response:
-  line: "{0}, why are you staying silent? Are you perhaps...?"
-  sprite: 4
+  line: "If silence is your answer, {0}, then you know how we will respond."
+  sprite: 2
 
 # The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {1}, and got the same result. {0} = the string 'Gnosia'.
 report_pt1_matching_result:
@@ -177,11 +177,11 @@ report_pt1_matching_result:
 # The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {0}, but got a different result. {0} = the string 'Gnosia'.
 report_pt1_conflicting_result:
   line: "No... that isn't what I observed.\n"
-  sprite: 5
+  sprite: 2
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.
 report_engineer_pt1_target_killed:
-  line: "I was... too late, but...\n"
+  line: "I was too late, but...\n"
   sprite: 3
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}.
@@ -201,7 +201,7 @@ report_engineer_pt2_gnosia_result:
 
 # As Engineer, the second sentence of their report that {1} was {0} (Gnosia).
 report_engineer_pt2_human_result:
-  line: "{1} is human. Not {0}."
+  line: "{1} is human."
   sprite: 6
 
 # As Engineer, stating that they did not investigate anyone as there were no more valid targets to examine.
@@ -266,7 +266,7 @@ report_doctor_pt2_oops_all_humans_result:
 
 # Only spoken on day one. They technically trust {0}, but also believe they are suspicious.
 doubt_day_one:
-  line: "There isn't much information to go on...\nHowever, {0} has seemed... strange, to me."
+  line: "There isn't much information to go on...\nHowever, {0} has seemed strange to me."
   sprite: 1
 
 # {0} is generically suspicious.
@@ -436,12 +436,12 @@ join_argument_high_trust_variant:
 
 # Attempt to defend against a weak accusation.
 refute_weak_doubt:
-  line: "I understand. It's only natural to suspect someone like me..."
-  sprite: 3
+  line: "I understand. It's only natural to suspect someone like me."
+  sprite: 5
 
 # Attempt to defend against an accusation with strong basis.
 refute_strong_doubt:
-  line: "Was there anything else you had to say...?"
+  line: "Was there anything else you had to say?"
   sprite: 2
 
 # Defending {0} from {1}'s statement.
@@ -451,7 +451,7 @@ defend_generic:
 
 # Defending {0} from {1}'s statement. Trusts {0} more than {1}.
 defend_trusted_target:
-  line: "So...? We shouldn't be so quick to distrust others, {1}."
+  line: "No... We shouldn't be so quick to distrust others, {1}."
   sprite: 2
 
 # Defending {0} from {1}'s statement. Persona trust of {0} is low.
@@ -656,7 +656,7 @@ cold_sleep_as_definite_enemy:
 
 # Saying goodbye to {0} before they are sent to cold sleep.
 farewell_to_cold_sleeper:
-  line: "You'll be safe, {0}.\nI'll make sure no harm comes to anyone we put into cold sleep."
+  line: "You'll be safe, {0}. I'll make sure no harm comes to you."
   sprite: 9
 
 # Proposing to the group to take turns saying 'I'm human'.
@@ -756,7 +756,7 @@ sk_logic_freeze_all_disagree_followup:
 
 # Reaction to their proposal to freeze all with the {0} role being accepted.
 sk_logic_freeze_all_proposal_accepted:
-  line: "Then we will proceed with the plan to freeze the {0}s."
+  line: "Very well. For those who agreed, we will focus on the {0}s first."
   sprite: 9
 
 # Reaction to their proposal to freeze all with the {0} role being rejected.
@@ -831,7 +831,7 @@ sk_charm_collab_proposal:
 
 # Accepting {0}'s proposal to collaborate.
 sk_charm_collab_accept:
-  line: "...I accept."
+  line: "I accept."
   sprite: 0
 
 # Declining {0}'s proposal to collaborate.
@@ -861,7 +861,7 @@ sk_perfo_exaggerate_cover:
 
 # {1} expressed trust in {0}, and then {2} disagreed. Emphasizing {2}'s counter-argument against {1}, ultimately saying that {0} is not trustworthy.
 sk_perfo_exaggerate_support_counter:
-  line: "I also cannot agree with {1}.\nThere's something about {0} that isn't right to me..."
+  line: "..."
   sprite: 3
 
 # Emphasizing {0}'s statement not to vote for {1}.

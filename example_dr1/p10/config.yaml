@@ -47,24 +47,24 @@ abilityMax:
 # Skills the character is capable of using. If a skill is not present here, false is assumed.
 known_skills:
   charisma_step_forward: true
-  charisma_seek_agreement: true
+  charisma_seek_agreement: false
   charisma_block_argument: false
-  intuition_say_human: true
+  intuition_say_human: false
   intuition_dont_be_fooled: false
-  charm_regret: false
+  charm_regret: true
   charm_collaborate: false
-  logic_vote: true
+  logic_vote: false
   logic_dont_vote: false
-  logic_definite_human_or_enemy: true
-  logic_definite_ac: true
-  logic_definite_bug: true
+  logic_definite_human_or_enemy: false
+  logic_definite_ac: false
+  logic_definite_bug: false
   logic_freeze_all: false
   perform_retaliate: false
-  perform_seek_help: false
-  perform_exaggerate: true
+  perform_seek_help: true
+  perform_exaggerate: false
   stealth_obfuscate: true
   stealth_small_talk: true
-  stealth_grovel: false
+  stealth_grovel: true
   night_liar_callout: true
   night_victim_request: true
   night_collaborate: true
@@ -150,7 +150,7 @@ step_forward_1_claim_reaction:
 
 # Reacting to {1} ('Name1 and Name2') being two claimants to the role of {0}.
 step_forward_2_claims_reaction:
-  line: "So between {1}, one of them is telling the truth, and the other one wants to eat my brains. Alright..."
+  line: "Let me get this straight. Between {1}, at least one of them wants to eat my brains. Alright..."
   sprite: 9
 
 # Reacting to {1} ('Name1, Name2, and Name3') being three or more claimants to the role of {0}.
@@ -175,7 +175,7 @@ report_pt1_matching_result:
 
 # The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {0}, but got a different result. {0} = the string 'Gnosia'.
 report_pt1_conflicting_result:
-  line: "Did you forget to calibrate your EMF detector? That's a common mistake...\n"
+  line: "Did you mis-calibrate your alien detector? That's a rookie mistake...\n"
   sprite: 5
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.
@@ -290,7 +290,7 @@ doubt_too_quiet:
 
 # Probabilistically, {0} is likely suspicious.
 doubt_prob:
-  line: "My crystal ball is telling me to be careful about {0}."
+  line: "I'm picking up some signs that we should watch out for {0}."
   sprite: 5
 
 # Once trusted {0}, but are now suspicious of them.
@@ -585,7 +585,7 @@ lets_vote:
 
 # Acknowledging that {0} (multiple names) have tied, and that we must vote again.
 lets_vote_tiebreaker:
-  line: "Now we just choose between {0}!"
+  line: "It's a battle between {0}! Fight!"
   sprite: 2
 
 # Reaction to a second tie when voting.
@@ -650,8 +650,8 @@ cold_sleep:
 
 # Last words before going off to cold sleep, as Definite Enemy.
 cold_sleep_as_definite_enemy:
-  line: "We'll meet again... in another life!"
-  sprite: 8
+  line: "Yeah, yeah, I get it. Here I go, I guess..."
+  sprite: 16
 
 # Saying goodbye to {0} before they are sent to cold sleep.
 farewell_to_cold_sleeper:
@@ -705,8 +705,8 @@ sk_steal_small_talk_start_love:
 
 # Initiating small talk about scary stories.
 sk_steal_small_talk_start_scary:
-  line: "Sweet Jesus, Buddha, and Persephone!\nDid anyone else feel a ghost pass by just now?!"
-  sprite: 3
+  line: "Sweet Jesus, did anyone else feel a ghost pass by just now?!"
+  sprite: 12
 
 # Joining small talk about food.
 sk_steal_small_talk_join_food:
@@ -860,7 +860,7 @@ sk_perfo_exaggerate_cover:
 
 # {1} expressed trust in {0}, and then {2} disagreed. Emphasizing {2}'s counter-argument against {1}, ultimately saying that {0} is not trustworthy.
 sk_perfo_exaggerate_support_counter:
-  line: "Yeah, you wouldn't know an alien even if it bit you in the butt, {1}!"
+  line: "Yeah, you wouldn't know an alien even if {1} bit you in the butt!\nActually, who am I agreeing with again?"
   sprite: 2
 
 # Emphasizing {0}'s statement not to vote for {1}.
@@ -991,10 +991,12 @@ time_clam:
 # Night conversation that the character has discovered a liar. {0} = Player name, {1} = Target name.# Add 100 to the sprite index to trigger the sound effect.
 multiline_night_liar_found:
   lines:
-    - line: "Check this out, I found a tarot deck!\nIt's not really my style, but I did a reading for {1} cuz they were freaking me out earlier."
+    - line: "Check this out, I found a tarot deck!"
+      sprite: 6
+    - line: "It's not really my style, but I did a reading for {1} cuz they were freaking me out earlier."
       sprite: 5
-    - line: "I drew... the Eight of Cups, the Moon, and the Seven of Swords!\nThat basically screams, \"Yep, {1}'s an alien!\""
-      sprite: 104
+    - line: "Anyways, the reading basically screamed \"Yep, {1}'s an alien!\""
+      sprite: 103
     - line: "Come on {0}, let's take 'em down!"
       sprite: 17
 
@@ -1124,7 +1126,7 @@ multiline_end_char_is_opposing_gnosia:
     - line: "Hey {0}! Wanna get your fortune read? Snap a photo of Bigfoot?\nBuy an artifact? Hit the hay?"
       sprite: 6
     - line: "Jeez, you're so gullible. Did you really fall for all of that?"
-      sprite: 100
+      sprite: 106
     - line: "I guess it's unfair when you're up against fate.\nYou're not going to like what's going to happen next."
       sprite: 7
 

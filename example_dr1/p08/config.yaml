@@ -76,138 +76,138 @@ known_skills:
 
 # Statement at the start of the round.
 opening_statement:
-  line: "OK! So, who's the liar, huh?\nWatch out, I'm gonna find you!"
-  sprite: 6
+  line: "I guess I understand. It won't be that hard to find the Gnosia, right?"
+  sprite: 13
 
 # Mourning the loss of {0} during the night phase.
 opening_remarks_condolences:
-  line: "Oh, {0}... Nope, we gotta try and stay positive!"
-  sprite: 6
+  line: "It's just so sudden... Why did we have to lose {0} now?"
+  sprite: 17
 
 # Celebrating that no one disappeared last night.
 opening_remarks_no_deaths:
-  line: "Hey, everyone's OK! Awesome!"
-  sprite: 0
+  line: "Hey everyone! Did you get a good night's sleep?"
+  sprite: 11
 
 # Reacting to the deaths of {0} ('Name1 and Name2') during the night phase. One of them was the bug, eliminated by the Engineer.
 opening_remarks_two_deaths:
-  line: "{0}... Just, why...?\nTwo at once, that's against the rules...!"
-  sprite: 2
+  line: "How could they just take {0} away from us? It's not fair!"
+  sprite: 10
 
 # Requesting that whoever has the role of {0} step forward.
 step_forward:
-  line: "Who's the {0} again?\nHuh? Didn't they already come forward?"
+  line: "So... we do have the {0} here, right?"
   sprite: 4
 
 # First person to reveal role as {0} ('Engineer'). They can investigate one person every night.
 reveal_role_engineer:
-  line: "I'm gonna find that Gnosia myself! Hehe, sounds cool, right?\nHehe, well I am the {0}, you know! But I'm bad with machines!"
-  sprite: 6
+  line: "Take it easy on me, okay? This is my first time as an {0}."
+  sprite: 1
 
 # Counter-claiming {1} for the role of {0} ('Engineer').
 reveal_own_role_engineer:
-  line: "Hey wait a minute, {1}...\nThe {0} is me!"
-  sprite: 4
+  line: "There's no way that's true.\nI'm the only {0}, so {1} must be lying."
+  sprite: 2
 
 # Revealing role as {0} ('Engineer') while also stating {1} is Gnosia.
 reveal_role_engineer_with_gnosia_result:
-  line: "Well, I'm the {0} and {1} is Gnosia.\nThat's what the machine said."
-  sprite: 0
+  line: "We need to get rid of {1} right now, you guys!\nI'm the {0}, so I know for a fact they're Gnosia!"
+  sprite: 23
 
 # First to reveal role as {0} ('Doctor'). They can investigate whoever was put into cold sleep the previous night.
 reveal_role_doctor:
-  line: "Lemme put this out there. The {0} is me.\nIf anyone goes into cold sleep, I'm gonna check you out!"
-  sprite: 0
+  line: "Well, I only have basic CPR training, but I guess that qualifies me to be the {0}."
+  sprite: 13
 
 # Counter-claiming {1} for the role of {0} ('Doctor').
 reveal_own_role_doctor:
-  line: "Oh OK, so {1} is definitely dangerous then.\nI mean, I'm supposed to be the only {0} on this ship."
-  sprite: 4
+  line: "Don't believe that! I'm supposed to be the only {0} here."
+  sprite: 21
 
 # Revealing role as {0} ('Doctor') while also stating the person {1} was Gnosia.
 reveal_role_doctor_with_gnosia_result:
-  line: "Oh yeah. I'm the {0}, by the way.\n{1} was Gnosia. Their brain was all... ew."
-  sprite: 4
+  line: "I do have some news... {1} was definitely Gnosia.\nI figured I might as well tell you guys I'm the {0}."
+  sprite: 8
 
 # First to reveal role as {0} ('Guard Duty'). The other person on guard duty will corroborate this.
 reveal_role_guard_duty:
-  line: "So, the Gnosia infection happened at the last station, right?\nThen it couldn't be me. I never left the ship.\nSorry if it sounds like I'm cheating or something..."
+  line: "Don't look at me. I was one of the two on {0}, so there's no way we're Gnosia."
   sprite: 5
 
 # Corroborating {1}'s claim of being {0} ('Guard Duty').
 reveal_role_guard_duty_response:
-  line: "I stayed on the ship, too, so I can alibi for {1}.\nWait... Is that how you use the word \"alibi\"?"
-  sprite: 0
+  line: "Yep! I was there with {1} the whole time."
+  sprite: 11
 
 # First to reveal role as {0} ('Guardian Angel').
 reveal_role_guardian_angel:
-  line: "I'm actually the {0}.\nI've been secretly looking after you guys."
-  sprite: 0
+  line: "Alright! I'll be watching over you guys, okay?"
+  sprite: 23
 
 # Reacting to {1} being the sole claimant to the role of {0} (i.e. they're the genuine {0}).
 step_forward_1_claim_reaction:
-  line: "{0}? It's {1}? Hm."
-  sprite: 4
+  line: "No one else came forward, so {1} really is the {0}, right?"
+  sprite: 22
 
 # Reacting to {1} ('Name1 and Name2') being two claimants to the role of {0}.
 step_forward_2_claims_reaction:
-  line: "Hehe, so {1}... one of them is lying, right?"
-  sprite: 6
+  line: "Are we sure there can't be two {0}s? They seemed pretty confident to me."
+  sprite: 2
 
 # Reacting to {1} ('Name1, Name2, and Name3') being three or more claimants to the role of {0}.
 step_forward_3_claims_reaction:
-  line: "Wait a sec, there's only one {0}, right?\nWhat a bunch of liars!"
-  sprite: 4
+  line: "Wait a second, isn't there only supposed to be one {0}? What happened?"
+  sprite: 14
 
 # Asking for any Engineer/Doctor who hasn't spoken yet to present their report.
 request_report:
-  line: "OK, so... Who else needs to report?"
-  sprite: 0
+  line: "Have we heard from everybody yet?"
+  sprite: 13
 
 # One of the Doctors/Engineers, named {0}, failed to present their report. This is very incriminating.
 request_report_no_response:
-  line: "No more reports? Then let's wrap this up.\nWhoever isn't reporting is hiding something."
-  sprite: 4
+  line: "That doesn't make any sense, {0}! Why aren't you saying something?"
+  sprite: 21
 
 # The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {1}, and got the same result. {0} = the string 'Gnosia'.
 report_pt1_matching_result:
-  line: "Welp, my report says the same thing.\n"
-  sprite: 0
+  line: "Hey, that's what I got too!\n"
+  sprite: 11
 
 # The first part of the report statement as a Doctor or Engineer who is following up after someone else's report. They examined the same person last night, {0}, but got a different result. {0} = the string 'Gnosia'.
 report_pt1_conflicting_result:
-  line: "Hold up, what're you even talking about?\n"
-  sprite: 2
+  line: "What? No, that's not right at all.\n"
+  sprite: 4
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.
 report_engineer_pt1_target_killed:
-  line: "They got taken out, but...\n"
-  sprite: 2
+  line: "Yeah, I looked at {1}.\n"
+  sprite: 13
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}.
 report_engineer_pt1:
-  line: "OK, time for my report.\n"
-  sprite: 0
+  line: "Here's my report!\n"
+  sprite: 23
 
 #  As {0} ('Engineer'), the first sentence of their report that they investigated a different target than what the other Engineer reported.
 report_engineer_pt1_different_target:
-  line: "OK then, here's my report.\n"
-  sprite: 0
+  line: "I thought I might try someone else.\n"
+  sprite: 3
 
 # As Engineer, the second sentence of their report that {1} was {0} (Gnosia).
 report_engineer_pt2_gnosia_result:
-  line: "I checked out {1}. Yup, {1} is {0}."
-  sprite: 5
+  line: "{1} is definitely {0}."
+  sprite: 14
 
 # As Engineer, the second sentence of their report that {1} was {0} (Human).
 report_engineer_pt2_human_result:
-  line: "I checked out {1}. Nothing weird. {1} isn't {0}."
+  line: "{1} isn't {0}. I think we're safe around them."
   sprite: 4
 
 # As Engineer, stating that they did not investigate anyone as there were no more valid targets to examine.
 report_engineer_no_result:
-  line: "Hehe, I didn't really know who to check out..."
-  sprite: 1
+  line: "But there's no one left to investigate..."
+  sprite: 3
 
 # # As Doctor, the first sentence of their report that they investigated the people who were in cold sleep last night.
 # {0} = "Gnosia"
@@ -217,8 +217,8 @@ report_engineer_no_result:
 # {4} = "was"/"were" for plural handling
 # {5} = "wasn't"/"weren't" for plural handling
 report_doctor_pt1:
-  line: "OK, here goes my doctor's report!\n"
-  sprite: 0
+  line: "Here's my Doctor report!\n"
+  sprite: 6
 
 # As Doctor, the second part of their report stating that they found {1} to be {0} (Gnosia).
 # {0} = "Gnosia"
@@ -228,7 +228,7 @@ report_doctor_pt1:
 # {4} = "was"/"were" for plural handling
 # {5} = "wasn't"/"weren't" for plural handling
 report_doctor_pt2_single_gnosia_result:
-  line: "{1} {3} {0}. Hehe, nailed it!"
+  line: "{1} {3} definitely {0}."
   sprite: 0
 
 # As Doctor, the second part of their report stating that they found {1} to NOT be {0} (Gnosia).
@@ -239,7 +239,7 @@ report_doctor_pt2_single_gnosia_result:
 # {4} = "was"/"were" for plural handling
 # {5} = "wasn't"/"weren't" for plural handling
 report_doctor_pt2_single_human_result:
-  line: "{1} went into cold sleep, but we were wrong.\nTurned out not to be {0}."
+  line: "{1} turned out not to be {0}."
   sprite: 3
 
 # As Doctor, the second part of the report stating that among {1} (names of those in cold sleep), {2} (names of the Gnosia) were {0} (Gnosia).
@@ -250,8 +250,8 @@ report_doctor_pt2_single_human_result:
 # {4} = "was"/"were" for plural handling
 # {5} = "wasn't"/"weren't" for plural handling
 report_doctor_pt2_multiple_gnosia_result:
-  line: "So yesterday, {1} went into cold sleep.\n{2} {4} {0}."
-  sprite: 4
+  line: "{1} went into cold sleep yesterday, right?\n{2} {4} {0}."
+  sprite: 2
 
 # As Doctor, the second part of the report stating that among {1} (names of those in cold sleep) none were {0} (Gnosia).
 # {0} = "Gnosia"
@@ -261,43 +261,43 @@ report_doctor_pt2_multiple_gnosia_result:
 # {4} = "was"/"were" for plural handling
 # {5} = "wasn't"/"weren't" for plural handling
 report_doctor_pt2_oops_all_humans_result:
-  line: "You guys... The {0} assumption was wrong.\nOh well, it's cool! Let's stay positive!"
-  sprite: 1
+  line: "I'm sorry, {1}... None of them were Gnosia."
+  sprite: 17
 
 # Only spoken on day one. They technically trust {0}, but also believe they are suspicious.
 doubt_day_one:
-  line: "Something about {0} is just kinda fishy.\nI mean... Just look at those eyes."
-  sprite: 6
+  line: "Can I just say something about {0}? They've been really weird lately."
+  sprite: 13
 
 # {0} is generically suspicious.
 doubt_dislike:
-  line: "So we gotta choose who we wanna put into cold sleep\nI'm thinking maybe {0}."
-  sprite: 0
+  line: "Just confess already, {0}! I know it's got to be you."
+  sprite: 18
 
 # {0} is talking too much or annoying.
 doubt_too_chatty:
-  line: "It's the way {0}, like, keeps talking?\nIt's just like, super sketchy."
-  sprite: 5
+  line: "{0} just keeps talking and talking...\nThat has to be suspicious, right?"
+  sprite: 13
 
 # {0} is suspicious despite being generally liked by everyone.
 doubt_too_popular:
-  line: "{0}. I think you're totally sketchy.\nRemember that."
-  sprite: 6
+  line: "Um, have you guys forgotten about {0}?\nIt's like they totally slipped under your radar."
+  sprite: 4
 
 # {0} hasn't spoken for a while.
 doubt_too_quiet:
-  line: "Hey {0}, why so quiet?"
-  sprite: 6
+  line: "I feel like {0}'s corner has been really quiet for a while..."
+  sprite: 2
 
 # Probabilistically, {0} is likely suspicious.
 doubt_prob:
-  line: "{0} is sketchy... Uh, I think.\nI mean, I'm not sure, but maybe?"
-  sprite: 1
+  line: "I'm not sure, but don't you think {0} has seemed suspicious lately?"
+  sprite: 13
 
 # Once trusted {0}, but are now suspicious of them.
 doubt_trusted:
-  line: "Heh, hehehe, {0}?\nSomething about you is totally fishy, huh?"
-  sprite: 6
+  line: "I don't think {0} is safe anymore, you guys. Stay away from them!"
+  sprite: 21
 
 # Was collaborating with {0}, but are now suspicious of them.
 doubt_collaborator:
@@ -321,8 +321,8 @@ doubt_trust_variant_too_chatty:
 
 # {0} is suspicious despite being generally liked by everyone. Variant when this character's persona trust towards {0} is high.
 doubt_trust_variant_too_popular:
-  line: "There's nothing sketchy about {0}.\nLike, so not-sketchy that it's sketchy? Ah, hold up...\nSo like, maybe {0} IS sketchy then?"
-  sprite: 0
+  line: "Yeah, {0} is just too suspicious for me to keep pretending. I don't care what you guys think."
+  sprite: 5
 
 # {0} hasn't spoken for a while. Variant when this character's persona trust towards {0} is high.
 doubt_trust_variant_too_quiet:
@@ -990,7 +990,8 @@ time_clam:
   sprite: 2
 
 # Night conversation that the character has discovered a liar. {0} = Player name, {1} = Target name.
-# Add 100 to the sprite index to trigger the sound effect.
+
+# Add 100 to the sprite index to trigger the sound effect.
 multiline_night_liar_found:
   lines:
     - line: "Hey, {0}, listen.\nI found the liar!"
@@ -1011,7 +1012,8 @@ multiline_liar_found_followup:
 
 
 # Night conversation if the character wishes to team up. {0} = Player name..
-# Add 100 to the sprite index to trigger the sound effect.
+
+# Add 100 to the sprite index to trigger the sound effect.
 multiline_night_lets_collaborate:
   lines:
     - line: "Oh hey, {0}, perfect timing.\nListen, I got a favor to ask. Well, it's more of a \"plan\"."

@@ -51,23 +51,23 @@ known_skills:
   charisma_block_argument: false
   intuition_say_human: false
   intuition_dont_be_fooled: false
-  charm_regret: true
-  charm_collaborate: false
-  logic_vote: false
+  charm_regret: false
+  charm_collaborate: true
+  logic_vote: true
   logic_dont_vote: true
   logic_definite_human_or_enemy: true
   logic_definite_ac: true
   logic_definite_bug: true
-  logic_freeze_all: true
+  logic_freeze_all: false
   perform_retaliate: false
   perform_seek_help: false
   perform_exaggerate: false
   stealth_obfuscate: false
   stealth_small_talk: false
   stealth_grovel: false
-  night_liar_callout: true
-  night_victim_request: true
-  night_collaborate: true
+  night_liar_callout: false
+  night_victim_request: false
+  night_collaborate: false
 
 ############
 # DIALOGUE #
@@ -100,13 +100,13 @@ step_forward:
 
 # First person to reveal role as {0} ('Engineer'). They can investigate one person every night.
 reveal_role_engineer:
-  line: "Of course! I am the {0}.\nYou can count on me!"
+  line: "Present! I am the {0}.\nYou can count on me!"
   sprite: 19
 
 # Counter-claiming {1} for the role of {0} ('Engineer').
 reveal_own_role_engineer:
-  line: "Hold on, the {0} is me.\nWhy would you say that, {1}?"
-  sprite: 3
+  line: "Please report {1} to the front office for impersonating the {0}!\nI am the only one assigned with those duties!"
+  sprite: 5
 
 # Revealing role as {0} ('Engineer') while also stating {1} is Gnosia.
 reveal_role_engineer_with_gnosia_result:
@@ -115,13 +115,13 @@ reveal_role_engineer_with_gnosia_result:
 
 # First to reveal role as {0} ('Doctor'). They can investigate whoever was put into cold sleep the previous night.
 reveal_role_doctor:
-  line: "As the {0}, I'll look over our friends,\neven after they're in cold sleep!"
+  line: "As the {0}, I'll look over our friends, even after they're in cold sleep!"
   sprite: 17
 
 # Counter-claiming {1} for the role of {0} ('Doctor').
 reveal_own_role_doctor:
-  line: "What!?\n{1}, you must be mistaken because I am the {0}!"
-  sprite: 4
+  line: "That's an affront to the medical field!\nAs the real {0}, I must ask you not to listen to {1}!"
+  sprite: 5
 
 # Revealing role as {0} ('Doctor') while also stating the person {1} was Gnosia.
 reveal_role_doctor_with_gnosia_result:
@@ -130,8 +130,8 @@ reveal_role_doctor_with_gnosia_result:
 
 # First to reveal role as {0} ('Guard Duty'). The other person on guard duty will corroborate this.
 reveal_role_guard_duty:
-  line: "I can vouch for myself and one other person.\nWe were on {0} together."
-  sprite: 6
+  line: "I would like to commend my fellow {0} for their diligence!\nWithout them, we would not be able to clear each other of suspicion."
+  sprite: 2
 
 # Corroborating {1}'s claim of being {0} ('Guard Duty').
 reveal_role_guard_duty_response:
@@ -145,22 +145,22 @@ reveal_role_guardian_angel:
 
 # Reacting to {1} being the sole claimant to the role of {0} (i.e. they're the genuine {0}).
 step_forward_1_claim_reaction:
-  line: "Got it! So {1} is definitely the {0}."
-  sprite: 6
+  line: "I believe you have what it takes, {1}!\nPlease perform your duties to the best of your ability!"
+  sprite: 2
 
 # Reacting to {1} ('Name1 and Name2') being two claimants to the role of {0}.
 step_forward_2_claims_reaction:
-  line: "What does this mean?\nThere should only be one {0}."
-  sprite: 1
+  line: "We can't have two {0}s!\nImposter, please raise your hand so that we may have a civilized discussion!"
+  sprite: 2
 
 # Reacting to {1} ('Name1, Name2, and Name3') being three or more claimants to the role of {0}.
 step_forward_3_claims_reaction:
-  line: "Wha- What is this!?\nOnly one of you can be the real {0}!"
-  sprite: 4
+  line: "This is very improper! There should be only one {0}!"
+  sprite: 18
 
 # Asking for any Engineer/Doctor who hasn't spoken yet to present their report.
 request_report:
-  line: "AHEM! Someone is neglecting their duty to report!"
+  line: "Excuse me! Someone is neglecting their duty to report!"
   sprite: 5
 
 # One of the Doctors/Engineers, named {0}, failed to present their report. This is very incriminating.
@@ -180,7 +180,7 @@ report_pt1_conflicting_result:
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}, who was killed last night.
 report_engineer_pt1_target_killed:
-  line: "I examined {1}, but it may no longer be necessary...\n"
+  line: "I examined {1} before they disappeared...\n"
   sprite: 3
 
 # As {0} ('Engineer') giving their report first, the first sentence of their report that they investigated {1}.
@@ -290,13 +290,13 @@ doubt_too_quiet:
 
 # Probabilistically, {0} is likely suspicious.
 doubt_prob:
-  line: "Given what we've heard so far,\nsomething doesn't add up with {0}."
+  line: "From everything we've heard so far, something doesn't add up with {0}."
   sprite: 1
 
 # Once trusted {0}, but are now suspicious of them.
 doubt_trusted:
-  line: "{0}... What happened to you?\nWhy do you seem strange all of a sudden...?"
-  sprite: 3
+  line: "I don't mean to be rude, {0}, but your recent behavior suggests that you may be Gnosia!"
+  sprite: 5
 
 # Was collaborating with {0}, but are now suspicious of them.
 doubt_collaborator:
@@ -435,7 +435,7 @@ join_argument_high_trust_variant:
 
 # Attempt to defend against a weak accusation.
 refute_weak_doubt:
-  line: "Even if you doubt me,\nI will never abandon my duty to protect our morals!"
+  line: "Even if you doubt me, I will always protect our morals!"
   sprite: 6
 
 # Attempt to defend against an accusation with strong basis.
@@ -565,12 +565,12 @@ thats_obvious:
 
 # Thanking {0} for being recognized as the real {1}.
 say_thanks_definite_human_with_role:
-  line: "Thank you for your acknowledgement, {0}!\nYes, I am the {1}!"
+  line: "Thank you for your acknowledgement, {0}!\nYes, I'm proud to be {1}!"
   sprite: 6
 
 # Admitting that {0} was correct in calling them out as Definite Enemy.
 definite_enemy_revealed:
-  line: "Well done, {0}! please ensure I don't endanger anyone else!"
+  line: "Well done, {0}! Please ensure I don't endanger anyone else!"
   sprite: 11
 
 #  Recognizing there's no need for discussion, skipping straight to the vote.
@@ -665,8 +665,8 @@ sk_intui_say_human_proposal:
 
 # Saying 'I'm human.'
 sk_intui_say_human_yes_im_human:
-  line: "I'm just an ordinary human,\nbut I push myself as hard as I can every day!"
-  sprite: 6
+  line: "Ordinary human, present!"
+  sprite: 2
 
 # Telling {0} to stop the round of 'I'm human'.
 sk_intui_say_human_stop_it:
@@ -720,8 +720,8 @@ sk_steal_small_talk_join_love:
 
 # Joining small talk about scary stories.
 sk_steal_small_talk_join_scary:
-  line: "Do you know the worst part!?\nThere's no study materials on this spaceship whatsoever!"
-  sprite: 7
+  line: "Such frightening talk is not welcome in a school environment!\nPlease adhere to a more wholesome topic!"
+  sprite: 5
 
 # Telling {0} to stop the small talk conversation they started.
 sk_steal_small_talk_stop:
@@ -880,8 +880,8 @@ sk_perfo_retaliate:
 
 # Evoking extreme pity in the group in response to being doubted.
 sk_charm_regret:
-  line: "Please... What do I have to do for you all to trust me...?"
-  sprite: 16
+  line: "What should I do for you to trust me...?\nPlease, tell me!"
+  sprite: 11
 
 # Asking {0} to help in the current round of discussion.
 sk_perfo_seek_help:
@@ -890,23 +890,23 @@ sk_perfo_seek_help:
 
 # Refusing to help {0} after being asked to bail them out.
 sk_perfo_seek_help_reaction:
-  line: "Ah, sorry, I'm still sort of undecided, so..."
+  line: "I'm still undecided, so..."
   sprite: 3
 
 # Pointing out to the group that {0} is clearly lying.
 sk_intui_dont_be_fooled:
-  line: "..."
-  sprite: 0
+  line: "I see through your lies, {0}!\nEveryone! Don't be fooled!"
+  sprite: 5
 
 # Attempting to talk their way out of cold sleep.
 sk_stealth_grovel:
-  line: "..."
-  sprite: 0
+  line: "PLEASE! I need to guide you all to the right path.\nHow can I do that if I'm in cold sleep...?"
+  sprite: 7
 
 # Reacting to {0}'s attempt to beg their way out of cold sleep.
 sk_stealth_grovel_reaction:
-  line: "Sorry...\nAh, what should we do...?"
-  sprite: 3
+  line: "This is very irregular!\nShould we even consider it?"
+  sprite: 5
 
 # Nighttime chatter when the player, {0}, is a friend and has high internal trust (F>0.5, T>0.75).
 night_friend_and_high_trust:
@@ -915,7 +915,7 @@ night_friend_and_high_trust:
 
 # Nighttime chatter when the player, {0}, is a friend, but doesn't have a high internal trust (F>0.5, 0<T<0.75).
 night_friend_and_maybe_trusted:
-  line: "I'd certainly like to talk with you more, {0}!\nWould you like to memorize equations together?"
+  line: "I was just memorizing some equations.\nWould you like to join me, {0}?"
   sprite: 6
 
 # Nighttime chatter when the player, {0}, is not quite a friend and does not have high internal trust (0.15<F<0.5, 0.25<T).
@@ -925,12 +925,12 @@ night_maybe_friend_and_maybe_trusted:
 
 # Nighttime chatter when the player, {0}, is not a close friend and is not trusted (-0.5<F<0.5, T<0.25).
 night_maybe_friend_and_not_trusted:
-  line: "I would love to trust you more, {0}!\nIn other words, I also don't trust you yet!"
+  line: "I would certainly love to trust you more, {0}!\nIn other words, I don't trust you yet!"
   sprite: 2
 
 # Nighttime chatter when the player, {0}, is somewhat of a friend and is somewhat trusted (-0.15<F<0.15, 0.25<T).
 night_not_friend_and_maybe_trusted:
-  line: "Oh, {0}! I'd love to talk to you.\nWant to study with me?"
+  line: "I'd be happy to spend some time with you, {0}!\nWant to study with me?"
   sprite: 19
 
 # Nighttime chatter when the player, {0}, is not a friend, but their internal trust is not necessarily low (F<-0.15, 0.25 < T)
@@ -950,7 +950,7 @@ night_char_definite_enemy:
 
 # Nighttime chatter with the player, {0}, while the player is a known Definite Enemy.
 night_player_definite_enemy:
-  line: "I almost didn't see you there, {0}!\nCare for one last study session before cold sleep?"
+  line: "I almost didn't see you there, {0}!\nCare for one last study session before you sleep?"
   sprite: 19
 
 # Nighttime chatter when both the player ({0}) and character are Gnosia, and the player has been labelled as Definite Enemy.
@@ -960,8 +960,8 @@ night_player_is_def_enemy_both_gnosia:
 
 # Nighttime chatter when the character and player ({0}) have made opposing claims.
 night_opposing_claim:
-  line: "Only one of us can survive!\nDo you have what it takes, {0}?"
-  sprite: 18
+  line: "Only one of us will survive...\nAre you sure you're ready for that, {0}?"
+  sprite: 1
 
 # Nighttime chatter when both the player ({0}) and character are Definite Human.
 night_both_definite_human:
@@ -970,7 +970,7 @@ night_both_definite_human:
 
 # Nighttime chatter when the player ({0}) is Definite Human.
 night_player_definite_human:
-  line: "Oh, hello, {0}! I was just starting some writing exercises.\nCare to join me?"
+  line: "Oh, hello, {0}! I was just starting some writing exercises.\nWant to join me?"
   sprite: 19
 
 # Nighttime chatter with the player, {0}, when this character is Definite Human.
@@ -980,7 +980,7 @@ night_char_def_human:
 
 # Nighttime chatter when both the player ({0}) and character are Gnosia (different from the 'who to kill' event').
 night_both_gnosia:
-  line: "Hello, {0}... Is it time to warp?"
+  line: "Hello, {0}... Is it time?"
   sprite: 16
 
 # Nonsensical statement when the game logic is irrevocably broken. {0} = Player name
@@ -1072,7 +1072,7 @@ multiline_end_human_win_not_trusted:
   lines:
     - line: "So, we did get ALL the Gnosia, right?\nThen why is {0} still here...?"
       sprite: 3
-    - line: "Oh my gosh, I'm so sorry I doubted you, {0}!"
+    - line: "Oh my gosh, I'm so sorry {0}!"
       sprite: 4
     - line: "Those were some impressive tactics to fool the Gnosia!\nYou really got me there!"
       sprite: 6
@@ -1130,7 +1130,7 @@ multiline_end_char_is_opposing_gnosia:
       sprite: 4
     - line: "...Ghhh!"
       sprite: 112
-    - line: "Please! You have to run!"
+    - line: "Please! You have to survive!"
       sprite: 7
 
 # Ending conversation when the character wins as a Bug.
