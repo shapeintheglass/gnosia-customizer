@@ -16,7 +16,8 @@ namespace GnosiaCustomizer.utils
         public const char Delimiter = '%';
         private const string NameFieldName = "name";
         private const string SexFieldName = "sex";
-        private const string AgeFieldName = "age";
+        private const string AgeFieldName = "t_aisatu";
+        // private const string AgeFieldName = "age";
         private const string BioFieldName = "t_temp";
         private const string OriginFieldName = "d_place";
         private const string HonorificFieldName = "t_keisho";
@@ -29,7 +30,7 @@ namespace GnosiaCustomizer.utils
 
         internal static readonly Dictionary<string, List<string>> DialogueInitialization = new Dictionary<string, List<string>>()
         {
-            { "t_aisatu", [ "introduction" ] },
+            // { "t_aisatu", [ "age_string" ] },
             { "t_suspect", [ "doubt_dislike%{0}", "doubt_too_chatty%{0}", "doubt_too_popular%{0}", "doubt_too_quiet%{0}", "doubt_prob%{0}", "doubt_trusted%{0}", "doubt_collaborator%{0}", "doubt_avenge%{0}" ] },
             { "t_suspect_r", [ "doubt_trust_variant_dislike%{0}", "doubt_trust_variant_too_chatty%{0}", "doubt_trust_variant_too_popular%{0}", "doubt_trust_variant_too_quiet%{0}", "doubt_trust_variant_prob%{0}", "doubt_trust_variant_trusted%{0}", "doubt_trust_variant_collaborator%{0}", "doubt_trust_variant_avenge%{0}" ] },
             { "t_suspect_add", [ "doubt_day_one%{0}" ] },
@@ -261,7 +262,8 @@ namespace GnosiaCustomizer.utils
             }
             if (charaText.Age != null)
             {
-                SetField(charaStructBoxed, AgeFieldName, charaText.Age.Value);
+                SetField(charaStructBoxed, AgeFieldName, new List<string>() { charaText.Age });
+                // SetField(charaStructBoxed, AgeFieldName, charaText.Age.Value);
             }
             if (charaText.Bio1 != null)
             {

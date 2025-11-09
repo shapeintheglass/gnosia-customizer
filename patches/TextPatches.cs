@@ -6,6 +6,8 @@ using System;
 using HarmonyLib;
 using System.Reflection;
 using GnosiaCustomizer.utils;
+using gnosia;
+using application;
 using coreSystem;
 using System.Collections.Concurrent;
 
@@ -170,6 +172,47 @@ namespace GnosiaCustomizer.patches
                     }
                 }
                 return true;
+            }
+        }
+    }
+
+    [HarmonyPatch]
+    internal class Patch_DataJoinTokucho
+    {
+        static MethodBase TargetMethod()
+        {
+            var t = AccessTools.TypeByName("application.DataJoinScreen");
+            return AccessTools.Method(t, "InitializeGlm");
+        }
+        static void Postfix(object __instance)
+        {
+            try
+            {
+                var mydata = (GameData)AccessTools.Field(__instance.GetType(), "mydata")
+                    .GetValue(__instance);
+
+                var idList = (List<int>)AccessTools.Field(__instance.GetType(), "idList")
+                    .GetValue(__instance);
+
+                int nowPeople = (int)AccessTools.Field(__instance.GetType(), "nowPeople")
+                    .GetValue(__instance);
+
+                int innerId = mydata.chara[idList[nowPeople]].id;
+
+                var dataType = AccessTools.TypeByName("gnosia.Data");
+                var charaField = AccessTools.Field(dataType, "Chara");
+                var charaArray = (System.Collections.IList)charaField.GetValue(null);
+                var charaObj = charaArray[innerId];
+                var tAisatuField = AccessTools.Field(charaObj.GetType(), "t_aisatu");
+                var aisatu = (System.Collections.IList)tAisatuField.GetValue(charaObj);
+                if (aisatu != null && aisatu.Count > 0)
+                {
+                    var setTextMethod = AccessTools.Method(__instance.GetType(), "SetText");
+                    setTextMethod.Invoke(__instance, new object[] { "tokucho", aisatu[0] });
+                }
+            }
+            catch
+            {
             }
         }
     }

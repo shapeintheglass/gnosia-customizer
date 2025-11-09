@@ -14,7 +14,8 @@ namespace GnosiaCustomizer.utils
         public string Honorific { get; set; } = default;
         public List<string> Notes { get; set; } = default;
         public byte? Sex { get; set; } = 2; // 0 = Male, 1 = Female, 2 = Non-Binary
-        public uint? Age { get; set; } = 25;
+        // public uint? Age { get; set; } = 25;
+        public string? Age { get; set; } = "30";
         public Dictionary<string, float> Attributes { get; set; } = default;
         public Dictionary<string, float> AbilityStart { get; set; } = default;
         public Dictionary<string, float> AbilityMax { get; set; } = default;
@@ -77,11 +78,14 @@ namespace GnosiaCustomizer.utils
                             Sex = sex;
                         }
                         break;
+                    // case "age":
+                    //     if (uint.TryParse(value.ToString(), out var age))
+                    //     {
+                    //         Age = age;
+                    //     }
+                    //     break;
                     case "age":
-                        if (uint.TryParse(value.ToString(), out var age))
-                        {
-                            Age = age;
-                        }
+                        Age = value.ToString();
                         break;
                     case "attributes":
                         Attributes = ParseFloatMap(value);
