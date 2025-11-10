@@ -188,6 +188,8 @@ namespace GnosiaCustomizer.patches
         {
             try
             {
+                TextPatches.Logger.LogInfo("Tokucho patch: entered Postfix");
+
                 var mydata = (GameData)AccessTools.Field(__instance.GetType(), "mydata")
                     .GetValue(__instance);
 
@@ -199,20 +201,56 @@ namespace GnosiaCustomizer.patches
 
                 int innerId = mydata.chara[idList[nowPeople]].id;
 
+                TextPatches.Logger.LogInfo($"Tokucho patch: innerId={innerId}");
+
                 var dataType = AccessTools.TypeByName("gnosia.Data");
                 var charaField = AccessTools.Field(dataType, "Chara");
                 var charaArray = (System.Collections.IList)charaField.GetValue(null);
                 var charaObj = charaArray[innerId];
                 var tAisatuField = AccessTools.Field(charaObj.GetType(), "t_aisatu");
                 var aisatu = (System.Collections.IList)tAisatuField.GetValue(charaObj);
+
+                TextPatches.Logger.LogInfo($"Tokucho patch: aisatu count={aisatu?.Count}");
+
                 if (aisatu != null && aisatu.Count > 0)
                 {
-                    var setTextMethod = AccessTools.Method(__instance.GetType(), "SetText");
-                    setTextMethod.Invoke(__instance, new object[] { "tokucho", aisatu[0] });
+                    // --- Retrieve tokucho TextArea from Screen.m_textAreaMap ---
+                    var screenType = typeof(application.Screen);
+                    var mapField = AccessTools.Field(screenType, "m_textAreaMap");
+                    var mapObj = mapField.GetValue(__instance);
+                    var map = mapObj as Dictionary<string, coreSystem.TextArea>;
+
+                    if (map != null && map.ContainsKey("tokucho"))
+                    {
+                        TextPatches.Logger.LogInfo("Tokucho patch: tokucho TextArea found in m_textAreaMap");
+
+                        var tokuchoArea = map["tokucho"];
+
+                        string msg = aisatu[0].ToString();
+                        TextPatches.Logger.LogInfo($"Tokucho patch: msg before tokuchoArea.SetText = {msg}");
+
+                        var setTextMethod = AccessTools.Method(typeof(coreSystem.TextArea),
+                                                               "SetText",
+                                                               new Type[] { typeof(string).MakeByRefType(), typeof(bool), typeof(bool) });
+
+                        object[] args = new object[] { msg, false, true };
+                        setTextMethod.Invoke(tokuchoArea, args);
+
+                        TextPatches.Logger.LogInfo("Tokucho patch: tokuchoArea.SetText invoked");
+
+                        tokuchoArea.SetTextarea(msg);
+
+                        TextPatches.Logger.LogInfo("Tokucho patch: tokuchoArea.SetTextarea invoked");
+                    }
+                    else
+                    {
+                        TextPatches.Logger.LogError("Tokucho patch: tokucho TextArea NOT found in m_textAreaMap");
+                    }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                TextPatches.Logger.LogError($"Tokucho patch exception: {ex}");
             }
         }
     }
